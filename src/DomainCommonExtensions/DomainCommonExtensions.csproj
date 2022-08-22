@@ -1,0 +1,62 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<TargetFramework>netstandard2.0</TargetFramework>
+		<GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <Authors>RzR</Authors>
+    <Copyright>RzR</Copyright>
+		<Owners>RzR</Owners>
+    <Copyright>RzR</Copyright>
+		<PackageLicenseFile>LICENSE</PackageLicenseFile>
+		<PackageIcon>PackageIcon.png</PackageIcon>
+		<NoWarn>$(NoWarn);CS8032</NoWarn>
+		<EnableNETAnalyzers>false</EnableNETAnalyzers>
+		<GeneratePackageOnBuild>false</GeneratePackageOnBuild>
+		<PackageTags>Data;Type;DataType;Extension;Util;Helper;Parser;API;Class;Object</PackageTags>
+		<RepositoryUrl>https://github.com/I-RzR-I/DomainCommonExtensions</RepositoryUrl>
+		<PackageProjectUrl>https://github.com/I-RzR-I/DomainCommonExtensions</PackageProjectUrl>
+		<PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
+		<PackageDescription>The purpose of this repository/library is to provide the most relevant and used extension methods in the life cycle of application development that allow us to improve our code, and writing speed, and use more efficiently dev team time during this period for more complex functionality.</PackageDescription>
+		<PackageTitle>RzR.Shared.DomainCommonExtensions (DomainCommonExtensions)</PackageTitle>
+		<Title>RzR.Shared.DomainCommonExtensions (DomainCommonExtensions)</Title>
+    <LangVersion>8.0</LangVersion>
+    <Language>en-US</Language>
+    <PackageIconUrl />
+	</PropertyGroup>
+  
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <DocumentationFile>bin\$(Configuration)\$(TargetFramework)\$(AssemblyName).xml</DocumentationFile>
+  </PropertyGroup>
+
+	<ItemGroup>
+		<Compile Include="..\shared\GeneralAssemblyInfo.cs" Link="Properties\GeneralAssemblyInfo.cs" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <None Include="..\..\assets\PackageIcon.png">
+	    <Pack>True</Pack>
+	    <PackagePath></PackagePath>
+	  </None>
+	  <None Include="..\..\LICENSE">
+	    <Pack>True</Pack>
+	    <PackagePath></PackagePath>
+	  </None>
+	</ItemGroup>
+
+	<ItemGroup>
+	  <PackageReference Include="Microsoft.Extensions.Caching.Abstractions" Version="6.0.0" />
+	  <PackageReference Include="Microsoft.Extensions.Configuration" Version="6.0.1" />
+	  <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="6.0.0" />
+	  <PackageReference Include="System.ComponentModel.Annotations" Version="5.0.0" />
+	  <PackageReference Include="System.Linq.Dynamic.Core" Version="1.2.19" />
+	</ItemGroup>
+
+	<ProjectExtensions>
+		<VisualStudio>
+			<UserProperties BuildVersion_StartDate="2022/8/22" />
+		</VisualStudio>
+	</ProjectExtensions>
+	<Target Name="PostBuild" AfterTargets="PostBuildEvent">
+		<Exec Command="PowerShell -NoProfile -ExecutionPolicy unrestricted -file $(SolutionDir)../build/pack.ps1 $(ConfigurationName)" />
+	</Target>
+</Project>
