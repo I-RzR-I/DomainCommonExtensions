@@ -482,7 +482,7 @@ namespace DataTypeTests
             var result2 = "As da Dw".UppercaseWords();
 
             Assert.AreEqual(string.Empty, result);
-            Assert.AreEqual("Aa Da Dw", result2);
+            Assert.AreEqual("As Da Dw", result2);
         }
 
         [TestMethod]
