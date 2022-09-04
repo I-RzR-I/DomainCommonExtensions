@@ -105,6 +105,9 @@ namespace DomainCommonExtensions.DataTypeExtensions
         /// <returns></returns>
         public static SecureString ToSecureString(this string str)
         {
+            if (str.IsNull())
+                throw new ArgumentNullException(nameof(str));
+
             var secureString = new SecureString();
             foreach (var c in str)
                 secureString.AppendChar(c);
@@ -119,6 +122,7 @@ namespace DomainCommonExtensions.DataTypeExtensions
         /// <returns></returns>
         public static string StripHtml(this string input)
         {
+            input ??= string.Empty;
             var tagsExpression = new Regex(@"</?.+?>");
 
             return tagsExpression.Replace(input, " ");
@@ -531,6 +535,9 @@ namespace DomainCommonExtensions.DataTypeExtensions
         /// <remarks></remarks>
         public static byte[] GetHashSha1CryptoProv(this string content)
         {
+            if (content.IsNull())
+                throw new ArgumentNullException(nameof(content));
+
             var buffer = Encoding.UTF8.GetBytes(content);
             var sha1 = new SHA1CryptoServiceProvider();
 
@@ -545,6 +552,9 @@ namespace DomainCommonExtensions.DataTypeExtensions
         /// <remarks></remarks>
         public static byte[] GetHashSha256CryptoProv(this string content)
         {
+            if (content.IsNull())
+                throw new ArgumentNullException(nameof(content));
+
             var buffer = Encoding.UTF8.GetBytes(content);
             var sha1 = new SHA256CryptoServiceProvider();
 
@@ -559,6 +569,9 @@ namespace DomainCommonExtensions.DataTypeExtensions
         /// <remarks></remarks>
         public static byte[] GetHashSha256(this string inputString)
         {
+            if (inputString.IsNull())
+                throw new ArgumentNullException(nameof(inputString));
+
             using HashAlgorithm algorithm = SHA256.Create();
 
             return algorithm.ComputeHash(Encoding.UTF8.GetBytes(inputString));
@@ -572,6 +585,9 @@ namespace DomainCommonExtensions.DataTypeExtensions
         /// <remarks></remarks>
         public static string GetHashSha256String(this string inputString)
         {
+            if (inputString.IsNull())
+                throw new ArgumentNullException(nameof(inputString));
+
             var sb = new StringBuilder();
             foreach (var b in GetHashSha256(inputString))
                 sb.Append(b.ToString("X2"));
@@ -587,6 +603,9 @@ namespace DomainCommonExtensions.DataTypeExtensions
         /// <remarks></remarks>
         public static byte[] DeCodeBytesFromBase64(this string encoded)
         {
+            if (encoded.IsNull())
+                throw new ArgumentNullException(nameof(encoded));
+
             return Convert.FromBase64String(encoded);
         }
 
@@ -663,6 +682,11 @@ namespace DomainCommonExtensions.DataTypeExtensions
         /// <remarks></remarks>
         public static string Next(this string value, uint next)
         {
+            if (value.IsNull())
+                throw new ArgumentNullException(nameof(value));
+            if (next.IsNull())
+                throw new ArgumentNullException(nameof(next));
+
             var result = new StringBuilder(value).ToString();
             for (var i = 0; i < next; i++) result = result.Next();
 
@@ -707,6 +731,9 @@ namespace DomainCommonExtensions.DataTypeExtensions
         /// <returns>The string each words are uppercase</returns>
         public static string UppercaseWords(this string value)
         {
+            if (value.IsNull())
+                throw new ArgumentNullException(nameof(value));
+
             var array = value.ToCharArray();
             if (array.Length >= 1)
                 if (char.IsLower(array[0]))
@@ -727,6 +754,9 @@ namespace DomainCommonExtensions.DataTypeExtensions
         /// <returns>The array of bytes</returns>
         public static byte[] GetBytes(this string str)
         {
+            if (str.IsNull())
+                throw new ArgumentNullException(nameof(str));
+
             var bytes = new byte[str.Length * sizeof(char)];
             Buffer.BlockCopy(str.ToCharArray(), 0, bytes, 0, bytes.Length);
 
@@ -756,6 +786,11 @@ namespace DomainCommonExtensions.DataTypeExtensions
         /// <returns>Return similarity of two words in percentage</returns>
         public static double SimpleCompareTwoString(this string a, string b)
         {
+            if (a.IsNull())
+                throw new ArgumentNullException(nameof(a));
+            if (b.IsNull())
+                throw new ArgumentNullException(nameof(b));
+
             if (a == b)
                 return 100;
             if (a.Length == 0 || b.Length == 0) return 0;
@@ -779,6 +814,13 @@ namespace DomainCommonExtensions.DataTypeExtensions
         /// <remarks></remarks>
         private static string SplitXmlWithCharSpecial(string input, string character, char separator)
         {
+            if (input.IsNull())
+                throw new ArgumentNullException(nameof(input));
+            if (character.IsNull())
+                throw new ArgumentNullException(nameof(character));
+            if (separator.IsNull())
+                throw new ArgumentNullException(nameof(separator));
+
             var output = "";
 
             var tagsArray = input.Split(separator);
@@ -805,6 +847,9 @@ namespace DomainCommonExtensions.DataTypeExtensions
         /// <returns>List of all permutations</returns>
         public static List<string> GenerateStringPermutation(this string inputData)
         {
+            if (inputData.IsNull())
+                throw new ArgumentNullException(nameof(inputData));
+
             var result = new List<string>();
             var splittedWord = inputData.Split(new[] { " ", ",", ", " }, StringSplitOptions.None).ToList();
             var factorial = 1;
@@ -840,6 +885,9 @@ namespace DomainCommonExtensions.DataTypeExtensions
         /// <remarks></remarks>
         public static List<string> GenerateStringOrderedList(this string inputData)
         {
+            if (inputData.IsNull())
+                throw new ArgumentNullException(nameof(inputData));
+
             var result = new List<string>();
             var splittedWord = inputData.Split(new[] { " ", ",", ", " }, StringSplitOptions.None).ToList();
 
@@ -860,6 +908,9 @@ namespace DomainCommonExtensions.DataTypeExtensions
         /// <remarks></remarks>
         public static bool ValidatePull(this string source, IEnumerable<string> pull)
         {
+            if (source.IsNull())
+                throw new ArgumentNullException(nameof(source));
+
             var match = pull.Count(source.StartsWith);
 
             return match > 0;
@@ -873,11 +924,36 @@ namespace DomainCommonExtensions.DataTypeExtensions
         /// <remarks></remarks>
         public static string FixBase64ForImage(this string image)
         {
+            if (image.IsNull())
+                throw new ArgumentNullException(nameof(image));
+
             var sbText = new StringBuilder(image, image.Length);
             sbText.Replace("\r\n", string.Empty);
             sbText.Replace(" ", string.Empty);
 
             return sbText.ToString();
+        }
+
+        /// <summary>
+        ///     Cast string to enum value
+        /// </summary>
+        /// <param name="value">Input string to cast</param>
+        /// <returns></returns>
+        /// <typeparam name="T">Type of Enum</typeparam>
+        /// <remarks></remarks>
+        public static T ToEnum<T>(this string value)
+        {
+            if (value == null)
+                throw new ArgumentNullException(nameof(value));
+
+            try
+            {
+                return (T)Enum.Parse(typeof(T), value, true);
+            }
+            catch
+            {
+                return default(T);
+            }
         }
     }
 }

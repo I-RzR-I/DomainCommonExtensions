@@ -64,6 +64,9 @@ namespace DomainCommonExtensions.CommonExtensions
         /// <remarks></remarks>
         public static object GetPropertyValue(this object obj, string name)
         {
+            if (obj == null)
+                throw new ArgumentNullException(nameof(obj));
+
             return obj?.GetType()
                 .GetProperty(name.Trim().FirstCharToUpper())
                 ?.GetValue(obj, null);
@@ -78,6 +81,9 @@ namespace DomainCommonExtensions.CommonExtensions
         /// <remarks></remarks>
         public static string GetStringPropertyValue(this object obj, string name)
         {
+            if (obj == null)
+                throw new ArgumentNullException(nameof(obj));
+
             return obj?.GetType()
                 .GetProperty(name.Trim().FirstCharToUpper())
                 ?.GetValue(obj, null)?.ToString() ?? string.Empty;
@@ -141,6 +147,9 @@ namespace DomainCommonExtensions.CommonExtensions
         /// <remarks></remarks>
         public static string GetSelectedFieldFromEntity(this Type type, IEnumerable<string> fields = null)
         {
+            if (type == null)
+                throw new ArgumentNullException(nameof(type));
+
             var searchBuilder = new StringBuilder();
             var propsInfo = type.GetProperties();
             var props = propsInfo.Select(x => x.Name).ToList();
@@ -172,6 +181,9 @@ namespace DomainCommonExtensions.CommonExtensions
         /// <remarks></remarks>
         public static bool IsSimpleType(this Type type)
         {
+            if (type == null)
+                throw new ArgumentNullException(nameof(type));
+
             var underlyingType = Nullable.GetUnderlyingType(type);
             type = underlyingType ?? type;
             var simpleTypes = new List<Type>
@@ -200,13 +212,16 @@ namespace DomainCommonExtensions.CommonExtensions
         }
 
         /// <summary>
-        ///     Check if data type is type on integer data
+        ///     Check if data type is type of integer data
         /// </summary>
         /// <param name="type">Current type</param>
         /// <returns></returns>
         /// <remarks></remarks>
-        public static bool IsTypeOnInt(this Type type)
+        public static bool IsTypeOfInt(this Type type)
         {
+            if (type == null)
+                throw new ArgumentNullException(nameof(type));
+
             var underlyingType = Nullable.GetUnderlyingType(type);
             type = underlyingType ?? type;
             var simpleTypes = new List<Type>
@@ -223,6 +238,74 @@ namespace DomainCommonExtensions.CommonExtensions
         }
 
         /// <summary>
+        ///     Check if data type is type of nullable integer data
+        /// </summary>
+        /// <param name="type"></param>
+        /// <returns></returns>
+        /// <remarks></remarks>
+        public static bool IsTypeOfNullableInt(this Type type)
+        {
+            if (type == null)
+                throw new ArgumentNullException(nameof(type));
+
+            var simpleTypes = new List<Type>
+            {
+                typeof(short?),
+                typeof(ushort?),
+                typeof(int?),
+                typeof(uint?),
+                typeof(long?),
+                typeof(ulong?)
+            };
+
+            return simpleTypes.Contains(type);
+        }
+
+        /// <summary>
+        ///     Check if data type is type of floating-point data
+        /// </summary>
+        /// <param name="type"></param>
+        /// <returns></returns>
+        /// <remarks></remarks>
+        public static bool IsTypeOfFloatingPoint(this Type type)
+        {
+            if (type == null)
+                throw new ArgumentNullException(nameof(type));
+
+            var underlyingType = Nullable.GetUnderlyingType(type);
+            type = underlyingType ?? type;
+            var simpleTypes = new List<Type>
+            {
+                typeof(float),
+                typeof(decimal),
+                typeof(double)
+            };
+
+            return simpleTypes.Contains(type);
+        }
+
+        /// <summary>
+        ///     Check if data type is type of nullable floating-point data
+        /// </summary>
+        /// <param name="type"></param>
+        /// <returns></returns>
+        /// <remarks></remarks>
+        public static bool IsTypeOfNullableFloatingPoint(this Type type)
+        {
+            if (type == null)
+                throw new ArgumentNullException(nameof(type));
+
+            var simpleTypes = new List<Type>
+            {
+                typeof(float?),
+                typeof(decimal?),
+                typeof(double?)
+            };
+
+            return simpleTypes.Contains(type);
+        }
+
+        /// <summary>
         ///     Check is property is Enum
         /// </summary>
         /// <param name="type"></param>
@@ -230,6 +313,9 @@ namespace DomainCommonExtensions.CommonExtensions
         /// <remarks></remarks>
         public static bool IsEnumType(this Type type)
         {
+            if (type == null)
+                throw new ArgumentNullException(nameof(type));
+
             var underlyingType = Nullable.GetUnderlyingType(type);
             type = underlyingType ?? type;
 
@@ -244,6 +330,9 @@ namespace DomainCommonExtensions.CommonExtensions
         /// <remarks></remarks>
         public static bool IsStringType(this Type type)
         {
+            if (type == null)
+                throw new ArgumentNullException(nameof(type));
+
             var underlyingType = Nullable.GetUnderlyingType(type);
             type = underlyingType ?? type;
 
@@ -258,6 +347,9 @@ namespace DomainCommonExtensions.CommonExtensions
         /// <remarks></remarks>
         public static Type GetNonNullableType(this Type type)
         {
+            if (type == null)
+                throw new ArgumentNullException(nameof(type));
+
             return type.IsNullablePropType()
                 ? NullableTypeDict.FirstOrDefault(x => x.Key == type).Value
                 : type;
