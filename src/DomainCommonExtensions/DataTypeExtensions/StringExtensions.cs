@@ -21,6 +21,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Net.Mail;
+using System.Runtime.Serialization;
 using System.Security;
 using System.Security.Cryptography;
 using System.Text;
@@ -278,23 +279,7 @@ namespace DomainCommonExtensions.DataTypeExtensions
 
             return sb.ToString();
         }
-
-        /// <summary>
-        ///     Convert to hexadecimal from byte array
-        /// </summary>
-        /// <param name="clearText">Required. </param>
-        /// <param name="withSpace">Optional. The default value is false.If set to <see langword="true" />, then ; otherwise, .</param>
-        /// <returns></returns>
-        /// <remarks></remarks>
-        public static string ToHexByte(this byte[] clearText, bool withSpace = false)
-        {
-            var hex = new StringBuilder(clearText.Length * 2);
-            foreach (var b in clearText)
-                hex.AppendFormat("{0:X2}{1}", b, withSpace ? " " : "");
-            var result = hex.ToString();
-
-            return withSpace ? result.TrimEnd(' ') : result;
-        }
+        
 
         /// <summary>
         ///     Convert to byte array from hexadecimal
@@ -954,6 +939,16 @@ namespace DomainCommonExtensions.DataTypeExtensions
             {
                 return default(T);
             }
+        }
+
+        /// <summary>
+        ///     To bytes UNICODE
+        /// </summary>
+        /// <param name="str"></param>
+        /// <returns></returns>
+        public static byte[] ToBytesUnicode(this string str)
+        {
+            return str.IsNull() ? default : Encoding.Unicode.GetBytes(str);
         }
     }
 }

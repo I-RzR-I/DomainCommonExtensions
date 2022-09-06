@@ -108,5 +108,33 @@ namespace DomainCommonExtensions.DataTypeExtensions
 
             return bytes.Aggregate(string.Empty, (current, b) => current + (char)b);
         }
+
+        /// <summary>
+        ///     Get string from byte stored as UNICODE
+        /// </summary>
+        /// <param name="input"></param>
+        /// <returns></returns>
+        /// <remarks></remarks>
+        public static string ToStringFromByteUnicode(this byte[] input)
+        {
+            return Encoding.Unicode.GetString(input);
+        }
+
+        /// <summary>
+        ///     Convert to hexadecimal from byte array
+        /// </summary>
+        /// <param name="clearText">Required. </param>
+        /// <param name="withSpace">Optional. The default value is false.If set to <see langword="true" />, then ; otherwise, .</param>
+        /// <returns></returns>
+        /// <remarks></remarks>
+        public static string ToHexByte(this byte[] clearText, bool withSpace = false)
+        {
+            var hex = new StringBuilder(clearText.Length * 2);
+            foreach (var b in clearText)
+                hex.AppendFormat("{0:X2}{1}", b, withSpace ? " " : "");
+            var result = hex.ToString();
+
+            return withSpace ? result.TrimEnd(' ') : result;
+        }
     }
 }
