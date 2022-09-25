@@ -950,5 +950,18 @@ namespace DomainCommonExtensions.DataTypeExtensions
         {
             return str.IsNull() ? default : Encoding.Unicode.GetBytes(str);
         }
+
+        /// <summary>
+        ///     Replace exact word in string
+        /// </summary>
+        /// <param name="input">Current strings</param>
+        /// <param name="oldValue">Value for search</param>
+        /// <param name="newValue">Value to replace</param>
+        /// <returns></returns>
+        /// <remarks></remarks>
+        public static string ReplaceExact(this string input, string oldValue, string newValue)
+        {
+            return Regex.Replace(input, $@"\b{oldValue}\b", newValue);
+        }
     }
 }
