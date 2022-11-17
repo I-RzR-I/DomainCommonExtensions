@@ -56,5 +56,62 @@ namespace DomainCommonExtensions.CommonExtensions
                 return (T)formatter.Deserialize(stream);
             }
         }
+
+        /// <summary>
+        ///     Return data if not null
+        /// </summary>
+        /// <param name="source">Source data</param>
+        /// <param name="action">Action</param>
+        /// <returns></returns>
+        /// <typeparam name="TInput">Input type</typeparam>
+        /// <typeparam name="TResult">Result type</typeparam>
+        /// <remarks></remarks>
+        public static TResult IfNotNull<TInput, TResult>(this TInput source, Func<TInput, TResult> action)
+        {
+            if (action.IsNull())
+                throw new ArgumentNullException(nameof(action));
+
+            return !source.IsNull()
+                ? action(source)
+                : default;
+        }
+
+        /// <summary>
+        ///     Return data if not null
+        /// </summary>
+        /// <param name="source">Source data</param>
+        /// <param name="action">Action</param>
+        /// <param name="defaultValue">Default result value</param>
+        /// <returns></returns>
+        /// <typeparam name="TInput">Input type</typeparam>
+        /// <typeparam name="TResult">Result type</typeparam>
+        /// <remarks></remarks>
+        public static TResult IfNotNull<TInput, TResult>(this TInput source, Func<TInput, TResult> action, TResult defaultValue)
+        {
+            if (action.IsNull())
+                throw new ArgumentNullException(nameof(action));
+
+            return !source.IsNull()
+                ? action(source)
+                : defaultValue;
+        }
+
+        /// <summary>
+        ///     Return data if not null
+        /// </summary>
+        /// <param name="source">Source data</param>
+        /// <param name="action">Action</param>
+        /// <typeparam name="TInput">Input type</typeparam>
+        /// <remarks></remarks>
+        public static void IfNotNull<TInput>(this TInput source, Action<TInput> action)
+        {
+            if (action.IsNull())
+                throw new ArgumentNullException(nameof(action));
+
+            if (source.IsNull())
+                return;
+
+            action(source);
+        }
     }
 }
