@@ -279,7 +279,7 @@ namespace DomainCommonExtensions.DataTypeExtensions
 
             return sb.ToString();
         }
-        
+
 
         /// <summary>
         ///     Convert to byte array from hexadecimal
@@ -962,6 +962,30 @@ namespace DomainCommonExtensions.DataTypeExtensions
         public static string ReplaceExact(this string input, string oldValue, string newValue)
         {
             return Regex.Replace(input, $@"\b{oldValue}\b", newValue);
+        }
+
+        /// <summary>
+        ///     Return current value or default value in case when input value is null or is white space character
+        /// </summary>
+        /// <param name="input">Input text to check</param>
+        /// <param name="defaultValue">Default value to return</param>
+        /// <returns></returns>
+        /// <remarks></remarks>
+        public static string IfNullOrWhiteSpace(this string input, string defaultValue)
+        {
+            return !string.IsNullOrWhiteSpace(input) ? input : defaultValue;
+        }
+
+        /// <summary>
+        ///     Return current value or default value in case when input value is null or is empty character
+        /// </summary>
+        /// <param name="input">Input text to check</param>
+        /// <param name="defaultValue">Default value to return</param>
+        /// <returns></returns>
+        /// <remarks></remarks>
+        public static string IfNullOrEmpty(this string input, string defaultValue)
+        {
+            return !input.IsNullOrEmpty() ? input : defaultValue;
         }
     }
 }

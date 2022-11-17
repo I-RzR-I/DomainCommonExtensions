@@ -12,3 +12,7 @@
 -> Was added new string extension: `ReplaceExact`.<br />
 -> Was added new Exception extension: `GetFullError`.<br />
 -> Was added new ExpandoObject extension: `AddProperty`, `UpdateValue`, `GetValue`.
+
+### **v.1.0.2.1457** 
+-> Was added new string extension: `IfNullOrWhiteSpace`, `IfNullOrEmpty`.<br />
+-> Was added new TExtensions extension: `IfNotNull`.
