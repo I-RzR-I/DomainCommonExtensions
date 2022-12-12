@@ -36,14 +36,13 @@ Global
 		{3EA9538F-A952-4BC8-9F03-F027D56A4A53} = {C59A0E49-6C0E-4FED-A3E4-F0170721563A}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
-		BuildVersion_BuildAction = Both
-		BuildVersion_UseUniversalClock = True
-		BuildVersion_ConfigurationName = Release
-		BuildVersion_AssemblyInfoFilename = shared\GeneralAssemblyInfo.cs
-		BuildVersion_StartDate = 2022/8/22
-		BuildVersion_UpdateFileVersion = True
-		BuildVersion_UpdateAssemblyVersion = True
-		BuildVersion_BuildVersioningStyle = None.None.Increment.TimeStamp
 		SolutionGuid = {4B5BD8B8-58AD-47B4-B85A-E7242D47B9FE}
+		BuildVersion_BuildVersioningStyle = None.None.Increment.TimeStamp
+		BuildVersion_UpdateAssemblyVersion = True
+		BuildVersion_UpdateFileVersion = True
+		BuildVersion_StartDate = 2022/8/22
+		BuildVersion_AssemblyInfoFilename = shared\GeneralAssemblyInfo.cs
+		BuildVersion_ConfigurationName = Release
+		BuildVersion_UseUniversalClock = True
 	EndGlobalSection
 EndGlobal

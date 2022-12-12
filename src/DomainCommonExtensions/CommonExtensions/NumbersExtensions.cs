@@ -19,6 +19,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using DomainCommonExtensions.DataTypeExtensions;
 
 #endregion
 
@@ -88,7 +89,7 @@ namespace DomainCommonExtensions.CommonExtensions
         /// <returns></returns>
         public static int PercentOf(this int value, int total)
         {
-            if (total == 0) return 0;
+            if (total.IsZero()) return 0;
 
             return (int)(value / (double)total * 100);
         }
@@ -101,7 +102,7 @@ namespace DomainCommonExtensions.CommonExtensions
         /// <returns></returns>
         public static int PercentOf(this ulong value, ulong total)
         {
-            if (total == 0) return 0;
+            if (total.IsZero()) return 0;
 
             return (int)(value / (double)total * 100);
         }
@@ -114,7 +115,7 @@ namespace DomainCommonExtensions.CommonExtensions
         /// <returns></returns>
         public static double PercentOf(this decimal value, decimal total)
         {
-            if (total == 0) return 0;
+            if (total.IsZero()) return 0;
             try
             {
                 return (double)(value / total * 100);
@@ -135,7 +136,7 @@ namespace DomainCommonExtensions.CommonExtensions
         /// <returns></returns>
         public static int PercentOf(this long value, long total)
         {
-            if (total == 0) return 0;
+            if (total.IsZero()) return 0;
             var v = value > 0 ? (ulong)value : 0;
 
             return total == 0 ? 0 : v.PercentOf((ulong)total);
@@ -207,7 +208,7 @@ namespace DomainCommonExtensions.CommonExtensions
         /// <returns></returns>
         public static bool IsPrime(this int number)
         {
-            if (number % 2 == 0) return number == 2;
+            if ((number % 2).IsZero()) return number == 2;
             var sqrt = (int)Math.Sqrt(number);
             for (var t = 3; t <= sqrt; t += 2)
                 if (number % t == 0)
@@ -236,6 +237,86 @@ namespace DomainCommonExtensions.CommonExtensions
         public static double RoundTo(this double value, int count)
         {
             return Math.Round(value, count);
+        }
+
+        /// <summary>
+        ///     Check if the value is between the two boundaries (boundaries included)
+        /// </summary>
+        /// <param name="source">Source number</param>
+        /// <param name="lower">Lower value</param>
+        /// <param name="higher">Higher value</param>
+        /// <returns></returns>
+        /// <remarks></remarks>
+        public static bool IsBetween(this double source, double lower, double higher)
+        {
+            return (source >= lower && source <= higher);
+        }
+
+        /// <summary>
+        ///     Check if the value is between the two boundaries (boundaries included)
+        /// </summary>
+        /// <param name="source">Source number</param>
+        /// <param name="lower">Lower value</param>
+        /// <param name="higher">Higher value</param>
+        /// <returns></returns>
+        /// <remarks></remarks>
+        public static bool IsBetween(this int source, int lower, int higher)
+        {
+            return (source >= lower && source <= higher);
+        }
+
+        /// <summary>
+        ///     Get number suffix
+        /// </summary>
+        /// <param name="sourceNumber">Number to check</param>
+        /// <returns></returns>
+        /// <remarks></remarks>
+        public static string GetNumberSuffix(this int sourceNumber)
+        {
+            var text = sourceNumber.ToString();
+            string result;
+            if (text.Length > 2)
+            {
+                var num = int.Parse(text.Substring(text.Length - 2, 2));
+                if (num >= 11 && num <= 13)
+                {
+                    result = "th";
+                    return result;
+                }
+            }
+            if (sourceNumber > 20)
+            {
+                switch (int.Parse(text.Substring(text.Length - 1, 1)))
+                {
+                    case 1:
+                        result = "st";
+                        return result;
+                    case 2:
+                        result = "nd";
+                        return result;
+                    case 3:
+                        result = "rd";
+                        return result;
+                }
+            }
+            else
+            {
+                switch (sourceNumber)
+                {
+                    case 1:
+                        result = "st";
+                        return result;
+                    case 2:
+                        result = "nd";
+                        return result;
+                    case 3:
+                        result = "rd";
+                        return result;
+                }
+            }
+            result = "th";
+
+            return result;
         }
     }
 }

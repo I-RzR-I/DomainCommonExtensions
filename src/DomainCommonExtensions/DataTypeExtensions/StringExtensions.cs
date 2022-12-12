@@ -4,7 +4,7 @@
 //  Created On       : 2022-08-10 21:39
 // 
 //  Last Modified By : RzR
-//  Last Modified On : 2022-08-12 23:39
+//  Last Modified On : 2022-12-08 21:24
 // ***********************************************************************
 //  <copyright file="StringExtensions.cs" company="">
 //   Copyright (c) RzR. All rights reserved.
@@ -21,7 +21,6 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Net.Mail;
-using System.Runtime.Serialization;
 using System.Security;
 using System.Security.Cryptography;
 using System.Text;
@@ -142,10 +141,10 @@ namespace DomainCommonExtensions.DataTypeExtensions
             const string suffix = "...";
             var truncatedString = text;
 
-            if (maxLength <= 0) return truncatedString;
+            if (maxLength.IsLessOrEqualZero()) return truncatedString;
             var strLength = maxLength - (useDots.Equals(true) ? suffix.Length : 0);
 
-            if (strLength <= 0) return truncatedString;
+            if (strLength.IsLessOrEqualZero()) return truncatedString;
 
             if (text == null || text.Length <= maxLength) return truncatedString;
 
@@ -279,7 +278,6 @@ namespace DomainCommonExtensions.DataTypeExtensions
 
             return sb.ToString();
         }
-
 
         /// <summary>
         ///     Convert to byte array from hexadecimal
@@ -606,7 +604,7 @@ namespace DomainCommonExtensions.DataTypeExtensions
 
             base64String = base64String.TrimIfNotNull();
 
-            return base64String.Length % 4 == 0 &&
+            return (base64String.Length % 4).IsZero() &&
                    Regex.IsMatch(base64String, RegularExpressions.BASE64, RegexOptions.None);
         }
 
@@ -778,7 +776,7 @@ namespace DomainCommonExtensions.DataTypeExtensions
 
             if (a == b)
                 return 100;
-            if (a.Length == 0 || b.Length == 0) return 0;
+            if (a.Length.IsZero() || b.Length.IsZero()) return 0;
             double maxLen = a.Length > b.Length ? a.Length : b.Length;
             var minLen = a.Length < b.Length ? a.Length : b.Length;
             var sameCharAtIndex = 0;
@@ -937,7 +935,7 @@ namespace DomainCommonExtensions.DataTypeExtensions
             }
             catch
             {
-                return default(T);
+                return default;
             }
         }
 
@@ -986,6 +984,143 @@ namespace DomainCommonExtensions.DataTypeExtensions
         public static string IfNullOrEmpty(this string input, string defaultValue)
         {
             return !input.IsNullOrEmpty() ? input : defaultValue;
+        }
+
+        /// <summary>
+        ///     Translates the (multiline) text to an array of lines
+        /// </summary>
+        /// <param name="source">Input data</param>
+        /// <returns>(A\r\nB) => new string[2] { "A", "B" }</returns>
+        /// <remarks></remarks>
+        public static string[] ToLines(this string source)
+        {
+            if (source == null) return new string[0];
+
+            var temp = source;
+            temp = temp.Replace("\r\n", "\n");
+            temp = temp.Replace('\r', '\n');
+
+            return temp.Split('\n');
+        }
+
+        /// <summary>
+        ///     Returns string chunks of equal size (except for the first or last part that could be shorter).
+        /// </summary>
+        /// <param name="source">Input data to chunk.</param>
+        /// <param name="size">The size of chunk.</param>
+        /// <param name="isRightAlign">
+        ///     Whether to align left or right. Right, alignment means the first chunk is allowed to be shorter,
+        ///     while left alignment means the last piece is allowed to be shorter.
+        /// </param>
+        /// <returns>Chunks of the given string.</returns>
+        public static IEnumerable<string> Chunked(this string source, int size, bool isRightAlign = false)
+        {
+            if (source.IsNull()) yield break;
+            if (source.Length.IsZero()) yield break;
+            if (size.IsLessOrEqualZero())
+            {
+                yield return source;
+                yield break;
+            }
+
+            var lastLen = source.Length % size;
+            if (isRightAlign && lastLen.IsGreaterThanZero())
+            {
+                yield return source.Substring(0, lastLen);
+                for (var i = lastLen; i < source.Length; i += size) yield return source.Substring(i, size);
+            }
+            else
+            {
+                var upTo = source.Length - lastLen - 1;
+                for (var i = 0; i <= upTo; i += size) yield return source.Substring(i, size);
+                if (lastLen.IsGreaterThanZero())
+                    yield return source.Substring(source.Length - lastLen);
+            }
+        }
+
+        /// <summary>
+        ///     throw exception if source is null or empty
+        /// </summary>
+        /// <param name="source">Source to check</param>
+        /// <param name="msg">Error message</param>
+        /// <remarks></remarks>
+        public static void ThrowIfNullOrEmpty(this string source, string msg)
+        {
+            if (source.IsNullOrEmpty())
+                throw new Exception(msg);
+        }
+
+        /// <summary>
+        ///     throw exception if source is null
+        /// </summary>
+        /// <param name="source">Source to check</param>
+        /// <param name="msg">Error message</param>
+        /// <remarks></remarks>
+        public static void ThrowIfNull(this string source, string msg)
+        {
+            if (source.IsNull())
+                throw new Exception(msg);
+        }
+
+        /// <summary>
+        ///     throw exception if source is empty
+        /// </summary>
+        /// <param name="source">Source to check</param>
+        /// <param name="msg">Error message</param>
+        /// <remarks></remarks>
+        public static void ThrowIfEmpty(this string source, string msg)
+        {
+            if (source.IsEmpty())
+                throw new Exception(msg);
+        }
+
+        /// <summary>
+        ///     Is empty snippet
+        /// </summary>
+        /// <param name="str"></param>
+        /// <returns></returns>
+        public static bool IsEmpty(this string str)
+        {
+            return (str ?? "") == "";
+        }
+
+        /// <summary>
+        ///     XML encode
+        /// </summary>
+        /// <param name="xml">Source xml</param>
+        /// <returns></returns>
+        /// <remarks></remarks>
+        public static string XmlEncode(this string xml)
+        {
+            if (xml.IsNullOrEmpty()) return xml;
+
+            xml = xml.Replace("&", "&amp;");
+            xml = xml.Replace("<", "&lt;");
+            xml = xml.Replace(">", "&gt;");
+            xml = xml.Replace("\"", "&quot;");
+            xml = xml.Replace("'", "&apos;");
+
+            return xml;
+
+        }
+
+        /// <summary>
+        ///     XML decode
+        /// </summary>
+        /// <param name="xml">Decode XML to normal value</param>
+        /// <returns></returns>
+        /// <remarks></remarks>
+        public static string XmlDecode(this string xml)
+        {
+            if (xml.IsNullOrEmpty()) return xml;
+
+            xml = xml.Replace("&lt;", "<");
+            xml = xml.Replace("&gt;", ">");
+            xml = xml.Replace("&quot;", "\"");
+            xml = xml.Replace("&apos;", "'");
+            xml = xml.Replace("&amp;", "&");
+
+            return xml;
         }
     }
 }

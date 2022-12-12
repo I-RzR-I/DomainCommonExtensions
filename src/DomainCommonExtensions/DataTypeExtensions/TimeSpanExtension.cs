@@ -1,12 +1,12 @@
 ﻿// ***********************************************************************
 //  Assembly         : RzR.Shared.Extensions.DomainCommonExtensions
 //  Author           : RzR
-//  Created On       : 2022-08-10 21:39
+//  Created On       : 2022-12-08 18:58
 // 
 //  Last Modified By : RzR
-//  Last Modified On : 2022-08-12 23:39
+//  Last Modified On : 2022-12-08 18:59
 // ***********************************************************************
-//  <copyright file="RandomExtensions.cs" company="">
+//  <copyright file="TimeSpanExtension.cs" company="">
 //   Copyright (c) RzR. All rights reserved.
 //  </copyright>
 // 
@@ -17,26 +17,25 @@
 #region U S A G E S
 
 using System;
-using DomainCommonExtensions.DataTypeExtensions;
 
 #endregion
 
-namespace DomainCommonExtensions.CommonExtensions
+namespace DomainCommonExtensions.DataTypeExtensions
 {
     /// <summary>
-    ///     Random extensions
+    ///     Time span extensions
     /// </summary>
-    /// <remarks></remarks>
-    public static class RandomExtensions
+    public static class TimeSpanExtension
     {
         /// <summary>
-        ///     Generates a random boolean value
+        ///     Returns the absolute value of the timestamp
         /// </summary>
-        /// <param name="random">Generator</param>
+        /// <param name="source">Source TimeSpan</param>
         /// <returns></returns>
-        public static bool NextBool(this Random random)
+        /// <remarks></remarks>
+        public static TimeSpan Absolute(this TimeSpan source)
         {
-            return (random.Next() % 2).IsZero();
+            return source.Ticks.IsGreaterThanOrEqualZero() ? source : source.Negate();
         }
     }
 }

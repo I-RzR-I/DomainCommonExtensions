@@ -354,5 +354,38 @@ namespace DomainCommonExtensions.CommonExtensions
                 ? NullableTypeDict.FirstOrDefault(x => x.Key == type).Value
                 : type;
         }
+
+        /// <summary>
+        ///     Return array of property to translate 'A.B.C' into array with properties A, B, C
+        /// </summary>
+        /// <param name="type">Entity type</param>
+        /// <param name="propertyPath">Property name/path 'A.B.C'</param>
+        /// <returns></returns>
+        /// <remarks></remarks>
+        public static PropertyInfo[] GetPropertyPath(this Type type, string propertyPath)
+        {
+            var propertyNames = propertyPath.Split('.');
+            var properties = new PropertyInfo[propertyNames.Length];
+
+            for (var i = 0; i < propertyNames.Length; i++)
+            {
+                properties[i] = type.GetProperty(propertyNames[i]);
+                type = properties[i].PropertyType;
+            }
+
+            return properties;
+        }
+
+        /// <summary>
+        ///     Check if source/target is type of T
+        /// </summary>
+        /// <param name="target"></param>
+        /// <returns></returns>
+        /// <typeparam name="T">Type</typeparam>
+        /// <remarks></remarks>
+        public static bool IsAsType<T>(this Type target)
+        {
+            return (typeof(T).IsAssignableFrom(target));
+        }
     }
 }

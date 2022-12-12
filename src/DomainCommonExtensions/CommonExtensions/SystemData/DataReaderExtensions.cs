@@ -19,6 +19,7 @@
 using System;
 using System.Data;
 using System.Data.Common;
+using DomainCommonExtensions.DataTypeExtensions;
 
 #endregion
 
@@ -100,7 +101,7 @@ namespace DomainCommonExtensions.CommonExtensions.SystemData
         {
             try
             {
-                return dataReader.GetOrdinal(columnName) >= 0;
+                return dataReader.GetOrdinal(columnName).IsGreaterThanOrEqualZero();
             }
             catch (IndexOutOfRangeException)
             {
@@ -118,7 +119,7 @@ namespace DomainCommonExtensions.CommonExtensions.SystemData
         {
             try
             {
-                if (dataReader.GetOrdinal(columnName) >= 0)
+                if (dataReader.GetOrdinal(columnName).IsGreaterThanOrEqualZero())
                     return dataReader[columnName] != DBNull.Value &&
                            !string.IsNullOrEmpty(dataReader[columnName].ToString());
                 return false;

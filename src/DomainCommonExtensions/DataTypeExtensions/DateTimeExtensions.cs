@@ -501,5 +501,31 @@ namespace DomainCommonExtensions.DataTypeExtensions
             // Return the week of our adjusted day
             return CultureInfo.InvariantCulture.Calendar.GetWeekOfYear(time, CalendarWeekRule.FirstFourDayWeek, DayOfWeek.Monday);
         }
+
+        /// <summary>
+        ///     Convert the given DateTime in Epoch time (Unix time).
+        /// </summary>
+        /// <param name="sourceTime">Source date time</param>
+        /// <returns></returns>
+        /// <remarks></remarks>
+        public static long ToEpochTime(this DateTime sourceTime)
+        {
+            var t = sourceTime.ToUniversalTime() - new DateTime(1970, 1, 1);
+
+            return (long)t.TotalSeconds;
+        }
+
+        /// <summary>
+        ///     Convert the given DateTime as Excel numerical value
+        /// </summary>
+        /// <param name="sourceTime">Source date time</param>
+        /// <returns></returns>
+        /// <remarks></remarks>
+        public static double ToExcelTime(this DateTime sourceTime)
+        {
+            var t = sourceTime - new DateTime(1899, 12, 31);
+
+            return t.TotalDays;
+        }
     }
 }
