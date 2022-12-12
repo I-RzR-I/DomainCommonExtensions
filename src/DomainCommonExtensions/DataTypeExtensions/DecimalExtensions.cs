@@ -1,12 +1,12 @@
 ﻿// ***********************************************************************
 //  Assembly         : RzR.Shared.Extensions.DomainCommonExtensions
 //  Author           : RzR
-//  Created On       : 2022-08-10 21:39
+//  Created On       : 2022-12-08 21:58
 // 
 //  Last Modified By : RzR
-//  Last Modified On : 2022-08-12 23:39
+//  Last Modified On : 2022-12-08 21:58
 // ***********************************************************************
-//  <copyright file="IntExtensions.cs" company="">
+//  <copyright file="DecimalExtensions.cs" company="">
 //   Copyright (c) RzR. All rights reserved.
 //  </copyright>
 // 
@@ -17,10 +17,10 @@
 namespace DomainCommonExtensions.DataTypeExtensions
 {
     /// <summary>
-    ///     Int - Int32 extensions
+    ///     Decimal extensions
     /// </summary>
     /// <remarks></remarks>
-    public static class IntExtensions
+    public static class DecimalExtensions
     {
         /// <summary>
         ///     Check if value is NULL or 0
@@ -28,7 +28,7 @@ namespace DomainCommonExtensions.DataTypeExtensions
         /// <param name="value">Input value to check</param>
         /// <returns></returns>
         /// <remarks></remarks>
-        public static bool IsNullOrZero(this int? value)
+        public static bool IsNullOrZero(this decimal? value)
         {
             return value == null || value == 0;
         }
@@ -39,7 +39,7 @@ namespace DomainCommonExtensions.DataTypeExtensions
         /// <param name="value">Input value to check</param>
         /// <returns></returns>
         /// <remarks></remarks>
-        public static bool IsZero(this int value)
+        public static bool IsZero(this decimal value)
         {
             return value == 0;
         }
@@ -50,7 +50,7 @@ namespace DomainCommonExtensions.DataTypeExtensions
         /// <param name="value">Input value to check</param>
         /// <returns></returns>
         /// <remarks></remarks>
-        public static bool IsLessOrEqualZero(this int value)
+        public static bool IsLessOrEqualZero(this decimal value)
         {
             return value <= 0;
         }
@@ -61,7 +61,7 @@ namespace DomainCommonExtensions.DataTypeExtensions
         /// <param name="value">Input value to check</param>
         /// <returns></returns>
         /// <remarks></remarks>
-        public static bool IsGreaterThanOrEqualZero(this int value)
+        public static bool IsGreaterThanOrEqualZero(this decimal value)
         {
             return value >= 0;
         }
@@ -72,32 +72,9 @@ namespace DomainCommonExtensions.DataTypeExtensions
         /// <param name="value">Input value to check</param>
         /// <returns></returns>
         /// <remarks></remarks>
-        public static bool IsGreaterThanZero(this int value)
+        public static bool IsGreaterThanZero(this decimal value)
         {
             return value > 0;
-        }
-
-        /// <summary>
-        ///     Sets a flag
-        /// </summary>
-        /// <param name="value">Where to install</param>
-        /// <param name="flag">Flag</param>
-        /// <param name="set">True - set, false - reset</param>
-        /// <returns></returns>
-        public static long SetFlag(this int value, int flag, bool set)
-        {
-            return (value & ~flag) | (set ? flag : 0);
-        }
-
-        /// <summary>
-        ///     Checks if the role flag is set
-        /// </summary>
-        /// <param name="value"></param>
-        /// <param name="flag"></param>
-        /// <returns></returns>
-        public static bool IsFlagSet(this int value, int flag)
-        {
-            return (value & flag) != 0;
         }
     }
 }

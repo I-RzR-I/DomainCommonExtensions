@@ -18,8 +18,12 @@
 
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.ComponentModel;
+using System.Linq;
+using System.Reflection;
 using System.Xml;
+using DomainCommonExtensions.CommonExtensions;
 
 #endregion
 
@@ -82,7 +86,7 @@ namespace DomainCommonExtensions.DataTypeExtensions
             foreach (var prop in obj.GetType().GetProperties())
             {
                 var xmlNode = xmlDocument.SelectSingleNode("//" + prop.Name);
-                if (xmlNode != null && xmlNode.ChildNodes.Count == 0 && prop.GetValue(obj, null) != null)
+                if (xmlNode != null && xmlNode.ChildNodes.Count.IsZero() && prop.GetValue(obj, null) != null)
                     if (xmlNode.Attributes != null)
                         xmlNode.Attributes["value"].Value = prop.GetValue(obj, null).ToString();
             }
@@ -122,6 +126,78 @@ namespace DomainCommonExtensions.DataTypeExtensions
             }
 
             return values;
+        }
+
+        /// <summary>
+        ///     Check if object is inside the given collection
+        /// </summary>
+        /// <param name="obj">Object to check</param>
+        /// <param name="collection">Where to check</param>
+        /// <returns></returns>
+        /// <remarks></remarks>
+        public static bool In(this object obj, IEnumerable collection)
+        {
+            return collection.Cast<object>().Contains(obj);
+        }
+
+        /// <summary>
+        ///     Returns a dictionary with all properties of the object and their values
+        /// </summary>
+        /// <param name="obj">The object to translate into a dictionary</param>
+        /// <returns></returns>
+        /// <remarks></remarks>
+        public static IDictionary<string, object> ToDictionary(this object obj)
+        {
+            if (obj.IsNull()) return null;
+
+            var result = new Dictionary<string, object>();
+            foreach (var property in obj.GetType().GetProperties())
+            {
+                result[property.Name] = property.GetValue(obj);
+            }
+
+            return result;
+        }
+
+        /// <summary>
+        ///     throw exception if source is null
+        /// </summary>
+        /// <param name="source">Source to check</param>
+        /// <param name="msg">Error message</param>
+        /// <remarks></remarks>
+        public static void ThrowIfNull(this object source, string msg)
+        {
+            if (source.IsNull())
+                throw new Exception(msg);
+        }
+
+        /// <summary>
+        ///     Cast object to string
+        /// </summary>
+        /// <param name="source">Input source object</param>
+        /// <returns></returns>
+        /// <remarks></remarks>
+        public static string ToString(this object source)
+        {
+            if (source == System.DBNull.Value || source.IsNull())
+                return null;
+            else
+                return source.ToString();
+        }
+
+        /// <summary>
+        ///     Cast object to T
+        /// </summary>
+        /// <param name="source">Input source object</param>
+        /// <returns></returns>
+        /// <typeparam name="T">Type to cast</typeparam>
+        /// <remarks></remarks>
+        public static T To<T>(this object source)
+        {
+            if (source == System.DBNull.Value || source.IsNull())
+                return default;
+            else
+                return (T)source;
         }
     }
 }

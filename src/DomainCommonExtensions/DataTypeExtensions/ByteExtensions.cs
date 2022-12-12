@@ -4,7 +4,7 @@
 //  Created On       : 2022-08-10 21:39
 // 
 //  Last Modified By : RzR
-//  Last Modified On : 2022-08-12 23:39
+//  Last Modified On : 2022-12-08 22:59
 // ***********************************************************************
 //  <copyright file="ByteExtensions.cs" company="">
 //   Copyright (c) RzR. All rights reserved.
@@ -17,6 +17,8 @@
 #region U S A G E S
 
 using System;
+using System.IO;
+using System.IO.Compression;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
@@ -106,7 +108,7 @@ namespace DomainCommonExtensions.DataTypeExtensions
             if (bytes == null)
                 throw new ArgumentNullException(nameof(bytes));
 
-            return bytes.Aggregate(string.Empty, (current, b) => current + (char)b);
+            return bytes.Aggregate(string.Empty, (current, b) => current + (char) b);
         }
 
         /// <summary>
@@ -124,7 +126,8 @@ namespace DomainCommonExtensions.DataTypeExtensions
         ///     Convert to hexadecimal from byte array
         /// </summary>
         /// <param name="clearText">Required. </param>
-        /// <param name="withSpace">Optional. The default value is false.If set to <see langword="true" />, then ; otherwise, .</param>
+        /// <param name="withSpace">Optional. The default value is false.
+        /// If set to <see langword="true" />, then ; otherwise, .</param>
         /// <returns></returns>
         /// <remarks></remarks>
         public static string ToHexByte(this byte[] clearText, bool withSpace = false)
@@ -135,6 +138,47 @@ namespace DomainCommonExtensions.DataTypeExtensions
             var result = hex.ToString();
 
             return withSpace ? result.TrimEnd(' ') : result;
+        }
+
+        /// <summary>
+        ///     Compare byte[]
+        /// </summary>
+        /// <param name="a"></param>
+        /// <param name="b"></param>
+        /// <returns></returns>
+        /// <remarks></remarks>
+        public static bool CompareTo(this byte[] a, byte[] b)
+        {
+            if (ReferenceEquals(a, b))
+                return true;
+            else if (ReferenceEquals(a, null))
+                return false;
+            else if (ReferenceEquals(b, null))
+                return false;
+            else if (a.Length != b.Length)
+                return false;
+            else
+            {
+                return !a.Where((t, i) => t != b[i]).Any();
+            }
+        }
+
+        /// <summary>
+        ///     Compress bytes with GZip
+        /// </summary>
+        /// <param name="source">Input bytes source</param>
+        /// <param name="compressionLevel">GZip compression level</param>
+        /// <returns></returns>
+        /// <remarks></remarks>
+        public static byte[] GZipCompress(this byte[] source, CompressionLevel compressionLevel)
+        {
+            using var memory = new MemoryStream();
+            using (var gzip = new GZipStream(memory, compressionLevel, true))
+            {
+                gzip.Write(source, 0, source.Length);
+            }
+
+            return memory.ToArray();
         }
     }
 }

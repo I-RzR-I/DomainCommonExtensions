@@ -57,5 +57,20 @@ namespace DomainCommonExtensions.CommonExtensions
 
             return result?.ToString().TrimIfNotNull();
         }
+
+        /// <summary>
+        ///     Set/add data to the given Exception object
+        /// </summary>
+        /// <param name="ex">Source exception</param>
+        /// <param name="dataKey">Key</param>
+        /// <param name="dataValue">Value</param>
+        /// <returns></returns>
+        /// <remarks></remarks>
+        public static Exception WithData(this Exception ex, object dataKey, object dataValue)
+        {
+            if (!ex.Data.IsNull()) ex.Data[dataKey] = dataValue;
+
+            return ex;
+        }
     }
 }

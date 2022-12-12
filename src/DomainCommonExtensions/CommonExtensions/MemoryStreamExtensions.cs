@@ -44,5 +44,16 @@ namespace DomainCommonExtensions.CommonExtensions
 
             return memoryStream.ToArray();
         }
+
+        /// <summary>
+        ///     Write all bytes
+        /// </summary>
+        /// <param name="stream">Source stream</param>
+        /// <param name="bytes">Bytes to write</param>
+        /// <remarks></remarks>
+        public static void WriteAll(this Stream stream, byte[] bytes)
+        {
+            stream.Write(bytes, 0, bytes.Length);
+        }
     }
 }

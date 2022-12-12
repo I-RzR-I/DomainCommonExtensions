@@ -21,6 +21,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
 using System.Xml;
+using DomainCommonExtensions.DataTypeExtensions;
 
 #endregion
 
@@ -52,13 +53,13 @@ namespace DomainCommonExtensions.CommonExtensions
             var parametersString = "";
             foreach (var parameterInfo in methodInfo.GetParameters())
             {
-                if (parametersString.Length > 0) parametersString += ",";
+                if (parametersString.Length.IsGreaterThanZero()) parametersString += ",";
 
                 parametersString += parameterInfo.ParameterType.FullName;
             }
 
             //AL: 15.04.2008 ==> BUG-FIX remove “()” if parametersString is empty
-            if (parametersString.Length > 0)
+            if (parametersString.Length.IsGreaterThanZero())
                 return XmlFromName(methodInfo.DeclaringType, 'M', methodInfo.Name + "(" + parametersString + ")");
 
             return XmlFromName(methodInfo.DeclaringType, 'M', methodInfo.Name);
@@ -71,7 +72,7 @@ namespace DomainCommonExtensions.CommonExtensions
         /// <returns>The XML fragment describing the member</returns>
         public static XmlElement GetDocumentation(this MemberInfo memberInfo)
         {
-            if (memberInfo == null) return null;
+            if (memberInfo .IsNull()) return null;
 
             // First character [0] of member type is prefix character in the name in the XML
             return XmlFromName(memberInfo.DeclaringType, memberInfo.MemberType.ToString()[0], memberInfo.Name);
@@ -86,7 +87,7 @@ namespace DomainCommonExtensions.CommonExtensions
         {
             var element = memberInfo.GetDocumentation();
             var summaryElm = element?.SelectSingleNode("summary");
-            if (summaryElm == null) return "";
+            if (summaryElm.IsNull()) return "";
 
             return summaryElm.InnerText.Trim();
         }
@@ -111,7 +112,7 @@ namespace DomainCommonExtensions.CommonExtensions
         {
             var element = type.GetDocumentation();
             var summaryElm = element?.SelectSingleNode("summary");
-            if (summaryElm == null) return "";
+            if (summaryElm .IsNull()) return "";
 
             return summaryElm.InnerText.Trim();
         }

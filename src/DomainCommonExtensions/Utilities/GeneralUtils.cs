@@ -4,9 +4,9 @@
 //  Created On       : 2022-08-10 21:39
 // 
 //  Last Modified By : RzR
-//  Last Modified On : 2022-08-12 23:40
+//  Last Modified On : 2022-12-12 23:40
 // ***********************************************************************
-//  <copyright file="Utils.cs" company="">
+//  <copyright file="GeneralUtils.cs" company="">
 //   Copyright (c) RzR. All rights reserved.
 //  </copyright>
 // 
@@ -21,13 +21,13 @@ using Microsoft.Extensions.Hosting;
 
 #endregion
 
-namespace DomainCommonExtensions
+namespace DomainCommonExtensions.Utilities
 {
     /// <summary>
     ///     Utils methods
     /// </summary>
     /// <remarks></remarks>
-    public class Utils
+    public class GeneralUtils
     {
         /// <summary>
         ///     Check if is debug
