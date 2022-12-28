@@ -19,12 +19,15 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.IO;
 using System.Linq;
 using System.Net.Mail;
+using System.Runtime.Serialization;
 using System.Security;
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.RegularExpressions;
+using CodeSource;
 using DomainCommonExtensions.CommonExtensions;
 using DomainCommonExtensions.Resources;
 
@@ -1121,6 +1124,25 @@ namespace DomainCommonExtensions.DataTypeExtensions
             xml = xml.Replace("&amp;", "&");
 
             return xml;
+        }
+
+        /// <summary>
+        ///     Deserialize XML to object
+        /// </summary>
+        /// <param name="xml">Source xml</param>
+        /// <param name="toType">Type to deserialize</param>
+        /// <returns></returns>
+        /// <remarks></remarks>
+        [CodeSource("https://learn.microsoft.com/en-us/dotnet/api/system.runtime.serialization.datacontractserializer?view=netstandard-2.0", "", "MS", "2022-12-28", "Reference source")]
+        public static object DeserializeToObject(this string xml, Type toType)
+        {
+            using Stream stream = new MemoryStream();
+            var data = System.Text.Encoding.UTF8.GetBytes(xml);
+            stream.Write(data, 0, data.Length);
+            stream.Position = 0;
+            var deserializer = new DataContractSerializer(toType);
+
+            return deserializer.ReadObject(stream);
         }
     }
 }

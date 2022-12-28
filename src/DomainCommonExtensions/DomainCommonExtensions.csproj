@@ -19,12 +19,16 @@
 		<PackageDescription>The purpose of this repository/library is to provide the most relevant and used extension methods in the life cycle of application development that allow us to improve our code, and writing speed, and use more efficiently dev team time during this period for more complex functionality.</PackageDescription>
 		<PackageTitle>RzR.Shared.DomainCommonExtensions (DomainCommonExtensions)</PackageTitle>
 		<Title>RzR.Shared.DomainCommonExtensions (DomainCommonExtensions)</Title>
-    <LangVersion>8.0</LangVersion>
+    <LangVersion>9.0</LangVersion>
     <Language>en-US</Language>
     <PackageIconUrl />
     <RepositoryType>GIT</RepositoryType>
 	</PropertyGroup>
   
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <DocumentationFile>bin\$(Configuration)\$(TargetFramework)\$(AssemblyName).xml</DocumentationFile>
+  </PropertyGroup>
+
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
     <DocumentationFile>bin\$(Configuration)\$(TargetFramework)\$(AssemblyName).xml</DocumentationFile>
   </PropertyGroup>
@@ -45,6 +49,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <PackageReference Include="CodeSource" Version="1.0.1.1811" />
 	  <PackageReference Include="Microsoft.Extensions.Caching.Abstractions" Version="6.0.0" />
 	  <PackageReference Include="Microsoft.Extensions.Configuration" Version="6.0.1" />
 	  <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="6.0.0" />
