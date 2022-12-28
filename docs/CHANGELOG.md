@@ -41,3 +41,8 @@
 -> Was added new `HashExtensions` with methods: `AddRange`.<br />
 -> Was added new `EnumerableExtensions` with methods: `Replace`, `Join`, `IsLast`, `IsFirst`, `GetDifferences`, `ContainsAny`, `AnyStartWith` (input: IEnumerable<string>, string), `ToObservableCollection`, `Randomize`, `Transpose`, `ToCollection`, `Combinations`, `ToDataTable`, `ToDataTableDynamic`, `IsNullOrEmptyEnumerable`, `WithIndex`, `ListToString`, `CloneCollection`, `NotNull`.<br />
 -> Was added new `ArrayExtensions` with methods: `IndexOf`.<br />
+
+### **v.1.0.3.1101** 
+-> Was added new object extension: `SerializeToString` .<br />
+-> Was added new string extension: `DeserializeToObject` .<br />
+-> Was added new T extension: `SerializeToXmlDoc` .<br />

@@ -20,9 +20,12 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.Serialization;
 using System.Xml;
+using CodeSource;
 using DomainCommonExtensions.CommonExtensions;
 
 #endregion
@@ -198,6 +201,24 @@ namespace DomainCommonExtensions.DataTypeExtensions
                 return default;
             else
                 return (T)source;
+        }
+
+        /// <summary>
+        ///     Serialize object to string
+        /// </summary>
+        /// <param name="obj">Source data object</param>
+        /// <returns></returns>
+        /// <remarks></remarks>
+        [CodeSource("https://learn.microsoft.com/en-us/dotnet/api/system.runtime.serialization.datacontractserializer?view=netstandard-2.0", "", "MS", "2022-12-28", "Reference source")]
+        public static string SerializeToString(this object obj)
+        {
+            using var memoryStream = new MemoryStream();
+            using var reader = new StreamReader(memoryStream);
+            var serializer = new DataContractSerializer(obj.GetType());
+            serializer.WriteObject(memoryStream, obj);
+            memoryStream.Position = 0;
+
+            return reader.ReadToEnd();
         }
     }
 }

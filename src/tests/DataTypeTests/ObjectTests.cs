@@ -42,9 +42,9 @@ namespace DataTypeTests
         [TestMethod]
         public void TryCastTest()
         {
-            var castDate = _date.TryCast(out DateTime castDateTime);
-            var castString = _dataString.TryCast<string>(out var castString1);
-            var castNull = _dataString.TryCast(out int castInt);
+            var castDate = _date.TryCast(out DateTime _);
+            var castString = _dataString.TryCast<string>(out _);
+            var castNull = _dataString.TryCast(out int _);
 
             Assert.IsTrue(castDate);
             Assert.IsTrue(castString);

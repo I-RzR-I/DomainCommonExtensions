@@ -16,10 +16,13 @@
 
 #region U S A G E S
 
+using DomainCommonExtensions.DataTypeExtensions;
 using System;
 using System.IO;
 using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters.Binary;
+using System.Xml;
+using CodeSource;
 
 #endregion
 
@@ -112,6 +115,34 @@ namespace DomainCommonExtensions.CommonExtensions
                 return;
 
             action(source);
+        }
+
+        /// <summary>
+        ///     Serialize source data to XML document
+        /// </summary>
+        /// <param name="source">Required. Source data</param>
+        /// <param name="rootName">Optional. The default value is null. XML root tag name</param>
+        /// <param name="rootNameSpaceName">Optional. The default value is null. XML root namespace name</param>
+        /// <returns></returns>
+        /// <typeparam name="T">Source data type</typeparam>
+        /// <remarks></remarks>
+        [CodeSource("https://learn.microsoft.com/en-us/dotnet/api/system.runtime.serialization.datacontractserializer?view=netstandard-2.0", "", "MS", "2022-12-28", "Reference source")]
+        public static XmlDocument SerializeToXmlDoc<T>(this T source, string rootName = null, string rootNameSpaceName = null)
+        {
+            if (source.IsNull()) return null;
+
+            rootName = rootName.IsNullOrEmpty() ? "Root" : rootName;
+            rootNameSpaceName = rootNameSpaceName.IsNullOrEmpty() ? "RootNs" : rootNameSpaceName;
+            var dataContractSerializer = new DataContractSerializer(source.GetType(), rootName!, rootNameSpaceName!);
+
+            var ms = new MemoryStream();
+            dataContractSerializer.WriteObject(ms, source);
+            ms.Position = 0;
+
+            var doc = new XmlDocument();
+            doc.Load(ms);
+
+            return doc;
         }
     }
 }
