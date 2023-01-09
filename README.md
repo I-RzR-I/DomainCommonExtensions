@@ -1,4 +1,4 @@
-> **Note** This repository is developed in .netstandard2.0
+> **Note** This repository is developed for net40, net45 .netstandard2.0, .netstandard2.1
 
 This library/ repository was created as a way to simplify the development process. Here were written the usually used methods (extension methods) for some data types like `int, string, DateTime, Enum, bool, byte, Guid`, also there was added extensions for `List, Dictionary, DynamicList(using 'System.Linq.Dynamic.Core')` and other collections(`ICollection, IEnumerable, IList, HashSet, IQueryable`).
 

@@ -2,11 +2,11 @@
 
 	<PropertyGroup>
 		<TargetFramework>netstandard2.0</TargetFramework>
+		<TargetFrameworks>net40;net45;netstandard2.0;netstandard2.1</TargetFrameworks>
 		<GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <Authors>RzR</Authors>
     <Copyright>RzR</Copyright>
 		<Owners>RzR</Owners>
-    <Copyright>RzR</Copyright>
 		<PackageLicenseFile>LICENSE</PackageLicenseFile>
 		<PackageIcon>PackageIcon.png</PackageIcon>
 		<NoWarn>$(NoWarn);CS8032</NoWarn>
@@ -17,6 +17,7 @@
 		<PackageProjectUrl>https://github.com/I-RzR-I/DomainCommonExtensions</PackageProjectUrl>
 		<PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
 		<PackageDescription>The purpose of this repository/library is to provide the most relevant and used extension methods in the life cycle of application development that allow us to improve our code, and writing speed, and use more efficiently dev team time during this period for more complex functionality.</PackageDescription>
+		<Summary>The purpose of this repository/library is to provide the most relevant and used extension methods in the life cycle of application development that allow us to improve our code, and writing speed, and use more efficiently dev team time during this period for more complex functionality.</Summary>
 		<PackageTitle>RzR.Shared.DomainCommonExtensions (DomainCommonExtensions)</PackageTitle>
 		<Title>RzR.Shared.DomainCommonExtensions (DomainCommonExtensions)</Title>
     <LangVersion>9.0</LangVersion>
@@ -49,13 +50,26 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <PackageReference Include="CodeSource" Version="1.0.1.1811" />
-	  <PackageReference Include="Microsoft.Extensions.Caching.Abstractions" Version="6.0.0" />
-	  <PackageReference Include="Microsoft.Extensions.Configuration" Version="6.0.1" />
-	  <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="6.0.0" />
-	  <PackageReference Include="System.ComponentModel.Annotations" Version="5.0.0" />
+	  <PackageReference Include="CodeSource" Version="1.0.2.1848" />
 	  <PackageReference Include="System.Linq.Dynamic.Core" Version="1.2.19" />
 	</ItemGroup>
+
+  <ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.0' Or '$(TargetFramework)' == 'netstandard2.1'">
+    <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions">
+      <Version>6.0.0</Version>
+    </PackageReference>
+    <PackageReference Include="Microsoft.Extensions.Configuration">
+      <Version>6.0.1</Version>
+    </PackageReference>
+    <PackageReference Include="Microsoft.Extensions.Caching.Abstractions">
+      <Version>6.0.0</Version>
+    </PackageReference>
+  </ItemGroup>
+
+  <ItemGroup Condition="$([System.Text.RegularExpressions.Regex]::IsMatch('$(TargetFramework)', '^((?!net40).)*$'))">
+    <PackageReference Include="System.ValueTuple" Version="4.5.0" />
+    <PackageReference Include="System.ComponentModel.Annotations" Version="5.0.0" />
+  </ItemGroup>
 
 	<ProjectExtensions>
 		<VisualStudio>

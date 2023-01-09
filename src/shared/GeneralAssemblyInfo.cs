@@ -35,14 +35,18 @@ using System.Resources;
     AssemblyDescription(
         "The purpose of this repository/library is to provide the most relevant and used extension methods in the life cycle of application development that allow us to improve our code, and writing speed, and use more efficiently dev team time during this period for more complex functionality.")]
 
+#if NET45_OR_GREATER || NET || NETSTANDARD
 [assembly: AssemblyMetadata("TermsOfService", "")]
 
 [assembly: AssemblyMetadata("ContactUrl", "")]
 [assembly: AssemblyMetadata("ContactName", "RzR")]
 [assembly: AssemblyMetadata("ContactEmail", "ddpRzR@hotmail.com")]
+#endif
 
+#if NETSTANDARD1_6_OR_GREATER || NET35_OR_GREATER
 [assembly: NeutralResourcesLanguage("en-US", UltimateResourceFallbackLocation.MainAssembly)]
+#endif
 
-[assembly: AssemblyVersion("1.0.3.1101")]
-[assembly: AssemblyFileVersion("1.0.3.1101")]
-[assembly: AssemblyInformationalVersion("1.0.3.1101")]
+[assembly: AssemblyVersion("1.0.4.1925")]
+[assembly: AssemblyFileVersion("1.0.4.1925")]
+[assembly: AssemblyInformationalVersion("1.0.4.x")]

@@ -94,6 +94,7 @@ namespace DomainCommonExtensions.ArraysExtensions
             return item.Equals(first);
         }
 
+#if NET45_OR_GREATER || NET || NETSTANDARD1_0_OR_GREATER
         /// <summary>
         ///     Get differences from 2 list
         /// </summary>
@@ -112,6 +113,7 @@ namespace DomainCommonExtensions.ArraysExtensions
 
             return (toAdd, toExclude);
         }
+#endif
 
         /// <summary>
         ///     Contains any
@@ -323,6 +325,7 @@ namespace DomainCommonExtensions.ArraysExtensions
             return source.IsNull() || !source.Any();
         }
 
+#if NET45_OR_GREATER || NET || NETSTANDARD1_0_OR_GREATER
         /// <summary>
         ///     Format list to list with item index
         /// </summary>
@@ -334,6 +337,7 @@ namespace DomainCommonExtensions.ArraysExtensions
         {
             return self?.Select((item, index) => (item, index)) ?? new List<(T, int)>();
         }
+#endif
 
         /// <summary>
         ///     Generates a string from a list of values with the given delimiter

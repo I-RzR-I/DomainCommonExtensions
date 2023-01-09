@@ -22,7 +22,6 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
-using System.Reflection;
 using System.Runtime.Serialization;
 using System.Xml;
 using CodeSource;
@@ -156,7 +155,11 @@ namespace DomainCommonExtensions.DataTypeExtensions
             var result = new Dictionary<string, object>();
             foreach (var property in obj.GetType().GetProperties())
             {
+#if NET40
+                result[property.Name] = property.GetValue(obj, null);
+#else
                 result[property.Name] = property.GetValue(obj);
+#endif
             }
 
             return result;

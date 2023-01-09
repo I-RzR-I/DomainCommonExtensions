@@ -18,12 +18,15 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
+
+#if NET45_OR_GREATER || NET || NETSTANDARD1_0_OR_GREATER
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
-using System.Globalization;
-using System.Linq;
 using System.Reflection;
 using System.Runtime.Serialization;
+using System.Globalization;
+#endif
 
 #endregion
 
@@ -47,6 +50,7 @@ namespace DomainCommonExtensions.DataTypeExtensions
             return Enum.GetNames(enumType).ToDictionary(x => (int)Enum.Parse(enumType, x), x => x);
         }
 
+#if NET45_OR_GREATER || NET || NETSTANDARD1_0_OR_GREATER
         /// <summary>
         ///     Get enum member value
         /// </summary>
@@ -60,7 +64,9 @@ namespace DomainCommonExtensions.DataTypeExtensions
 
             return (object)element == null ? null : element.GetCustomAttribute<EnumMemberAttribute>(false)?.Value;
         }
+#endif
 
+#if NET || NETSTANDARD1_0_OR_GREATER
         /// <summary>
         ///     Get enum value
         /// </summary>
@@ -81,6 +87,7 @@ namespace DomainCommonExtensions.DataTypeExtensions
 
             return default;
         }
+#endif
 
         /// <summary>
         ///     Get int from enum property
@@ -112,6 +119,7 @@ namespace DomainCommonExtensions.DataTypeExtensions
             return (string)(IConvertible)source;
         }
 
+#if NET45_OR_GREATER || NET || NETSTANDARD1_0_OR_GREATER
         /// <summary>
         ///     Get description of enum property if exist
         /// </summary>
@@ -128,6 +136,7 @@ namespace DomainCommonExtensions.DataTypeExtensions
 
             return attribute != null ? attribute.Description : (returnEmpty.Equals(true) ? "" : value.ToString());
         }
+#endif
 
         /// <summary>
         ///     Method to get enumeration value from string value
@@ -173,6 +182,8 @@ namespace DomainCommonExtensions.DataTypeExtensions
             return val;
         }
 
+
+#if NET45_OR_GREATER || NET || NETSTANDARD1_0_OR_GREATER
         /// <summary>
         ///     Get 'Name' value from 'Display' attribute
         /// </summary>
@@ -214,5 +225,6 @@ namespace DomainCommonExtensions.DataTypeExtensions
 
             return value.ToString();
         }
+#endif
     }
 }

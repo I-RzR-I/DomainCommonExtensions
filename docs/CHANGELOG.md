@@ -46,3 +46,6 @@
 -> Was added new object extension: `SerializeToString` .<br />
 -> Was added new string extension: `DeserializeToObject` .<br />
 -> Was added new T extension: `SerializeToXmlDoc` .<br />
+
+### **v.1.0.4.1925** 
+-> Added support for net framework.<br />
