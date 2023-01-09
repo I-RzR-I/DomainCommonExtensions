@@ -28,6 +28,7 @@ namespace DomainCommonExtensions.CommonExtensions
     /// <remarks></remarks>
     public static class TaskExtensions
     {
+#if NET45_OR_GREATER || NET || NETSTANDARD1_0_OR_GREATER
         /// <summary>
         ///     Execute async
         /// </summary>
@@ -48,5 +49,6 @@ namespace DomainCommonExtensions.CommonExtensions
         {
             task.GetAwaiter().GetResult();
         }
+#endif
     }
 }

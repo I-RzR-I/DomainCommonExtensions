@@ -17,7 +17,10 @@
 #region U S A G E S
 
 using System;
+
+#if NET45_OR_GREATER || NET || NETSTANDARD1_0_OR_GREATER
 using System.ComponentModel.DataAnnotations;
+#endif
 using System.Globalization;
 using DomainCommonExtensions.CommonExtensions;
 
@@ -95,7 +98,7 @@ namespace DomainCommonExtensions.DataTypeExtensions
         /// <param name="cultureInfo">culture info name</param>
         /// <returns></returns>
         /// <remarks> cultureInfo = ('en-US', 'ru-RU', 'ro-RO', etc)</remarks>
-        public static bool CheckCultureDateTime(this string value, [Required] string cultureInfo)
+        public static bool CheckCultureDateTime(this string value, string cultureInfo)
         {
             if (value.IsNullOrEmpty())
                 return false;

@@ -163,6 +163,7 @@ namespace DomainCommonExtensions.DataTypeExtensions
             }
         }
 
+#if NET45_OR_GREATER || NET || NETSTANDARD1_0_OR_GREATER
         /// <summary>
         ///     Compress bytes with GZip
         /// </summary>
@@ -180,5 +181,6 @@ namespace DomainCommonExtensions.DataTypeExtensions
 
             return memory.ToArray();
         }
+#endif
     }
 }

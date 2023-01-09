@@ -17,7 +17,9 @@
 #region U S A G E S
 
 using System;
+#if NETSTANDARD2_0_OR_GREATER
 using Microsoft.Extensions.Hosting;
+#endif
 
 #endregion
 
@@ -44,6 +46,7 @@ namespace DomainCommonExtensions.Utilities
             }
         }
 
+#if  NET || NETSTANDARD2_0_OR_GREATER
         /// <summary>
         ///     Check if app is in Development mode
         /// </summary>
@@ -63,5 +66,6 @@ namespace DomainCommonExtensions.Utilities
         {
             return Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
         }
+#endif
     }
 }
