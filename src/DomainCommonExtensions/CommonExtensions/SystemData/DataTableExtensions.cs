@@ -40,11 +40,12 @@ namespace DomainCommonExtensions.CommonExtensions.SystemData
         public static List<T> ToList<T>(this DataTable table) where T : new()
         {
             var list = new List<T>();
-            var typeProperties = typeof(T).GetProperties().Select(propertyInfo => new
-            {
-                PropertyInfo = propertyInfo,
-                Type = Nullable.GetUnderlyingType(propertyInfo.PropertyType) ?? propertyInfo.PropertyType
-            }).ToList();
+            var typeProperties = typeof(T).GetProperties()
+                .Select(propertyInfo => new
+                {
+                    PropertyInfo = propertyInfo,
+                    Type = Nullable.GetUnderlyingType(propertyInfo.PropertyType) ?? propertyInfo.PropertyType
+                }).ToList();
 
             foreach (var row in table.Rows.Cast<DataRow>())
             {

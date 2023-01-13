@@ -50,7 +50,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <PackageReference Include="CodeSource" Version="1.0.2.1848" />
+	  <PackageReference Include="CodeSource" Version="1.0.4.1723" />
 	  <PackageReference Include="System.Linq.Dynamic.Core" Version="1.2.19" />
 	</ItemGroup>
 
