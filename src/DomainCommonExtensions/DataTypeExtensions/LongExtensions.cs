@@ -99,5 +99,27 @@ namespace DomainCommonExtensions.DataTypeExtensions
         {
             return (value & flag) != 0;
         }
+
+        /// <summary>
+        ///     Check current value is less than 0
+        /// </summary>
+        /// <param name="value">Value to check</param>
+        /// <returns></returns>
+        /// <remarks></remarks>
+        public static bool IsLessZero(this long value)
+        {
+            return value < 0;
+        }
+
+        /// <summary>
+        ///     Check current value is less than 0
+        /// </summary>
+        /// <param name="value">Value to check</param>
+        /// <returns></returns>
+        /// <remarks></remarks>
+        public static bool IsLessZero(this long? value)
+        {
+            return (value ?? 0) < 0;
+        }
     }
 }

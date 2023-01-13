@@ -49,3 +49,8 @@
 
 ### **v.1.0.4.1925** 
 -> Added support for net framework.<br />
+
+### **v.1.0.5.1849** 
+-> Added string extension `Contains`.<br />
+-> Added int/long extension `IsLessZero`.<br />
+-> Was added new Type extension: `GetStringPropertyNames`, `GetStringPropertyInfos`, `GetPropertyInfos`.<br />

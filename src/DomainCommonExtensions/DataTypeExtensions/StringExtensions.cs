@@ -1144,5 +1144,18 @@ namespace DomainCommonExtensions.DataTypeExtensions
 
             return deserializer.ReadObject(stream);
         }
+
+        /// <summary>
+        ///     Check if string is contains in source
+        /// </summary>
+        /// <param name="source">Source data</param>
+        /// <param name="check">Data to check</param>
+        /// <param name="comp">String comparison</param>
+        /// <returns></returns>
+        /// <remarks></remarks>
+        public static bool Contains(this string source, string check, StringComparison comp)
+        {
+            return source?.IndexOf(check, comp) >= 0;
+        }
     }
 }

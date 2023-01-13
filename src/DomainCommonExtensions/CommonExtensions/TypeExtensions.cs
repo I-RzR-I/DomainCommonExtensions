@@ -387,5 +387,57 @@ namespace DomainCommonExtensions.CommonExtensions
         {
             return (typeof(T).IsAssignableFrom(target));
         }
+
+        /// <summary>
+        ///     Get all properties
+        /// </summary>
+        /// <param name="type">Entity type</param>
+        /// <returns></returns>
+        public static IEnumerable<PropertyInfo> GetPropertyInfos(this Type type)
+        {
+            try
+            {
+                return type
+                    .GetProperties(BindingFlags.GetProperty | BindingFlags.Instance | BindingFlags.Public)
+                    .ToList();
+            }
+            catch { return null; }
+        }
+
+        /// <summary>
+        ///     Get all string properties
+        /// </summary>
+        /// <param name="type">Entity type</param>
+        /// <returns></returns>
+        public static IEnumerable<PropertyInfo> GetStringPropertyInfos(this Type type)
+        {
+            try
+            {
+                var properties = GetPropertyInfos(type)?
+                    .Where(x => x.PropertyType == typeof(string)).ToList();
+
+                return properties;
+            }
+            catch { return null; }
+        }
+
+        /// <summary>
+        ///     Get all string properties name
+        /// </summary>
+        /// <param name="type">Entity type</param>
+        /// <returns></returns>
+        public static List<string> GetStringPropertyNames(this Type type)
+        {
+            try
+            {
+                var properties = GetStringPropertyInfos(type)?
+                    .Where(x => x.PropertyType == typeof(string))
+                    .Select(x => x.Name)
+                    .ToList();
+
+                return properties;
+            }
+            catch { return null; }
+        }
     }
 }
