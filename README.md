@@ -1,5 +1,8 @@
 > **Note** This repository is developed for net40, net45 .netstandard2.0, .netstandard2.1
 
+[![NuGet Version](https://img.shields.io/nuget/v/DomainCommonExtensions.svg?style=flat&logo=nuget)](https://www.nuget.org/packages/DomainCommonExtensions/)
+[![Nuget Downloads](https://img.shields.io/nuget/dt/DomainCommonExtensions.svg?style=flat&logo=nuget)](https://www.nuget.org/packages/DomainCommonExtensions)
+
 This library/ repository was created as a way to simplify the development process. Here were written the usually used methods (extension methods) for some data types like `int, string, DateTime, Enum, bool, byte, Guid`, also there was added extensions for `List, Dictionary, DynamicList(using 'System.Linq.Dynamic.Core')` and other collections(`ICollection, IEnumerable, IList, HashSet, IQueryable`).
 
 In the repository was added an extension for `cryptography`, encrypting and decrypting string by key with RSA.
@@ -17,8 +20,6 @@ I hope I'm on the right way to providing all these things to all who saw or sear
 **In case you wish to use it in your project, you can install the package from <a href="https://www.nuget.org/packages/DomainCommonExtensions" target="_blank">nuget.org</a>** or specify what version you want:
 
 > `Install-Package DomainCommonExtensions -Version x.x.x.x`
-
-[![NuGet Version](https://img.shields.io/nuget/v/DomainCommonExtensions.svg?style=flat)](https://www.nuget.org/packages/DomainCommonExtensions/)
 
 ## Content
 1. [USING](docs/usage.md)
