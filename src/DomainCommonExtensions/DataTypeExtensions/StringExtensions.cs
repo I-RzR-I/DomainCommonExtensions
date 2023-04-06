@@ -1157,5 +1157,42 @@ namespace DomainCommonExtensions.DataTypeExtensions
         {
             return source?.IndexOf(check, comp) >= 0;
         }
+
+        /// <summary>
+        ///     Parse string as int
+        /// </summary>
+        /// <param name="source">Source string</param>
+        /// <returns></returns>
+        /// <remarks></remarks>
+        public static int ParseToInt(this string source)
+        {
+            return int.Parse(source);
+        }
+
+        /// <summary>
+        ///     Parse string as nullable int
+        /// </summary>
+        /// <param name="source">Source string</param>
+        /// <returns></returns>
+        /// <remarks></remarks>
+        public static int? ParseNullableInt(this string source)
+        {
+            if (!int.TryParse(source, out var result))
+                return null;
+
+            return result;
+        }
+
+        /// <summary>
+        ///     Try parse string as int
+        /// </summary>
+        /// <param name="source">Source string</param>
+        /// <param name="result">Parse result</param>
+        /// <returns></returns>
+        /// <remarks></remarks>
+        public static bool TryParseInt(this string source, out int result)
+        {
+            return int.TryParse(source, out result);
+        }
     }
 }

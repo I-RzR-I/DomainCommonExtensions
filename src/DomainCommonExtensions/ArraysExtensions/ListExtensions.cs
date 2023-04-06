@@ -97,5 +97,20 @@ namespace DomainCommonExtensions.ArraysExtensions
 
             return true;
         }
+
+        /// <summary>
+        ///     Execute action for every item from list
+        /// </summary>
+        /// <param name="source">Source list</param>
+        /// <param name="action">Action to execute</param>
+        /// <typeparam name="T">Source type</typeparam>
+        /// <remarks></remarks>
+        public static void ActionForEach<T>(this List<T> source, Action<T> action)
+        {
+            foreach (var item in source)
+            {
+                action(item);
+            }
+        }
     }
 }
