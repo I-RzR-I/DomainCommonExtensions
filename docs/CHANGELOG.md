@@ -54,3 +54,7 @@
 -> Added string extension `Contains`.<br />
 -> Added int/long extension `IsLessZero`.<br />
 -> Was added new Type extension: `GetStringPropertyNames`, `GetStringPropertyInfos`, `GetPropertyInfos`.<br />
+
+### **v.1.0.5.2131** 
+-> Added string extension `ParseToInt`, `ParseNullableInt`, `TryParseInt`.<br />
+-> Added list extension `ActionForEach`.<br />

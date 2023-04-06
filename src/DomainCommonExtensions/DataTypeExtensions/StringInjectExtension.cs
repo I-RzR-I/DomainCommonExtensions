@@ -69,6 +69,7 @@ namespace DomainCommonExtensions.DataTypeExtensions
 
             foreach (string attributeKey in attributes.Keys)
                 result = result.InjectSingleValue(attributeKey, attributes[attributeKey]);
+
             return result;
         }
 
