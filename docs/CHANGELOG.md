@@ -58,3 +58,9 @@
 ### **v.1.0.5.2131** 
 -> Added string extension `ParseToInt`, `ParseNullableInt`, `TryParseInt`.<br />
 -> Added list extension `ActionForEach`.<br />
+
+### **v.1.0.6.1341** 
+-> Update vulnerable library version.<br />
+
+### **v.1.0.7.0535** 
+-> Add in directory helper new methods: `FileCount` x3, `DirectoryFileCount`.<br />

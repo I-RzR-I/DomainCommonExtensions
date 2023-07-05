@@ -14,7 +14,9 @@
 //  </summary>
 // ***********************************************************************
 
+using System;
 using System.IO;
+using System.Linq;
 
 namespace DomainCommonExtensions.Helpers
 {
@@ -30,7 +32,8 @@ namespace DomainCommonExtensions.Helpers
         /// <remarks></remarks>
         public static void CreateDirectory(string path)
         {
-            if (!Directory.Exists(path)) Directory.CreateDirectory(path);
+            if (!Directory.Exists(path))
+                Directory.CreateDirectory(path);
         }
 
         /// <summary>
@@ -61,9 +64,7 @@ namespace DomainCommonExtensions.Helpers
         /// <param name="targetPath">Target directory path</param>
         /// <remarks></remarks>
         public static void CopyDirectory(string sourcePath, string targetPath)
-        {
-            CopyDirectory(new DirectoryInfo(sourcePath), new DirectoryInfo(targetPath));
-        }
+        => CopyDirectory(new DirectoryInfo(sourcePath), new DirectoryInfo(targetPath));
 
         /// <summary>
         ///     Delete the directory and all files that are there
@@ -86,8 +87,75 @@ namespace DomainCommonExtensions.Helpers
         /// <param name="sourcePath">Source directory path</param>
         /// <remarks></remarks>
         public static void DeleteDirectory(string sourcePath)
+        => DeleteDirectory(new DirectoryInfo(sourcePath));
+
+        /// <summary>
+        ///     Count file in directory
+        /// </summary>
+        /// <param name="directory">Files directory</param>
+        /// <returns></returns>
+        /// <remarks></remarks>
+        public static int FileCount(string directory)
         {
-            DeleteDirectory(new DirectoryInfo(sourcePath));
+            var dirInfo = new DirectoryInfo(directory);
+
+            return dirInfo.EnumerateDirectories().AsParallel()
+                .SelectMany(di => di.EnumerateFiles("*.*", SearchOption.AllDirectories)).Count();
+        }
+
+        /// <summary>
+        ///     Count file in directory
+        /// </summary>
+        /// <param name="directory">Files directory</param>
+        /// <param name="searchOption">File search option</param>
+        /// <returns></returns>
+        /// <remarks></remarks>
+        public static int FileCount(string directory, SearchOption searchOption)
+        {
+            var dirInfo = new DirectoryInfo(directory);
+
+            return dirInfo.EnumerateDirectories().AsParallel()
+                .SelectMany(di => di.EnumerateFiles("*.*", searchOption)).Count();
+        }
+
+        /// <summary>
+        ///     Count file in directory
+        /// </summary>
+        /// <param name="directory">Files directory</param>
+        /// <param name="searchOption">File search option</param>
+        /// <param name="searchPattern">File search pattern</param>
+        /// <returns></returns>
+        /// <remarks></remarks>
+        public static int FileCount(string directory, SearchOption searchOption, string searchPattern)
+        {
+            var dirInfo = new DirectoryInfo(directory);
+
+            return dirInfo.EnumerateDirectories().AsParallel()
+                .SelectMany(di => di.EnumerateFiles(searchPattern, searchOption)).Count();
+        }
+
+        /// <summary>
+        ///     File and directory count
+        /// </summary>
+        /// <param name="directory">Files directory</param>
+        /// <returns></returns>
+        /// <remarks>
+        ///     Tuple.Item1 -> Directory count.
+        ///     Tuple.Item2 -> File count.
+        /// </remarks>
+        public static Tuple<int, int> DirectoryFileCount(string directory)
+        {
+            var dictionary = new DirectoryInfo(directory)
+                .EnumerateFileSystemInfos("*", SearchOption.AllDirectories)
+                .GroupBy(fsi => fsi is DirectoryInfo)
+                .ToDictionary(item => item.Key, s => s.Count());
+
+            return new Tuple<int, int>(dictionary.ContainsKey(true) 
+                ? dictionary[true] 
+                : 0, 
+                dictionary.ContainsKey(false) 
+                    ? dictionary[false] 
+                    : 0);
         }
     }
 }
