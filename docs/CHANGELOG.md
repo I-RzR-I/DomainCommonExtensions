@@ -64,3 +64,7 @@
 
 ### **v.1.0.7.0535** 
 -> Add in directory helper new methods: `FileCount` x3, `DirectoryFileCount`.<br />
+
+### **v.1.0.8.0638** 
+-> Added string extension `GetHashSha512String`, `FromSpaceSeparatedString`, `IsMissing`, `IsNullOrEmpty`, `AddQueryString`, `AddHashFragment`, `GetOrigin`, `Obfuscate`.<br />
+-> Added Enumerable extension `ToSpaceSeparatedString`, `HasDuplicates`, `GetDuplicates`.<br />
