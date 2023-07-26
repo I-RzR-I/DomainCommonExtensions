@@ -48,7 +48,7 @@ namespace DomainCommonExtensions.ArraysExtensions
                 current++;
             }
         }
-       
+
         /// <summary>
         ///     Join as string
         /// </summary>
@@ -395,7 +395,7 @@ namespace DomainCommonExtensions.ArraysExtensions
         {
             return list ?? Enumerable.Empty<T>();
         }
-        
+
         /// <summary>
         ///     Execute action for every item from list
         /// </summary>
@@ -409,6 +409,59 @@ namespace DomainCommonExtensions.ArraysExtensions
             {
                 action(item);
             }
+        }
+
+        /// <summary>
+        ///     Create string separated by space
+        /// </summary>
+        /// <param name="list">Source list</param>
+        /// <returns></returns>
+        /// <remarks></remarks>
+        public static string ToSpaceSeparatedString(this IEnumerable<string> list)
+        {
+            if (list.IsNull())
+                return string.Empty;
+
+            var sb = new StringBuilder();
+            foreach (var element in list)
+            {
+                sb.Append(element + " ");
+            }
+
+            return sb.ToString().Trim();
+        }
+
+        /// <summary>
+        ///     Check if list has duplicates
+        /// </summary>
+        /// <param name="list">source list</param>
+        /// <param name="selector">Duplicate selector</param>
+        /// <returns></returns>
+        /// <typeparam name="T">Type of list</typeparam>
+        /// <typeparam name="TProp"></typeparam>
+        /// <remarks></remarks>
+        public static bool HasDuplicates<T, TProp>(this IEnumerable<T> list, Func<T, TProp> selector)
+        {
+            var d = new HashSet<TProp>();
+
+            return list.Any(t => !d.Add(selector(t)));
+        }
+
+        /// <summary>
+        ///     Get list duplicates
+        /// </summary>
+        /// <param name="list">Source list</param>
+        /// <returns></returns>
+        /// <remarks></remarks>
+        private static IEnumerable<string> GetDuplicates(IEnumerable<string> list)
+        {
+            var duplicates = list
+                .GroupBy(x => x)
+                .Where(g => g.Count() > 1)
+                .Select(y => y.Key)
+                .ToArray();
+
+            return duplicates.ToArray();
         }
     }
 }

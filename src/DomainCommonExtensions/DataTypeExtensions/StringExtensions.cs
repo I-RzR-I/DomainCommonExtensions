@@ -26,6 +26,11 @@ using System.Runtime.Serialization;
 using System.Security;
 using System.Security.Cryptography;
 using System.Text;
+
+#if NET || NETSTANDARD2_0_OR_GREATER
+using System.Text.Encodings.Web;
+#endif
+
 using System.Text.RegularExpressions;
 using CodeSource;
 using DomainCommonExtensions.CommonExtensions;
@@ -1193,6 +1198,157 @@ namespace DomainCommonExtensions.DataTypeExtensions
         public static bool TryParseInt(this string source, out int result)
         {
             return int.TryParse(source, out result);
+        }
+
+        /// <summary>
+        /// Creates a SHA512 hash of the specified input.
+        /// </summary>
+        /// <param name="source">The input.</param>
+        /// <returns>A hash</returns>
+        public static string GetHashSha512String(this string source)
+        {
+            if (source.IsNull())
+                throw new ArgumentNullException(nameof(source));
+
+            using var sha = SHA512.Create();
+            var bytes = Encoding.UTF8.GetBytes(source);
+            var hash = sha.ComputeHash(bytes);
+
+            return Convert.ToBase64String(hash);
+        }
+
+        /// <summary>
+        ///     Generate list from source string separated by space
+        /// </summary>
+        /// <param name="source">The input source string</param>
+        /// <returns></returns>
+        /// <remarks></remarks>
+        public static IEnumerable<string> FromSpaceSeparatedString(this string source)
+        {
+            if (source.IsNull())
+                throw new ArgumentNullException(nameof(source));
+
+            source = source.Trim();
+
+            return source.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries).ToList();
+        }
+
+        /// <summary>
+        ///     Is missing source string
+        /// </summary>
+        /// <param name="source"></param>
+        /// <returns></returns>
+        /// <remarks></remarks>
+        public static bool IsMissing(this string source)
+        {
+            return string.IsNullOrWhiteSpace(source);
+        }
+
+        /// <summary>
+        ///     Is present source string
+        /// </summary>
+        /// <param name="source"></param>
+        /// <returns></returns>
+        /// <remarks></remarks>
+        public static bool IsPresent(this string source)
+        {
+            return !string.IsNullOrWhiteSpace(source);
+        }
+
+        /// <summary>
+        ///     Add query string
+        /// </summary>
+        /// <param name="url">Source URL</param>
+        /// <param name="query">Query string</param>
+        /// <remarks></remarks>
+        public static string AddQueryString(this string url, string query)
+        {
+            if (!url.Contains("?"))
+            {
+                url += "?";
+            }
+            else if (!url.EndsWith("&"))
+            {
+                url += "&";
+            }
+
+            return url + query;
+        }
+
+#if NET || NETSTANDARD2_0_OR_GREATER
+
+        /// <summary>
+        ///     Add query string
+        /// </summary>
+        /// <param name="url">Source URL</param>
+        /// <param name="name">Query param name</param>
+        /// <param name="value">Query param value</param>
+        /// <remarks></remarks>
+        public static string AddQueryString(this string url, string name, string value)
+        {
+            return url.AddQueryString(name + "=" + UrlEncoder.Default.Encode(value));
+        }
+#endif
+        /// <summary>
+        ///     Add hash fragment to URL
+        /// </summary>
+        /// <param name="url">Source URL</param>
+        /// <param name="query">Query string</param>
+        /// <returns></returns>
+        /// <remarks></remarks>
+        public static string AddHashFragment(this string url, string query)
+        {
+            if (!url.Contains("#"))
+            {
+                url += "#";
+            }
+
+            return url + query;
+        }
+        
+        /// <summary>
+        ///     Get origin from URL
+        /// </summary>
+        /// <param name="url">Source URL</param>
+        /// <returns></returns>
+        /// <remarks></remarks>
+        public static string GetOrigin(this string url)
+        {
+            if (url.IsNull()) return null;
+
+            Uri uri;
+            try
+            {
+                uri = new Uri(url);
+            }
+            catch (Exception)
+            {
+                return null;
+            }
+
+            if (uri.Scheme == "http" || uri.Scheme == "https")
+            {
+                return $"{uri.Scheme}://{uri.Authority}";
+            }
+
+            return null;
+        }
+
+        /// <summary>
+        ///     Obfuscate source string
+        /// </summary>
+        /// <param name="source">Source string</param>
+        /// <returns></returns>
+        /// <remarks></remarks>
+        public static string Obfuscate(this string source)
+        {
+            var last4Chars = "****";
+            if (source.IsPresent() && source.Length > 4)
+            {
+                last4Chars = source.Substring(source.Length - 4);
+            }
+
+            return "****" + last4Chars;
         }
     }
 }
