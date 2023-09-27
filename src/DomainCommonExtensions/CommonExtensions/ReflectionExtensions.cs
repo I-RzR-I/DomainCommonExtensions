@@ -37,7 +37,7 @@ namespace DomainCommonExtensions.CommonExtensions
         public static void CopyProperties(this object source, object destination)
         {
             //if any this null throw an exception
-            if (source == null || destination == null)
+            if (source.IsNull() || destination.IsNull())
                 throw new Exception("Source or/and Destination Objects are null");
 
             var typeDest = destination.GetType();
@@ -50,7 +50,7 @@ namespace DomainCommonExtensions.CommonExtensions
                 if (!srcProp.CanRead)
                     continue;
                 var targetProperty = typeDest.GetProperty(srcProp.Name);
-                if (targetProperty == null)
+                if (targetProperty.IsNull())
                     continue;
                 if (!targetProperty.CanWrite)
                     continue;

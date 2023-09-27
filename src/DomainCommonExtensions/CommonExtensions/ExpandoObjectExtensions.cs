@@ -72,6 +72,7 @@ namespace DomainCommonExtensions.CommonExtensions
         public static object GetValue(this ExpandoObject expando, string key)
         {
             object r = expando.FirstOrDefault(x => x.Key == key).Value;
+
             return r;
         }
     }

@@ -37,7 +37,7 @@ namespace DomainCommonExtensions.DataTypeExtensions
         /// <returns></returns>
         public static bool IsGuid(this string source)
         {
-            if (string.IsNullOrEmpty(source)) return false;
+            if (source.IsNullOrEmpty()) return false;
 
             var options = RegexOptions.IgnoreCase | RegexOptions.Multiline;
             var guidRegEx = new Regex(RegularExpressions.GUID, options);
@@ -52,7 +52,7 @@ namespace DomainCommonExtensions.DataTypeExtensions
         /// <returns></returns>
         public static Guid ToGuid(this string source)
         {
-            if (string.IsNullOrEmpty(source)) return Guid.Empty;
+            if (source.IsNullOrEmpty()) return Guid.Empty;
             try
             {
                 return Guid.Parse(source);
@@ -70,7 +70,7 @@ namespace DomainCommonExtensions.DataTypeExtensions
         /// <returns></returns>
         public static Guid FromDoubleQuotesWithBackSlashesToGuid(this string source)
         {
-            if (string.IsNullOrEmpty(source)) return Guid.Empty;
+            if (source.IsNullOrEmpty()) return Guid.Empty;
             try
             {
                 return Guid.ParseExact(source.Replace("-", "").Replace("\"", ""), "N");
@@ -88,7 +88,7 @@ namespace DomainCommonExtensions.DataTypeExtensions
         /// <returns></returns>
         public static Guid? TryToGuid(this string source)
         {
-            if (string.IsNullOrEmpty(source)) return null;
+            if (source.IsNullOrEmpty()) return null;
             try
             {
                 return Guid.Parse(source);

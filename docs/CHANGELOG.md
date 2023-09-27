@@ -68,3 +68,11 @@
 ### **v.1.0.8.0638** 
 -> Added string extension `GetHashSha512String`, `FromSpaceSeparatedString`, `IsMissing`, `IsNullOrEmpty`, `AddQueryString`, `AddHashFragment`, `GetOrigin`, `Obfuscate`.<br />
 -> Added Enumerable extension `ToSpaceSeparatedString`, `HasDuplicates`, `GetDuplicates`.<br />
+
+### **v.1.0.9.2108** 
+-> Added object extensions `ThrowIfArgNull`, `ThrowArgIfNull`.<br />
+-> Added bool extensions `IsTrue`, `IsFalse`.<br />
+-> Added null check extensions `IsNotNull`, `IsDbNull`.<br />
+-> Added string extensions `ThrowArgIfNull`, `ThrowArgIfNullOrEmpty`, `ThrowIfArgNull`, `ThrowIfArgNullOrEmpty`.<br />
+-> Adjust validation for input params at some methods.
+-> Small code refactor.

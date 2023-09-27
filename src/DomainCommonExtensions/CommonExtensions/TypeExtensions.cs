@@ -23,6 +23,7 @@ using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Text;
 using DomainCommonExtensions.DataTypeExtensions;
+// ReSharper disable ExpressionIsAlwaysNull
 
 #endregion
 
@@ -64,7 +65,7 @@ namespace DomainCommonExtensions.CommonExtensions
         /// <remarks></remarks>
         public static object GetPropertyValue(this object obj, string name)
         {
-            if (obj == null)
+            if (obj.IsNull())
                 throw new ArgumentNullException(nameof(obj));
 
             return obj?.GetType()
@@ -81,7 +82,7 @@ namespace DomainCommonExtensions.CommonExtensions
         /// <remarks></remarks>
         public static string GetStringPropertyValue(this object obj, string name)
         {
-            if (obj == null)
+            if (obj.IsNull())
                 throw new ArgumentNullException(nameof(obj));
 
             return obj?.GetType()
@@ -97,7 +98,7 @@ namespace DomainCommonExtensions.CommonExtensions
         /// <remarks></remarks>
         public static bool IsAnonymousType(this Type type)
         {
-            if (type == null)
+            if (type.IsNull())
                 throw new ArgumentNullException(nameof(type));
 
             return Attribute.IsDefined(type, typeof(CompilerGeneratedAttribute), false)
@@ -114,7 +115,7 @@ namespace DomainCommonExtensions.CommonExtensions
         /// <remarks></remarks>
         public static bool IsNullablePropType(this Type type)
         {
-            if (type == null) throw new ArgumentNullException(nameof(type));
+            if (type.IsNull()) throw new ArgumentNullException(nameof(type));
 
             return type.IsGenericType && type.GetGenericTypeDefinition() == typeof(Nullable<>);
         }
@@ -133,7 +134,7 @@ namespace DomainCommonExtensions.CommonExtensions
             var t = typeof(T);
             t = Nullable.GetUnderlyingType(t) ?? t;
 
-            return value == null || DBNull.Value.Equals(value)
+            return value.IsNull() || DBNull.Value.Equals(value)
                 ? default
                 : (T)Convert.ChangeType(value, t);
         }
@@ -147,21 +148,21 @@ namespace DomainCommonExtensions.CommonExtensions
         /// <remarks></remarks>
         public static string GetSelectedFieldFromEntity(this Type type, IEnumerable<string> fields = null)
         {
-            if (type == null)
+            if (type.IsNull())
                 throw new ArgumentNullException(nameof(type));
 
             var searchBuilder = new StringBuilder();
             var propsInfo = type.GetProperties();
             var props = propsInfo.Select(x => x.Name).ToList();
 
-            if (fields != null && fields.Any())
+            if (fields.IsNotNull() && fields.Any())
             {
                 //Return only specified fields
                 foreach (var field in fields.ToList())
                     if (props.Contains(field))
                     {
                         var propType = propsInfo.FirstOrDefault(x => x.Name == field);
-                        if (propType != null) searchBuilder.Append($"{field},");
+                        if (propType.IsNotNull()) searchBuilder.Append($"{field},");
                     }
             }
             else
@@ -181,7 +182,7 @@ namespace DomainCommonExtensions.CommonExtensions
         /// <remarks></remarks>
         public static bool IsSimpleType(this Type type)
         {
-            if (type == null)
+            if (type.IsNull())
                 throw new ArgumentNullException(nameof(type));
 
             var underlyingType = Nullable.GetUnderlyingType(type);
@@ -219,7 +220,7 @@ namespace DomainCommonExtensions.CommonExtensions
         /// <remarks></remarks>
         public static bool IsTypeOfInt(this Type type)
         {
-            if (type == null)
+            if (type.IsNull())
                 throw new ArgumentNullException(nameof(type));
 
             var underlyingType = Nullable.GetUnderlyingType(type);
@@ -245,7 +246,7 @@ namespace DomainCommonExtensions.CommonExtensions
         /// <remarks></remarks>
         public static bool IsTypeOfNullableInt(this Type type)
         {
-            if (type == null)
+            if (type.IsNull())
                 throw new ArgumentNullException(nameof(type));
 
             var simpleTypes = new List<Type>
@@ -269,7 +270,7 @@ namespace DomainCommonExtensions.CommonExtensions
         /// <remarks></remarks>
         public static bool IsTypeOfFloatingPoint(this Type type)
         {
-            if (type == null)
+            if (type.IsNull())
                 throw new ArgumentNullException(nameof(type));
 
             var underlyingType = Nullable.GetUnderlyingType(type);
@@ -292,7 +293,7 @@ namespace DomainCommonExtensions.CommonExtensions
         /// <remarks></remarks>
         public static bool IsTypeOfNullableFloatingPoint(this Type type)
         {
-            if (type == null)
+            if (type.IsNull())
                 throw new ArgumentNullException(nameof(type));
 
             var simpleTypes = new List<Type>
@@ -313,7 +314,7 @@ namespace DomainCommonExtensions.CommonExtensions
         /// <remarks></remarks>
         public static bool IsEnumType(this Type type)
         {
-            if (type == null)
+            if (type.IsNull())
                 throw new ArgumentNullException(nameof(type));
 
             var underlyingType = Nullable.GetUnderlyingType(type);
@@ -330,7 +331,7 @@ namespace DomainCommonExtensions.CommonExtensions
         /// <remarks></remarks>
         public static bool IsStringType(this Type type)
         {
-            if (type == null)
+            if (type.IsNull())
                 throw new ArgumentNullException(nameof(type));
 
             var underlyingType = Nullable.GetUnderlyingType(type);
@@ -347,7 +348,7 @@ namespace DomainCommonExtensions.CommonExtensions
         /// <remarks></remarks>
         public static Type GetNonNullableType(this Type type)
         {
-            if (type == null)
+            if (type.IsNull())
                 throw new ArgumentNullException(nameof(type));
 
             return type.IsNullablePropType()

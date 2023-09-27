@@ -42,18 +42,18 @@ namespace DomainCommonExtensions.CommonExtensions
             {
                 if (!showCallStack)
                 {
-                    if (ex.Message != "An error occurred while updating the entries. See the inner exception for details.")
-                        result.AppendLine(ex.Message);
+                    if (ex?.Message != "An error occurred while updating the entries. See the inner exception for details.")
+                        result.AppendLine(ex?.Message);
                 }
                 else
-                    result.AppendLine(ex.Message);
+                    result.AppendLine(ex?.Message);
                 
                 if (showCallStack)
-                    result.Append(ex.StackTrace);
+                    result.Append(ex?.StackTrace);
 
                 ex = ex.InnerException;
             }
-            while (ex != null);
+            while (ex.IsNotNull());
 
             return result?.ToString().TrimIfNotNull();
         }

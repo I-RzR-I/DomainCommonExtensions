@@ -14,6 +14,8 @@
 //  </summary>
 // ***********************************************************************
 
+using DomainCommonExtensions.CommonExtensions;
+
 namespace DomainCommonExtensions.DataTypeExtensions
 {
     /// <summary>
@@ -23,9 +25,9 @@ namespace DomainCommonExtensions.DataTypeExtensions
     public static class BoolExtensions
     {
         /// <summary>
-        ///     Negate
+        ///     Negate source value.
         /// </summary>
-        /// <param name="source"></param>
+        /// <param name="source">Source object to be checked.</param>
         /// <returns></returns>
         public static bool Negate(this bool? source)
         {
@@ -35,13 +37,47 @@ namespace DomainCommonExtensions.DataTypeExtensions
         }
 
         /// <summary>
-        ///     Negate
+        ///     Negate source value.
         /// </summary>
-        /// <param name="source"></param>
+        /// <param name="source">Source object to be checked.</param>
         /// <returns></returns>
         public static bool Negate(this bool source)
-        {
-            return !source;
-        }
+            => !source;
+
+        /// <summary>
+        ///     Check if source value is equals with true.
+        /// </summary>
+        /// <param name="source">Source object to be checked.</param>
+        /// <returns></returns>
+        /// <remarks></remarks>
+        public static bool IsTrue(this bool source)
+            => source.IsNotNull() && source.Equals(true);
+
+        /// <summary>
+        ///     Check if source value is equals with true.
+        /// </summary>
+        /// <param name="source">Source object to be checked.</param>
+        /// <returns></returns>
+        /// <remarks></remarks>
+        public static bool IsTrue(this bool? source)
+                => source.IsNotNull() && source.Equals(true);
+
+        /// <summary>
+        ///     Check if source value is equals with false.
+        /// </summary>
+        /// <param name="source">Source object to be checked.</param>
+        /// <returns></returns>
+        /// <remarks></remarks>
+        public static bool IsFalse(this bool source)
+            => source.IsNull() || source.Equals(false);
+
+        /// <summary>
+        ///     Check if source value is equals with false.
+        /// </summary>
+        /// <param name="source">Source object to be checked.</param>
+        /// <returns></returns>
+        /// <remarks></remarks>
+        public static bool IsFalse(this bool? source)
+                    => source.IsNull() || source.Equals(false);
     }
 }

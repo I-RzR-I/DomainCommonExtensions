@@ -14,6 +14,8 @@
 //  </summary>
 // ***********************************************************************
 
+using DomainCommonExtensions.CommonExtensions;
+
 namespace DomainCommonExtensions.DataTypeExtensions
 {
     /// <summary>
@@ -30,7 +32,7 @@ namespace DomainCommonExtensions.DataTypeExtensions
         /// <remarks></remarks>
         public static bool IsNullOrZero(this ulong? value)
         {
-            return value == null || value == 0;
+            return value.IsNull() || value == 0;
         }
 
         /// <summary>

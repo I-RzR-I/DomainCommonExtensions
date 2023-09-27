@@ -72,7 +72,7 @@ namespace DomainCommonExtensions.CommonExtensions
         /// <returns>The XML fragment describing the member</returns>
         public static XmlElement GetDocumentation(this MemberInfo memberInfo)
         {
-            if (memberInfo .IsNull()) return null;
+            if (memberInfo.IsNull()) return null;
 
             // First character [0] of member type is prefix character in the name in the XML
             return XmlFromName(memberInfo.DeclaringType, memberInfo.MemberType.ToString()[0], memberInfo.Name);
@@ -89,7 +89,7 @@ namespace DomainCommonExtensions.CommonExtensions
             var summaryElm = element?.SelectSingleNode("summary");
             if (summaryElm.IsNull()) return "";
 
-            return summaryElm.InnerText.Trim();
+            return summaryElm?.InnerText.Trim();
         }
 
         /// <summary>
@@ -112,9 +112,9 @@ namespace DomainCommonExtensions.CommonExtensions
         {
             var element = type.GetDocumentation();
             var summaryElm = element?.SelectSingleNode("summary");
-            if (summaryElm .IsNull()) return "";
+            if (summaryElm.IsNull()) return "";
 
-            return summaryElm.InnerText.Trim();
+            return summaryElm?.InnerText.Trim();
         }
 
         /// <summary>
@@ -129,7 +129,7 @@ namespace DomainCommonExtensions.CommonExtensions
         {
             string fullName;
 
-            if (string.IsNullOrEmpty(name))
+            if (name.IsNullOrEmpty())
                 fullName = prefix + ":" + type.FullName;
             else
                 fullName = prefix + ":" + type.FullName + "." + name;
