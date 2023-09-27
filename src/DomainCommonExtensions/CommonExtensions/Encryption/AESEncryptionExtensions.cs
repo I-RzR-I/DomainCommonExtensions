@@ -22,6 +22,7 @@ using System;
 using System.IO;
 using System.Security.Cryptography;
 using System.Text;
+using DomainCommonExtensions.DataTypeExtensions;
 
 #endregion
 
@@ -37,6 +38,9 @@ namespace DomainCommonExtensions.CommonExtensions
         /// <returns></returns>
         public static string AesEncryptString(this string plainText, string key)
         {
+            key.ThrowIfArgNullOrEmpty(nameof(key));
+            plainText.ThrowIfArgNull(nameof(plainText));
+
             var iv = new byte[16];
             byte[] array;
 
@@ -72,6 +76,9 @@ namespace DomainCommonExtensions.CommonExtensions
         /// <returns></returns>
         public static string AesDecryptString(this string cipherText, string key)
         {
+            key.ThrowIfArgNullOrEmpty(nameof(key));
+            cipherText.ThrowIfArgNullOrEmpty(nameof(cipherText));
+
             var iv = new byte[16];
             var buffer = Convert.FromBase64String(cipherText);
 

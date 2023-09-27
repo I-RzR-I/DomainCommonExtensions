@@ -122,6 +122,7 @@ namespace DomainCommonExtensions.CommonExtensions.SystemData
                 if (dataReader.GetOrdinal(columnName).IsGreaterThanOrEqualZero())
                     return dataReader[columnName] != DBNull.Value &&
                            !string.IsNullOrEmpty(dataReader[columnName].ToString());
+
                 return false;
             }
             catch (IndexOutOfRangeException)

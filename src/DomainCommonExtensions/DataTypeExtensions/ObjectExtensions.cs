@@ -45,7 +45,7 @@ namespace DomainCommonExtensions.DataTypeExtensions
         /// <remarks></remarks>
         public static DateTime? TryGetDateTimeFromDbObj(this object value)
         {
-            if (value == null || value == DBNull.Value || string.IsNullOrEmpty(value.ToString()))
+            if (value.IsNull() || value .IsDbNull() || string.IsNullOrEmpty(value.ToString()))
                 return null;
             try
             {
@@ -120,7 +120,7 @@ namespace DomainCommonExtensions.DataTypeExtensions
         public static Hashtable GetPropertyHash(this object properties)
         {
             Hashtable values = null;
-            if (properties != null)
+            if (properties.IsNotNull())
             {
                 values = new Hashtable();
                 var props = TypeDescriptor.GetProperties(properties);
@@ -166,7 +166,7 @@ namespace DomainCommonExtensions.DataTypeExtensions
         }
 
         /// <summary>
-        ///     throw exception if source is null
+        ///     Throw exception if source is null
         /// </summary>
         /// <param name="source">Source to check</param>
         /// <param name="msg">Error message</param>
@@ -178,6 +178,30 @@ namespace DomainCommonExtensions.DataTypeExtensions
         }
 
         /// <summary>
+        ///     Throw argument null exception if source is null
+        /// </summary>
+        /// <param name="source">Source to check</param>
+        /// <param name="objectName">Name of source object</param>
+        /// <remarks></remarks>
+        public static void ThrowIfArgNull(this object source, string objectName)
+        {
+            if (source.IsNull())
+                throw new ArgumentNullException(objectName);
+        }
+
+        /// <summary>
+        ///     Throw argument exception if source is null
+        /// </summary>
+        /// <param name="source">Source to check</param>
+        /// <param name="msg">Error message.</param>
+        /// <remarks></remarks>
+        public static void ThrowArgIfNull(this object source, string msg)
+        {
+            if (source.IsNull())
+                throw new ArgumentException(msg);
+        }
+
+        /// <summary>
         ///     Cast object to string
         /// </summary>
         /// <param name="source">Input source object</param>
@@ -185,7 +209,7 @@ namespace DomainCommonExtensions.DataTypeExtensions
         /// <remarks></remarks>
         public static string ToString(this object source)
         {
-            if (source == System.DBNull.Value || source.IsNull())
+            if (source.IsDbNull() || source.IsNull())
                 return null;
             else
                 return source.ToString();
@@ -200,7 +224,7 @@ namespace DomainCommonExtensions.DataTypeExtensions
         /// <remarks></remarks>
         public static T To<T>(this object source)
         {
-            if (source == System.DBNull.Value || source.IsNull())
+            if (source.IsDbNull() || source.IsNull())
                 return default;
             else
                 return (T)source;

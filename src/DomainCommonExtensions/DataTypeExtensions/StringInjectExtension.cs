@@ -19,6 +19,7 @@
 using System.Collections;
 using System.Globalization;
 using System.Text.RegularExpressions;
+using DomainCommonExtensions.CommonExtensions;
 
 #endregion
 
@@ -64,7 +65,7 @@ namespace DomainCommonExtensions.DataTypeExtensions
         public static string Inject(this string formatString, Hashtable attributes)
         {
             var result = formatString;
-            if (attributes == null || formatString == null)
+            if (attributes.IsNull() || formatString.IsNull())
                 return result;
 
             foreach (string attributeKey in attributes.Keys)

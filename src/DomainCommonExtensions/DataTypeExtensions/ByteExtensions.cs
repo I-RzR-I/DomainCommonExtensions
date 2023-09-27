@@ -17,11 +17,14 @@
 #region U S A G E S
 
 using System;
+#if NET45_OR_GREATER || NET || NETSTANDARD1_0_OR_GREATER
 using System.IO;
 using System.IO.Compression;
+#endif
 using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
+using DomainCommonExtensions.CommonExtensions;
 
 #endregion
 
@@ -41,7 +44,7 @@ namespace DomainCommonExtensions.DataTypeExtensions
         /// <remarks></remarks>
         public static string ToBase64String(this byte[] bytes)
         {
-            if (bytes == null)
+            if (bytes.IsNull())
                 throw new ArgumentNullException(nameof(bytes));
 
             return Convert.ToBase64String(bytes, 0, bytes.Length);
@@ -55,7 +58,7 @@ namespace DomainCommonExtensions.DataTypeExtensions
         /// <remarks></remarks>
         public static string GetHashSha256String(this byte[] bytes)
         {
-            if (bytes == null)
+            if (bytes.IsNull())
                 throw new ArgumentNullException(nameof(bytes));
 
             var sb = new StringBuilder();
@@ -73,7 +76,7 @@ namespace DomainCommonExtensions.DataTypeExtensions
         /// <remarks></remarks>
         public static string GetHashSha1String(this byte[] bytes)
         {
-            if (bytes == null)
+            if (bytes.IsNull())
                 throw new ArgumentNullException(nameof(bytes));
 
             using var sha1 = new SHA1Managed();
@@ -92,7 +95,7 @@ namespace DomainCommonExtensions.DataTypeExtensions
         // ReSharper disable once InconsistentNaming
         public static string GetStringUTF8(this byte[] bytes)
         {
-            if (bytes == null)
+            if (bytes.IsNull())
                 throw new ArgumentNullException(nameof(bytes));
 
             return Encoding.UTF8.GetString(bytes);
@@ -105,7 +108,7 @@ namespace DomainCommonExtensions.DataTypeExtensions
         /// <returns>The string</returns>
         public static string GetString(this byte[] bytes)
         {
-            if (bytes == null)
+            if (bytes.IsNull())
                 throw new ArgumentNullException(nameof(bytes));
 
             return bytes.Aggregate(string.Empty, (current, b) => current + (char) b);

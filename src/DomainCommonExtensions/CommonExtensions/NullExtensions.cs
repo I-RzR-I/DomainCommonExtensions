@@ -16,6 +16,7 @@
 
 #region U S A G E S
 
+using System;
 using System.Collections.Generic;
 
 #endregion
@@ -31,12 +32,10 @@ namespace DomainCommonExtensions.CommonExtensions
         /// <summary>
         ///     Is null
         /// </summary>
-        /// <param name="obj"></param>
+        /// <param name="obj">Object to be checked</param>
         /// <returns></returns>
         public static bool IsNull(this object obj)
-        {
-            return obj == null;
-        }
+            => obj == null;
 
         /// <summary>
         ///     Check if KeyValue is null
@@ -49,5 +48,21 @@ namespace DomainCommonExtensions.CommonExtensions
         {
             return source.Equals(default(KeyValuePair<TK, TV>));
         }
+
+        /// <summary>
+        ///     Is not null
+        /// </summary>
+        /// <param name="obj">Object to be checked</param>
+        /// <returns></returns>
+        public static bool IsNotNull(this object obj)
+            => obj != null;
+
+        /// <summary>
+        ///     Is if source object is DBNull
+        /// </summary>
+        /// <param name="obj">Object to be checked</param>
+        /// <returns></returns>
+        public static bool IsDbNull(this object obj)
+            => obj == DBNull.Value;
     }
 }

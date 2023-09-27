@@ -69,7 +69,7 @@ namespace DomainCommonExtensions.DataTypeExtensions
         /// <returns></returns>
         public static string FirstCharToUpper(this string input)
         {
-            if (string.IsNullOrEmpty(input) || input.Length < 2) return input;
+            if (input.IsNullOrEmpty() || input.Length < 2) return input;
 
             return input.First().ToString().ToUpper() + input.Substring(1);
         }
@@ -81,7 +81,7 @@ namespace DomainCommonExtensions.DataTypeExtensions
         /// <returns></returns>
         public static string FirstCharToLower(this string input)
         {
-            if (string.IsNullOrEmpty(input) || input.Length < 2) return input;
+            if (input.IsNullOrEmpty() || input.Length < 2) return input;
 
             return input.First().ToString().ToLowerInvariant() + input.Substring(1);
         }
@@ -173,7 +173,7 @@ namespace DomainCommonExtensions.DataTypeExtensions
         /// <returns></returns>
         public static string TruncateExactLength(this string value, int maxLength)
         {
-            if (string.IsNullOrEmpty(value)) return value;
+            if (value.IsNullOrEmpty()) return value;
 
             return value.Length <= maxLength ? value : value.Substring(0, maxLength);
         }
@@ -463,7 +463,7 @@ namespace DomainCommonExtensions.DataTypeExtensions
         /// <remarks></remarks>
         public static string RemoveSpecialChars(this string str)
         {
-            if (string.IsNullOrEmpty(str)) return str;
+            if (str.IsNullOrEmpty()) return str;
 
             var chars = new[]
             {
@@ -608,7 +608,7 @@ namespace DomainCommonExtensions.DataTypeExtensions
         /// <remarks></remarks>
         public static bool IsBase64String(this string base64String)
         {
-            if (string.IsNullOrEmpty(base64String)) return false;
+            if (base64String.IsNullOrEmpty()) return false;
 
             base64String = base64String.TrimIfNotNull();
 
@@ -624,7 +624,7 @@ namespace DomainCommonExtensions.DataTypeExtensions
         /// <remarks></remarks>
         public static string ReplaceSpecialCharacters(this string data)
         {
-            if (data is null) return null;
+            if (data.IsNull()) return null;
 
             var normalizedString = data.Normalize(NormalizationForm.FormD);
             var stringBuilder = new StringBuilder();
@@ -661,6 +661,7 @@ namespace DomainCommonExtensions.DataTypeExtensions
 
             var alternative = new StringBuilder();
             for (var i = 0; i <= value.Length; i++) alternative.Append('A');
+
             return alternative.ToString();
         }
 
@@ -692,7 +693,7 @@ namespace DomainCommonExtensions.DataTypeExtensions
         /// <remarks></remarks>
         public static string FromUnicode(this string unicodeString)
         {
-            if (string.IsNullOrEmpty(unicodeString)) return unicodeString;
+            if (unicodeString.IsNullOrEmpty()) return unicodeString;
 
             var bytes = Encoding.Unicode.GetBytes(unicodeString);
             var encoded = Encoding.Convert(Encoding.Unicode, Encoding.UTF8, bytes);
@@ -708,10 +709,11 @@ namespace DomainCommonExtensions.DataTypeExtensions
         /// <remarks></remarks>
         public static Guid? TryParseGuidNullable(this string val)
         {
-            if (string.IsNullOrEmpty(val))
+            if (val.IsNullOrEmpty())
                 return null;
             if (Guid.TryParse(val, out var guidValue))
                 return guidValue;
+
             return null;
         }
 
@@ -934,7 +936,7 @@ namespace DomainCommonExtensions.DataTypeExtensions
         /// <remarks></remarks>
         public static T ToEnum<T>(this string value)
         {
-            if (value == null)
+            if (value.IsNull())
                 throw new ArgumentNullException(nameof(value));
 
             try
@@ -1002,7 +1004,7 @@ namespace DomainCommonExtensions.DataTypeExtensions
         /// <remarks></remarks>
         public static string[] ToLines(this string source)
         {
-            if (source == null) return new string[0];
+            if (source.IsNull()) return new string[0];
 
             var temp = source;
             temp = temp.Replace("\r\n", "\n");
@@ -1047,7 +1049,7 @@ namespace DomainCommonExtensions.DataTypeExtensions
         }
 
         /// <summary>
-        ///     throw exception if source is null or empty
+        ///     Throw exception if source is null or empty
         /// </summary>
         /// <param name="source">Source to check</param>
         /// <param name="msg">Error message</param>
@@ -1059,7 +1061,7 @@ namespace DomainCommonExtensions.DataTypeExtensions
         }
 
         /// <summary>
-        ///     throw exception if source is null
+        ///     Throw exception if source is null
         /// </summary>
         /// <param name="source">Source to check</param>
         /// <param name="msg">Error message</param>
@@ -1071,7 +1073,55 @@ namespace DomainCommonExtensions.DataTypeExtensions
         }
 
         /// <summary>
-        ///     throw exception if source is empty
+        ///     Throw argument exception if source is null
+        /// </summary>
+        /// <param name="source">Source to check</param>
+        /// <param name="msg">Error message.</param>
+        /// <remarks></remarks>
+        public static void ThrowArgIfNull(this string source, string msg)
+        {
+            if (source.IsNull())
+                throw new ArgumentException(msg);
+        }
+
+        /// <summary>
+        ///     Throw argument exception if source is null or empty
+        /// </summary>
+        /// <param name="source">Source to check</param>
+        /// <param name="msg">Error message.</param>
+        /// <remarks></remarks>
+        public static void ThrowArgIfNullOrEmpty(this string source, string msg)
+        {
+            if (source.IsNullOrEmpty())
+                throw new ArgumentException(msg);
+        }
+
+        /// <summary>
+        ///     Throw argument null exception if source is null
+        /// </summary>
+        /// <param name="source">Source to check</param>
+        /// <param name="objectName">Object name</param>
+        /// <remarks></remarks>
+        public static void ThrowIfArgNull(this string source, string objectName)
+        {
+            if (source.IsNull())
+                throw new ArgumentNullException(objectName);
+        }
+
+        /// <summary>
+        ///     Throw argument null exception if source is null or empty
+        /// </summary>
+        /// <param name="source">Source to check</param>
+        /// <param name="objectName">Object name</param>
+        /// <remarks></remarks>
+        public static void ThrowIfArgNullOrEmpty(this string source, string objectName)
+        {
+            if (source.IsNullOrEmpty())
+                throw new ArgumentNullException(objectName);
+        }
+
+        /// <summary>
+        ///     Throw exception if source is empty
         /// </summary>
         /// <param name="source">Source to check</param>
         /// <param name="msg">Error message</param>

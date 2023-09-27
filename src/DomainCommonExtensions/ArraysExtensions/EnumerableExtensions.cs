@@ -57,7 +57,7 @@ namespace DomainCommonExtensions.ArraysExtensions
         /// <returns></returns>
         public static string Join(this IEnumerable<string> source, string separator)
         {
-            return source == null ? string.Empty : string.Join(separator, source);
+            return source.IsNull() ? string.Empty : string.Join(separator, source);
         }
 
         /// <summary>
