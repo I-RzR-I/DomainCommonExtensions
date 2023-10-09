@@ -18,11 +18,11 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Data;
 using System.Diagnostics.Contracts;
 using System.Linq;
 using System.Text;
 using DomainCommonExtensions.CommonExtensions;
+using System.Data;
 
 namespace DomainCommonExtensions.ArraysExtensions
 {
