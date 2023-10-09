@@ -79,3 +79,7 @@
 
 ### **v.1.0.10.2315** 
 -> Update lib version. Add option to sign the new version of the files.<br />
+-> Small code refactor.
+
+### **v.1.0.11.1319** 
+-> Fix wrong modification.<br />
