@@ -76,3 +76,6 @@
 -> Added string extensions `ThrowArgIfNull`, `ThrowArgIfNullOrEmpty`, `ThrowIfArgNull`, `ThrowIfArgNullOrEmpty`.<br />
 -> Adjust validation for input params at some methods.
 -> Small code refactor.
+
+### **v.1.0.10.2315** 
+-> Update lib version. Add option to sign the new version of the files.<br />
