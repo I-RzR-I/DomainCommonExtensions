@@ -83,3 +83,6 @@
 
 ### **v.1.0.11.1319** 
 -> Fix wrong modification.<br />
+
+### **v.1.0.12.1447** 
+-> Add IDataReader extensions to convert object in specific type.<br />
