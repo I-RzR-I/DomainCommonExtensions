@@ -70,25 +70,48 @@ namespace DomainCommonExtensions.CommonExtensions.SystemData
         }
 
         /// <summary>
-        ///     Checks if a column's value is DBNull
+        ///     Checks if a column value is DBNull
         /// </summary>
         /// <param name="dataReader">The data reader</param>
         /// <param name="columnName">The column name</param>
-        /// <returns>A bool indicating if the column's value is DBNull</returns>
+        /// <returns>A bool indicating if the column value is DBNull</returns>
         public static bool IsDbNull(this IDataReader dataReader, string columnName)
         {
             return dataReader[columnName] == DBNull.Value;
         }
 
         /// <summary>
-        ///     Checks if a column's value is DBNull or is Empty
+        ///     Checks if a column value is not DBNull
+        /// </summary>
+        /// <param name="dataReader">The data reader</param>
+        /// <param name="columnName">The column name</param>
+        /// <returns>A bool indicating if the column value is not DBNull</returns>
+        public static bool IsNotDbNull(this IDataReader dataReader, string columnName)
+        {
+            return dataReader[columnName] != DBNull.Value;
+        }
+
+        /// <summary>
+        ///     Checks if a column value is DBNull or is Empty
+        /// </summary>
+        /// <param name="dataReader">The data reader</param>
+        /// <param name="columnName">The column name</param>
+        /// <returns>A bool indicating if the column value is DBNull</returns>
+        public static bool IsDbNullOrEmpty(this IDataReader dataReader, string columnName)
+        {
+            return dataReader[columnName] == DBNull.Value || dataReader[columnName].ToString() == string.Empty;
+        }
+
+        /// <summary>
+        ///     Checks if reader column has value
         /// </summary>
         /// <param name="dataReader">The data reader</param>
         /// <param name="columnName">The column name</param>
         /// <returns>A bool indicating if the column's value is DBNull</returns>
-        public static bool IsDbNullOrEmpty(this IDataReader dataReader, string columnName)
+        public static bool IsWithValue(this IDataReader dataReader, string columnName)
         {
-            return dataReader[columnName] == DBNull.Value || dataReader[columnName].ToString() == string.Empty;
+            return dataReader[columnName].IsNotDbNull() && dataReader[columnName].ToString().IsNotNull()
+                                                          && dataReader[columnName].ToString().IsPresent();
         }
 
         /// <summary>

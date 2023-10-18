@@ -64,5 +64,13 @@ namespace DomainCommonExtensions.CommonExtensions
         /// <returns></returns>
         public static bool IsDbNull(this object obj)
             => obj == DBNull.Value;
+
+        /// <summary>
+        ///     Is if source object is NOT DBNull
+        /// </summary>
+        /// <param name="obj">Object to be checked</param>
+        /// <returns></returns>
+        public static bool IsNotDbNull(this object obj)
+            => obj != DBNull.Value;
     }
 }

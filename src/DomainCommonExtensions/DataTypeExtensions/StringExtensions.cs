@@ -814,8 +814,6 @@ namespace DomainCommonExtensions.DataTypeExtensions
             if (separator.IsNull())
                 throw new ArgumentNullException(nameof(separator));
 
-            var output = "";
-
             var tagsArray = input.Split(separator);
             var emptyElement = tagsArray.Select((value, index) => new { index, value })
                 .Where(element => string.IsNullOrEmpty(element.value)).Select(element => element.index).ToList();
@@ -827,7 +825,7 @@ namespace DomainCommonExtensions.DataTypeExtensions
                 tagsArray[emptyElement[i]] = character;
             }
 
-            output = string.Join(separator.ToString(), tagsArray);
+            var output = string.Join(separator.ToString(), tagsArray);
             output = output.Replace(separator + character, character);
 
             return output;
@@ -1192,7 +1190,7 @@ namespace DomainCommonExtensions.DataTypeExtensions
         public static object DeserializeToObject(this string xml, Type toType)
         {
             using Stream stream = new MemoryStream();
-            var data = System.Text.Encoding.UTF8.GetBytes(xml);
+            var data = Encoding.UTF8.GetBytes(xml);
             stream.Write(data, 0, data.Length);
             stream.Position = 0;
             var deserializer = new DataContractSerializer(toType);
