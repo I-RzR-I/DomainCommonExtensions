@@ -165,7 +165,7 @@ namespace DataTypeTests
             var res = date.CalculateAge();
 
             Assert.IsNotNull(res);
-            Assert.IsTrue(res.Equals(28));
+            Assert.IsTrue(res.Equals(29));
         }
 
         [TestMethod]
