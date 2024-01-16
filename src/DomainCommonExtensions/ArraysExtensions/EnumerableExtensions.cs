@@ -453,7 +453,7 @@ namespace DomainCommonExtensions.ArraysExtensions
         /// <param name="list">Source list</param>
         /// <returns></returns>
         /// <remarks></remarks>
-        private static IEnumerable<string> GetDuplicates(IEnumerable<string> list)
+        public static IEnumerable<string> GetDuplicates(this IEnumerable<string> list)
         {
             var duplicates = list
                 .GroupBy(x => x)

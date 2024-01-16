@@ -86,3 +86,8 @@
 
 ### **v.1.0.12.1447** 
 -> Add IDataReader extensions to convert object in specific type.<br />
+
+### **v.1.0.13.8399** 
+-> Add excel column name generator `GetExcelColumnName`.<br />
+-> Adjust method modifier for `GetDuplicates`.<br />
+-> Fix tests.

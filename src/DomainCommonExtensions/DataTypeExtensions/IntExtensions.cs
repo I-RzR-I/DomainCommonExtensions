@@ -14,6 +14,8 @@
 //  </summary>
 // ***********************************************************************
 
+using System;
+using System.Globalization;
 using DomainCommonExtensions.CommonExtensions;
 
 namespace DomainCommonExtensions.DataTypeExtensions
@@ -122,6 +124,46 @@ namespace DomainCommonExtensions.DataTypeExtensions
         public static bool IsLessZero(this int? value)
         {
             return  (value ?? 0) < 0;
+        }
+
+        ///-------------------------------------------------------------------------------------------------
+        /// <summary>Gets excel column name.</summary>
+        /// <param name="columnIndex">Zero-based index of the column.</param>
+        /// <returns>The excel column name.</returns>
+        ///=================================================================================================
+        public static string GetExcelColumnName(this int columnIndex)
+        {
+            // A - Z
+            if (columnIndex >= 0 && columnIndex <= 25)
+            {
+                return ((char)('A' + columnIndex)).ToString();
+            }
+
+            // AA - ZZ
+            if (columnIndex >= 26 && columnIndex <= 701)
+            {
+                var firstChar = (char)('A' + (columnIndex / 26) - 1);
+                var secondChar = (char)('A' + (columnIndex % 26));
+
+                return string.Format(CultureInfo.InvariantCulture, "{0}{1}", firstChar, secondChar);
+            }
+
+            // 17576
+            // AAA - ZZZ
+            if (columnIndex >= 702 && columnIndex <= 18277)
+            {
+                var fc = (columnIndex - 702) / 676;
+                var sc = ((columnIndex - 702) % 676) / 26;
+                var tc = ((columnIndex - 702) % 676) % 26;
+
+                var firstChar = (char)('A' + fc);
+                var secondChar = (char)('A' + sc);
+                var thirdChar = (char)('A' + tc);
+
+                return string.Format(CultureInfo.InvariantCulture, "{0}{1}{2}", firstChar, secondChar, thirdChar);
+            }
+            
+            throw new ArgumentOutOfRangeException($"Column reference ({columnIndex}) is out of range");
         }
     }
 }
