@@ -18,11 +18,16 @@
 
 using DomainCommonExtensions.DataTypeExtensions;
 using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
+using System.Reflection;
 using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Xml;
 using CodeSource;
+
+#pragma warning disable SCS0007
 
 #endregion
 
@@ -143,6 +148,42 @@ namespace DomainCommonExtensions.CommonExtensions
             doc.Load(ms);
 
             return doc;
+        }
+
+        ///-------------------------------------------------------------------------------------------------
+        /// <summary>A T extension method that appends to.</summary>
+        /// <remarks></remarks>
+        /// <typeparam name="T">Generic type parameter.</typeparam>
+        /// <param name="first">The first to act on.</param>
+        /// <param name="items">A variable-length parameters list containing items.</param>
+        /// <returns>A T[].</returns>
+        ///=================================================================================================
+        public static T[] AppendTo<T>(this T first, params T[] items)
+        {
+            var result = new T[items.Length + 1];
+            result[0] = first;
+            items.CopyTo(result, 1);
+
+            return result;
+        }
+
+        ///-------------------------------------------------------------------------------------------------
+        /// <summary>
+        ///     A TSource extension method that gets properties information from source.
+        /// </summary>
+        /// <remarks></remarks>
+        /// <typeparam name="TSource">Type of the source.</typeparam>
+        /// <param name="source">.</param>
+        /// <returns>The properties information from source.</returns>
+        ///=================================================================================================
+        public static IList<PropertyInfo> GetPropertiesInfoFromSource<TSource>(this TSource source) where TSource : class
+        {
+            try
+            {
+                return typeof(TSource).GetProperties()
+                    .ToList();
+            }
+            catch { return null; }
         }
     }
 }

@@ -57,7 +57,7 @@ namespace DomainCommonExtensions.DataTypeExtensions
         /// <typeparam name="T"></typeparam>
         /// <param name="value"></param>
         /// <returns></returns>
-        public static string GetEnumMemberValue<T>(this T value) where T : struct, IConvertible
+        public static string GetEnumMemberValue<T>(this T value) where T : struct, Enum, IConvertible
         {
             var element = typeof(T).GetTypeInfo().DeclaredMembers
                 .SingleOrDefault(x => x.Name == value.ToString(CultureInfo.InvariantCulture));
@@ -73,7 +73,7 @@ namespace DomainCommonExtensions.DataTypeExtensions
         /// <typeparam name="T"></typeparam>
         /// <param name="str"></param>
         /// <returns></returns>
-        public static T ToEnumMemberValue<T>(this string str)
+        public static T ToEnumMemberValue<T>(this string str) where T : struct, Enum, IConvertible
         {
             var enumType = typeof(T);
             foreach (var name in Enum.GetNames(enumType))
@@ -96,7 +96,7 @@ namespace DomainCommonExtensions.DataTypeExtensions
         /// <returns></returns>
         /// <typeparam name="T"></typeparam>
         /// <remarks></remarks>
-        public static int ToInt<T>(this T source) where T : IConvertible
+        public static int ToInt<T>(this T source) where T : Enum, IConvertible
         {
             if (!typeof(T).IsEnum)
                 throw new ArgumentException("T must be an enumerated type");
@@ -111,7 +111,7 @@ namespace DomainCommonExtensions.DataTypeExtensions
         /// <returns></returns>
         /// <typeparam name="T"></typeparam>
         /// <remarks></remarks>
-        public static string ToString<T>(this T source) where T : IConvertible
+        public static string ToString<T>(this T source) where T : Enum, IConvertible
         {
             if (!typeof(T).IsEnum)
                 throw new ArgumentException("T must be an enumerated type");
@@ -145,7 +145,7 @@ namespace DomainCommonExtensions.DataTypeExtensions
         /// <returns></returns>
         /// <typeparam name="T"></typeparam>
         /// <remarks></remarks>
-        public static T GetEnumValue<T>(this string str) where T : struct, IConvertible
+        public static T GetEnumValue<T>(this string str) where T : struct, Enum, IConvertible
         {
             if (!typeof(T).IsEnum) throw new Exception("T must be an Enumeration type.");
             var val = ((T[])Enum.GetValues(typeof(T)))[0];
@@ -167,7 +167,7 @@ namespace DomainCommonExtensions.DataTypeExtensions
         /// <returns></returns>
         /// <typeparam name="T"></typeparam>
         /// <remarks></remarks>
-        public static T GetEnumValue<T>(this int intValue) where T : struct, IConvertible
+        public static T GetEnumValue<T>(this int intValue) where T : struct, Enum, IConvertible
         {
             if (!typeof(T).IsEnum) throw new Exception("T must be an Enumeration type.");
             var val = ((T[])Enum.GetValues(typeof(T)))[0];
