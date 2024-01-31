@@ -271,3 +271,5 @@ coverage.*
 
 # Certificates
 *.pfx
+
+*.ncrunchsolution

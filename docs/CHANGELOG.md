@@ -91,3 +91,7 @@
 -> Add excel column name generator `GetExcelColumnName`.<br />
 -> Adjust method modifier for `GetDuplicates`.<br />
 -> Fix tests.
+
+### **v.1.0.14.6517** 
+-> Fix some enums extensions.<br />
+-> Add new methods (`AppendTo`, `GetPropertiesInfoFromSource`) in 'TExtensions'.
