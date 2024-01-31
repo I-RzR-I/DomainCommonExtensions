@@ -36,7 +36,7 @@ namespace DomainCommonExtensions.CommonExtensions
     public static class TExtensions
     {
         /// <summary>
-        ///     Cloning an object
+        ///     Cloning an object   
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="source"></param>
