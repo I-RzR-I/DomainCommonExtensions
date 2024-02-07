@@ -42,6 +42,7 @@ namespace DomainCommonExtensions.CommonExtensions
             var cspp = new CspParameters { KeyContainerName = key };
             var rsa = new RSACryptoServiceProvider(cspp) { PersistKeyInCsp = true };
             var bytes = rsa.Encrypt(Encoding.UTF8.GetBytes(stringToEncrypt), true);
+            rsa.Dispose();
 
             return BitConverter.ToString(bytes);
         }
@@ -68,6 +69,7 @@ namespace DomainCommonExtensions.CommonExtensions
                 var decryptByteArray = Array.ConvertAll(decryptArray, s => Convert.ToByte(byte.Parse(s,
                     NumberStyles.HexNumber)));
                 var bytes = rsa.Decrypt(decryptByteArray, true);
+                rsa.Dispose();
 
                 result = Encoding.UTF8.GetString(bytes);
             }

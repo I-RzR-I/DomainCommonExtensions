@@ -51,11 +51,11 @@ namespace DomainCommonExtensions.CommonExtensions
                 if (showCallStack)
                     result.Append(ex?.StackTrace);
 
-                ex = ex.InnerException;
+                ex = ex?.InnerException;
             }
             while (ex.IsNotNull());
 
-            return result?.ToString().TrimIfNotNull();
+            return result.ToString().TrimIfNotNull();
         }
 
         /// <summary>

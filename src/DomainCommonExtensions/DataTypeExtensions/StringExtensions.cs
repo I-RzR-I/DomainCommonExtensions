@@ -531,8 +531,10 @@ namespace DomainCommonExtensions.DataTypeExtensions
 
             var buffer = Encoding.UTF8.GetBytes(content);
             var sha1 = new SHA1CryptoServiceProvider();
+            var bytes = sha1.ComputeHash(buffer);
+            sha1.Dispose();
 
-            return sha1.ComputeHash(buffer);
+            return bytes;
         }
 
         /// <summary>
@@ -548,8 +550,10 @@ namespace DomainCommonExtensions.DataTypeExtensions
 
             var buffer = Encoding.UTF8.GetBytes(content);
             var sha1 = new SHA256CryptoServiceProvider();
+            var bytes = sha1.ComputeHash(buffer);
+            sha1.Dispose();
 
-            return sha1.ComputeHash(buffer);
+            return bytes;
         }
 
         /// <summary>
