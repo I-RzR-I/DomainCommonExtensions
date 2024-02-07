@@ -25,7 +25,6 @@ using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Reflection;
 using System.Runtime.Serialization;
-using System.Globalization;
 #endif
 
 #endregion
@@ -60,7 +59,7 @@ namespace DomainCommonExtensions.DataTypeExtensions
         public static string GetEnumMemberValue<T>(this T value) where T : struct, Enum, IConvertible
         {
             var element = typeof(T).GetTypeInfo().DeclaredMembers
-                .SingleOrDefault(x => x.Name == value.ToString(CultureInfo.InvariantCulture));
+                .SingleOrDefault(x => x.Name == value.ToString());
 
             return (object)element == null ? null : element.GetCustomAttribute<EnumMemberAttribute>(false)?.Value;
         }

@@ -95,3 +95,8 @@
 ### **v.1.0.14.6517** 
 -> Fix some enums extensions.<br />
 -> Add new methods (`AppendTo`, `GetPropertiesInfoFromSource`) in 'TExtensions'.
+
+### **v.1.1.0.0** 
+-> Remove unused packages.<br />
+-> Downgrade some package versions to cover target frameworks.<br />
+-> Fix some warnings and disposable objects.<br />
