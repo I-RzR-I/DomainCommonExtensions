@@ -34,7 +34,7 @@ namespace DomainCommonExtensions.DataTypeExtensions
         /// <remarks></remarks>
         public static bool IsNullOrZero(this int? value)
         {
-            return value.IsNull() || value == 0;
+            return value.IsNull() || value.IsZero();
         }
 
         /// <summary>
@@ -44,6 +44,17 @@ namespace DomainCommonExtensions.DataTypeExtensions
         /// <returns></returns>
         /// <remarks></remarks>
         public static bool IsZero(this int value)
+        {
+            return value == 0;
+        }
+
+        /// <summary>
+        ///     Check if the value is == 0
+        /// </summary>
+        /// <param name="value">Input value to check</param>
+        /// <returns></returns>
+        /// <remarks></remarks>
+        public static bool IsZero(this int? value)
         {
             return value == 0;
         }

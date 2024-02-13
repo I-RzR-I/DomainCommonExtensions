@@ -17,6 +17,7 @@
 #region U S A G E S
 
 using System.IO;
+using DomainCommonExtensions.DataTypeExtensions;
 
 #endregion
 
@@ -41,7 +42,7 @@ namespace DomainCommonExtensions.CommonExtensions
                 using var fs = new FileStream(path, FileMode.OpenOrCreate);
                 var canWrite = fs.CanWrite;
 
-                return canWrite != true;
+                return canWrite.IsFalse();
             }
             catch (IOException)
             {

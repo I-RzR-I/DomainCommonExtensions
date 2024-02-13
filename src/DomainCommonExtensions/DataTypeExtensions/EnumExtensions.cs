@@ -19,6 +19,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using DomainCommonExtensions.CommonExtensions;
 
 #if NET45_OR_GREATER || NET || NETSTANDARD1_0_OR_GREATER
 using System.ComponentModel;
@@ -44,7 +45,7 @@ namespace DomainCommonExtensions.DataTypeExtensions
         /// <returns></returns>
         public static Dictionary<int, string> GetEnumDefinition(this Type enumType)
         {
-            if (!enumType.IsEnum) throw new Exception("Non valid enum");
+            if (enumType.IsEnum.IsFalse()) throw new Exception("Non valid enum");
 
             return Enum.GetNames(enumType).ToDictionary(x => (int)Enum.Parse(enumType, x), x => x);
         }
@@ -97,7 +98,7 @@ namespace DomainCommonExtensions.DataTypeExtensions
         /// <remarks></remarks>
         public static int ToInt<T>(this T source) where T : Enum, IConvertible
         {
-            if (!typeof(T).IsEnum)
+            if (typeof(T).IsEnum.IsFalse())
                 throw new ArgumentException("T must be an enumerated type");
 
             return (int)(IConvertible)source;
@@ -112,7 +113,7 @@ namespace DomainCommonExtensions.DataTypeExtensions
         /// <remarks></remarks>
         public static string ToString<T>(this T source) where T : Enum, IConvertible
         {
-            if (!typeof(T).IsEnum)
+            if (typeof(T).IsEnum.IsFalse())
                 throw new ArgumentException("T must be an enumerated type");
 
             return (string)(IConvertible)source;
@@ -146,7 +147,7 @@ namespace DomainCommonExtensions.DataTypeExtensions
         /// <remarks></remarks>
         public static T GetEnumValue<T>(this string str) where T : struct, Enum, IConvertible
         {
-            if (!typeof(T).IsEnum) throw new Exception("T must be an Enumeration type.");
+            if (typeof(T).IsEnum.IsFalse()) throw new Exception("T must be an Enumeration type.");
             var val = ((T[])Enum.GetValues(typeof(T)))[0];
             if (!string.IsNullOrEmpty(str))
                 foreach (var enumValue in (T[])Enum.GetValues(typeof(T)))
@@ -168,7 +169,7 @@ namespace DomainCommonExtensions.DataTypeExtensions
         /// <remarks></remarks>
         public static T GetEnumValue<T>(this int intValue) where T : struct, Enum, IConvertible
         {
-            if (!typeof(T).IsEnum) throw new Exception("T must be an Enumeration type.");
+            if (typeof(T).IsEnum.IsFalse()) throw new Exception("T must be an Enumeration type.");
             var val = ((T[])Enum.GetValues(typeof(T)))[0];
 
             foreach (var enumValue in (T[])Enum.GetValues(typeof(T)))
@@ -193,10 +194,10 @@ namespace DomainCommonExtensions.DataTypeExtensions
             var type = value.GetType();
             var memberInfo = type.GetMember(value.ToString()).FirstOrDefault();
 
-            if (memberInfo != null)
+            if (memberInfo.IsNotNull())
             {
                 var attribute = (DisplayAttribute)
-                    memberInfo.GetCustomAttributes(typeof(DisplayAttribute), false)
+                    memberInfo!.GetCustomAttributes(typeof(DisplayAttribute), false)
                         .FirstOrDefault();
                 return attribute?.Name ?? value.ToString();
             }
@@ -214,10 +215,10 @@ namespace DomainCommonExtensions.DataTypeExtensions
             var type = value.GetType();
             var memberInfo = type.GetMember(value.ToString()).FirstOrDefault();
 
-            if (memberInfo != null)
+            if (memberInfo.IsNotNull())
             {
                 var attribute = (DisplayAttribute)
-                    memberInfo.GetCustomAttributes(typeof(DisplayAttribute), false)
+                    memberInfo!.GetCustomAttributes(typeof(DisplayAttribute), false)
                         .FirstOrDefault();
                 return attribute?.Description ?? value.ToString();
             }

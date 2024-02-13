@@ -47,6 +47,17 @@ namespace DomainCommonExtensions.DataTypeExtensions
         }
 
         /// <summary>
+        ///     Check if the value is == 0
+        /// </summary>
+        /// <param name="value">Input value to check</param>
+        /// <returns></returns>
+        /// <remarks></remarks>
+        public static bool IsZero(this long? value)
+        {
+            return value == 0;
+        }
+
+        /// <summary>
         ///     Check if the value is less or equal with 0
         /// </summary>
         /// <param name="value">Input value to check</param>

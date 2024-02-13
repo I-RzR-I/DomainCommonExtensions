@@ -14,10 +14,6 @@
 //  </summary>
 // ***********************************************************************
 
-#region U S A G E S
-
-#endregion
-
 namespace DomainCommonExtensions.ArraysExtensions
 {
     /// <summary>

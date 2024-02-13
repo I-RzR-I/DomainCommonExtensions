@@ -40,13 +40,13 @@ namespace DomainCommonExtensions.CommonExtensions
         /// <summary>
         ///     Check if KeyValue is null
         /// </summary>
-        /// <typeparam name="TK"></typeparam>
-        /// <typeparam name="TV"></typeparam>
+        /// <typeparam name="Tk"></typeparam>
+        /// <typeparam name="Tv"></typeparam>
         /// <param name="source"></param>
         /// <returns></returns>
-        public static bool IsNull<TK, TV>(this KeyValuePair<TK, TV> source)
+        public static bool IsNull<Tk, Tv>(this KeyValuePair<Tk, Tv> source)
         {
-            return source.Equals(default(KeyValuePair<TK, TV>));
+            return source.Equals(default(KeyValuePair<Tk, Tv>));
         }
 
         /// <summary>

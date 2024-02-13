@@ -70,6 +70,7 @@ namespace DomainCommonExtensions.DataTypeExtensions
             if (obj is T)
             {
                 result = (T)obj;
+
                 return true;
             }
 
