@@ -169,7 +169,7 @@ namespace DomainCommonExtensions.DataTypeExtensions
         /// </summary>
         /// <param name="input">Current DateTime value</param>
         /// <returns>Return DateTime.Now in case when
-        ///     <para>source</para>
+        ///     <para>input</para>
         ///     is null
         /// </returns>
         /// <remarks></remarks>

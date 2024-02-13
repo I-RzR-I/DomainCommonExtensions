@@ -23,6 +23,8 @@ using System.Linq;
 using System.Text;
 using DomainCommonExtensions.CommonExtensions;
 using System.Data;
+using DomainCommonExtensions.CommonExtensions.TypeParam;
+using DomainCommonExtensions.DataTypeExtensions;
 
 namespace DomainCommonExtensions.ArraysExtensions
 {
@@ -194,9 +196,9 @@ namespace DomainCommonExtensions.ArraysExtensions
         public static IEnumerable<IEnumerable<T>> Transpose<T>(this IEnumerable<IEnumerable<T>> collection)
         {
             var values = collection?.ToList() ?? new List<IEnumerable<T>>();
-            if (!values.Any())
+            if (values.IsNullOrEmptyEnumerable())
                 return values;
-            if (!values.First().Any())
+            if (values.First().IsNullOrEmptyEnumerable())
                 return Transpose(values.Skip(1));
 
             var x = values.First().First();
@@ -240,8 +242,8 @@ namespace DomainCommonExtensions.ArraysExtensions
         public static IEnumerable<IEnumerable<T>> Combinations<T>(this IEnumerable<T> source, int select,
             bool repetition = false)
         {
-            Contract.Requires(source != null);
-            Contract.Requires(select >= 0);
+            Contract.Requires(source.IsNotNull());
+            Contract.Requires(select.IsGreaterThanOrEqualZero());
 
             var enumerable = source.ToList();
 
@@ -351,7 +353,7 @@ namespace DomainCommonExtensions.ArraysExtensions
             // ReSharper disable PossibleMultipleEnumeration
             var result = new StringBuilder();
 
-            if (!list.IsNull() && list.Any())
+            if (list.IsNotNull() && list.Any())
             {
                 var notFirst = false;
                 foreach (var item in list)

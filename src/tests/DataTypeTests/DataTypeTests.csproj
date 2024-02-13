@@ -25,6 +25,10 @@
     <ProjectReference Include="..\..\DomainCommonExtensions\DomainCommonExtensions.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Models\" />
+  </ItemGroup>
+
   <ProjectExtensions><VisualStudio><UserProperties BuildVersion_StartDate="2000/1/1" /></VisualStudio></ProjectExtensions>
 
 </Project>

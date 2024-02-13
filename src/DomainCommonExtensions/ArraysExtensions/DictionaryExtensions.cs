@@ -19,6 +19,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using DomainCommonExtensions.DataTypeExtensions;
 
 #endregion
 
@@ -42,7 +43,7 @@ namespace DomainCommonExtensions.ArraysExtensions
         {
             context ??= new Dictionary<TKey, TValue>();
             foreach (var item in newItems)
-                if (context.ContainsKey(item.Key))
+                if (context.ContainsKey(item.Key).IsTrue())
                     context[item.Key] = item.Value;
                 else
                     context.Add(item.Key, item.Value);
@@ -62,7 +63,7 @@ namespace DomainCommonExtensions.ArraysExtensions
             IEnumerable<TKey> keys)
         {
             foreach (var key in keys)
-                if (dict.ContainsKey(key))
+                if (dict.ContainsKey(key).IsTrue())
                     dict.Remove(key);
 
             return dict;
@@ -94,7 +95,7 @@ namespace DomainCommonExtensions.ArraysExtensions
         public static string GetStringOrDefault(this Dictionary<string, string> dictionary, string key,
                     string @default = default)
         {
-            if (dictionary.ContainsKey(key)) return dictionary[key];
+            if (dictionary.ContainsKey(key).IsTrue()) return dictionary[key];
 
             return @default;
         }
@@ -110,7 +111,7 @@ namespace DomainCommonExtensions.ArraysExtensions
         public static Guid GetGuidOrDefault(this Dictionary<string, string> dictionary, string key,
             Guid @default = default)
         {
-            if (dictionary.ContainsKey(key))
+            if (dictionary.ContainsKey(key).IsTrue())
                 if (Guid.TryParse(dictionary[key], out var value))
                     return value;
 
@@ -128,7 +129,7 @@ namespace DomainCommonExtensions.ArraysExtensions
         public static int GetIntOrDefault(this Dictionary<string, string> dictionary, string key,
             int @default = default)
         {
-            if (dictionary.ContainsKey(key))
+            if (dictionary.ContainsKey(key).IsTrue())
                 if (int.TryParse(dictionary[key], out var value))
                     return value;
 
@@ -146,7 +147,7 @@ namespace DomainCommonExtensions.ArraysExtensions
         public static bool GetBoolOrDefault(this Dictionary<string, string> dictionary, string key,
             bool @default = default)
         {
-            if (dictionary.ContainsKey(key))
+            if (dictionary.ContainsKey(key).IsTrue())
                 if (bool.TryParse(dictionary[key], out var value))
                     return value;
 

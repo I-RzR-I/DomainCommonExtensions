@@ -17,6 +17,7 @@
 using System.Collections.Generic;
 using System.Dynamic;
 using System.Linq;
+using DomainCommonExtensions.DataTypeExtensions;
 
 namespace DomainCommonExtensions.CommonExtensions
 {
@@ -37,7 +38,7 @@ namespace DomainCommonExtensions.CommonExtensions
         {
             // ExpandoObject supports IDictionary so we can extend it like this
             var expandoDict = expando as IDictionary<string, object>;
-            if (expandoDict.ContainsKey(propertyName))
+            if (expandoDict.ContainsKey(propertyName).IsTrue())
                 expandoDict[propertyName] = propertyValue;
             else
                 expandoDict.Add(propertyName, propertyValue);
@@ -53,7 +54,7 @@ namespace DomainCommonExtensions.CommonExtensions
         public static void UpdateValue(this ExpandoObject expando, string propertyName, object propertyValue)
         {
             var map = (IDictionary<string, object>)expando;
-            if (map.ContainsKey(propertyName))
+            if (map.ContainsKey(propertyName).IsTrue())
                 map[propertyName] = propertyValue;
             foreach (var val in map.Values)
             {

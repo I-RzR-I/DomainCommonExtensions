@@ -68,7 +68,7 @@ namespace DomainCommonExtensions.CommonExtensions
         /// <remarks></remarks>
         public static Exception WithData(this Exception ex, object dataKey, object dataValue)
         {
-            if (!ex.Data.IsNull()) ex.Data[dataKey] = dataValue;
+            if (ex.Data.IsNotNull()) ex.Data[dataKey] = dataValue;
 
             return ex;
         }

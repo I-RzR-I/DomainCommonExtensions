@@ -58,7 +58,6 @@ namespace DomainCommonExtensions.CommonExtensions
                     Expression.Invoke(expr2, param)), param);
         }
 
-
         /// <summary>
         ///     Convert all expressions to 'AND' clause
         /// </summary>
