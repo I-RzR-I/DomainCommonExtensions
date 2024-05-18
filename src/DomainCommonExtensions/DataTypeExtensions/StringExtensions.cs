@@ -1357,7 +1357,7 @@ namespace DomainCommonExtensions.DataTypeExtensions
 
             return url + query;
         }
-        
+
         /// <summary>
         ///     Get origin from URL
         /// </summary>
@@ -1401,6 +1401,55 @@ namespace DomainCommonExtensions.DataTypeExtensions
             }
 
             return "****" + last4Chars;
+        }
+
+        /// <summary>
+        ///     Return string as redacted value
+        /// </summary>
+        /// <param name="source">Source string</param>
+        /// <returns></returns>
+        /// <remarks></remarks>
+        public static string AsRedacted(this string source)
+            => "***REDACTED***";
+
+        /// <summary>
+        ///     Return string prefix trimmed
+        /// </summary>
+        /// <param name="source">Source string</param>
+        /// <param name="prefix">Prefix to be checked</param>
+        /// <param name="stringComparision">String comparision type. Default OrdinalIgnoreCase.</param>
+        /// <returns></returns>
+        /// <remarks></remarks>
+        public static string TrimPrefix(this string source, string prefix, StringComparison stringComparision = StringComparison.OrdinalIgnoreCase)
+        {
+            if (source.IsMissing() || prefix.IsMissing()) return source;
+
+            if (source.StartsWith(prefix, stringComparision))
+            {
+                return source.Substring(prefix.Length);
+            }
+
+            return source;
+        }
+
+        /// <summary>
+        ///     Return string suffix trimmed
+        /// </summary>
+        /// <param name="source">Source string</param>
+        /// <param name="suffix">Suffix to be checked</param>
+        /// <param name="stringComparision">String comparision type. Default OrdinalIgnoreCase.</param>
+        /// <returns></returns>
+        /// <remarks></remarks>
+        public static string TrimSuffix(this string source, string suffix, StringComparison stringComparision = StringComparison.OrdinalIgnoreCase)
+        {
+            if (source.IsMissing() || suffix.IsMissing()) return source;
+
+            if (source.EndsWith(suffix, stringComparision))
+            {
+                return source.Substring(0, source.Length - suffix.Length);
+            }
+
+            return source;
         }
     }
 }

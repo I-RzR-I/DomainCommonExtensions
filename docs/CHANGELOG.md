@@ -105,3 +105,6 @@
 -> Adjust and clean up code execution.<br />
 -> Reorganize typeparam extensions.<br />
 -> Add new typeparam extensions: `IfIsNull`, `IfIsNotNull`, `IfIsNullOrFuncIsTrue`, `IfIsNullAndFuncIsTrue`, `IfFuncIsTrue`, `IfFuncIsFalse`, `IfFunc`, `IfNull`, `IfNotNull`.<br />
+
+### **v1.1.2.3434** 
+-> Add new string extensions: `AsRedacted`, `TrimPrefix`, `TrimSuffix`.<br />
