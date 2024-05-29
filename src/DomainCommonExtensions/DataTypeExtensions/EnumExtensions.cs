@@ -59,10 +59,12 @@ namespace DomainCommonExtensions.DataTypeExtensions
         /// <returns></returns>
         public static string GetEnumMemberValue<T>(this T value) where T : struct, Enum, IConvertible
         {
+            if (value.IsNull()) return null;
+
             var element = typeof(T).GetTypeInfo().DeclaredMembers
                 .SingleOrDefault(x => x.Name == value.ToString());
 
-            return (object)element == null ? null : element.GetCustomAttribute<EnumMemberAttribute>(false)?.Value;
+            return ((object)element).IsNull() ? null : element!.GetCustomAttribute<EnumMemberAttribute>(false)?.Value;
         }
 #endif
 
@@ -75,6 +77,8 @@ namespace DomainCommonExtensions.DataTypeExtensions
         /// <returns></returns>
         public static T ToEnumMemberValue<T>(this string str) where T : struct, Enum, IConvertible
         {
+            if (str.IsNull()) return default;
+
             var enumType = typeof(T);
             foreach (var name in Enum.GetNames(enumType))
             {
@@ -98,6 +102,8 @@ namespace DomainCommonExtensions.DataTypeExtensions
         /// <remarks></remarks>
         public static int ToInt<T>(this T source) where T : Enum, IConvertible
         {
+            if (source.IsNull())
+                throw new ArgumentNullException(nameof(source));
             if (typeof(T).IsEnum.IsFalse())
                 throw new ArgumentException("T must be an enumerated type");
 
@@ -113,6 +119,8 @@ namespace DomainCommonExtensions.DataTypeExtensions
         /// <remarks></remarks>
         public static string ToString<T>(this T source) where T : Enum, IConvertible
         {
+            if (source.IsNull())
+                throw new ArgumentNullException(nameof(source));
             if (typeof(T).IsEnum.IsFalse())
                 throw new ArgumentException("T must be an enumerated type");
 
@@ -130,11 +138,11 @@ namespace DomainCommonExtensions.DataTypeExtensions
         public static string GetDescription(this Enum value, bool returnEmpty = false)
         {
             var fieldInfo = value.GetType().GetField(value.ToString());
-            if (fieldInfo == null) return null;
+            if (fieldInfo.IsNull()) return null;
 
             var attribute = (DescriptionAttribute)fieldInfo.GetCustomAttribute(typeof(DescriptionAttribute));
 
-            return attribute != null ? attribute.Description : (returnEmpty.Equals(true) ? "" : value.ToString());
+            return attribute.IsNotNull() ? attribute.Description : (returnEmpty.Equals(true) ? "" : value.ToString());
         }
 #endif
 
