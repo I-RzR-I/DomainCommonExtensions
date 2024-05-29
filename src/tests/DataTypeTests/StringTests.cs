@@ -92,6 +92,14 @@ namespace DataTypeTests
         }
 
         [TestMethod]
+        [DataRow("")]
+        [DataRow(null)]
+        public void ToSecureStringNullEmptyTest(string sourceString)
+        {
+            Assert.ThrowsException<ArgumentNullException>(sourceString.ToSecureString);
+        }
+
+        [TestMethod]
         public void StripHtmlTest()
         {
             var source = "<a>ss<a/>";

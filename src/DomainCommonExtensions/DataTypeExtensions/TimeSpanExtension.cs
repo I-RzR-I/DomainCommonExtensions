@@ -17,6 +17,7 @@
 #region U S A G E S
 
 using System;
+using DomainCommonExtensions.CommonExtensions;
 
 #endregion
 
@@ -35,6 +36,8 @@ namespace DomainCommonExtensions.DataTypeExtensions
         /// <remarks></remarks>
         public static TimeSpan Absolute(this TimeSpan source)
         {
+            if (source.IsNull()) return TimeSpan.Zero;
+
             return source.Ticks.IsGreaterThanOrEqualZero() ? source : source.Negate();
         }
     }

@@ -20,6 +20,7 @@ using System.Collections;
 using System.Globalization;
 using System.Text.RegularExpressions;
 using DomainCommonExtensions.CommonExtensions;
+// ReSharper disable RedundantAssignment
 
 #endregion
 
@@ -40,6 +41,9 @@ namespace DomainCommonExtensions.DataTypeExtensions
         /// <remarks></remarks>
         public static string Inject(this string formatString, object injectionObject)
         {
+            if (formatString.IfNullThenEmpty().IsMissing()) return null;
+            if (injectionObject.IsNull()) return formatString;
+
             return formatString.Inject(injectionObject.GetPropertyHash());
         }
 
@@ -52,6 +56,9 @@ namespace DomainCommonExtensions.DataTypeExtensions
         /// <remarks></remarks>
         public static string Inject(this string formatString, IDictionary dictionary)
         {
+            if (formatString.IfNullThenEmpty().IsMissing()) return null;
+            if (dictionary.IsNull()) return formatString;
+
             return formatString.Inject(new Hashtable(dictionary));
         }
 
@@ -64,6 +71,9 @@ namespace DomainCommonExtensions.DataTypeExtensions
         /// <remarks></remarks>
         public static string Inject(this string formatString, Hashtable attributes)
         {
+            if (formatString.IfNullThenEmpty().IsMissing()) return null;
+            if (attributes.IsNull()) return formatString;
+
             var result = formatString;
             if (attributes.IsNull() || formatString.IsNull())
                 return result;
@@ -84,6 +94,10 @@ namespace DomainCommonExtensions.DataTypeExtensions
         /// <remarks></remarks>
         public static string InjectSingleValue(this string formatString, string key, object replacementValue)
         {
+            if (formatString.IfNullThenEmpty().IsMissing()) return null;
+            if (key.IfNullThenEmpty().IsMissing()) return formatString;
+            if (key.IsNull()) return formatString;
+
             var result = formatString;
             var attributeRegex = new Regex("{(" + key + ")(?:}|(?::(.[^}]*)}))");
             foreach (Match m in attributeRegex.Matches(formatString))

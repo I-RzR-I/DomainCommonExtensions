@@ -79,7 +79,9 @@ namespace DomainCommonExtensions.DataTypeExtensions
             if (bytes.IsNull())
                 throw new ArgumentNullException(nameof(bytes));
 
+#pragma warning disable SCS0006
             using var sha1 = new SHA1Managed();
+#pragma warning restore SCS0006
             var hash = sha1.ComputeHash(bytes);
 
             return Convert.ToBase64String(hash);
@@ -122,6 +124,9 @@ namespace DomainCommonExtensions.DataTypeExtensions
         /// <remarks></remarks>
         public static string ToStringFromByteUnicode(this byte[] input)
         {
+            if (input.IsNull())
+                throw new ArgumentNullException(nameof(input));
+
             return Encoding.Unicode.GetString(input);
         }
 
@@ -135,6 +140,9 @@ namespace DomainCommonExtensions.DataTypeExtensions
         /// <remarks></remarks>
         public static string ToHexByte(this byte[] clearText, bool withSpace = false)
         {
+            if (clearText.IsNull())
+                throw new ArgumentNullException(nameof(clearText));
+
             var hex = new StringBuilder(clearText.Length * 2);
             foreach (var b in clearText)
                 hex.AppendFormat("{0:X2}{1}", b, withSpace ? " " : "");
@@ -176,6 +184,9 @@ namespace DomainCommonExtensions.DataTypeExtensions
         /// <remarks></remarks>
         public static byte[] GZipCompress(this byte[] source, CompressionLevel compressionLevel)
         {
+            if (source.IsNull())
+                throw new ArgumentNullException(nameof(source));
+
             using var memory = new MemoryStream();
             using (var gzip = new GZipStream(memory, compressionLevel, true))
             {

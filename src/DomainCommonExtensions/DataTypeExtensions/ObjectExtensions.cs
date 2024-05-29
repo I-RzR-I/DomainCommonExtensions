@@ -86,6 +86,9 @@ namespace DomainCommonExtensions.DataTypeExtensions
         /// <param name="xmlDocument">The xml document</param>
         public static void GetXmlParams(this object obj, ref XmlDocument xmlDocument)
         {
+            if (obj.IsNull())
+                throw new ArgumentNullException(nameof(obj));
+
             foreach (var prop in obj.GetType().GetProperties())
             {
                 var xmlNode = xmlDocument.SelectSingleNode("//" + prop.Name);
@@ -103,6 +106,11 @@ namespace DomainCommonExtensions.DataTypeExtensions
         /// <remarks></remarks>
         public static void CopyPropertiesTo(this object fromObject, object toObject)
         {
+            if (fromObject.IsNull())
+                throw new ArgumentNullException(nameof(fromObject));
+            if (toObject.IsNull())
+                throw new ArgumentNullException(nameof(toObject));
+
             var toObjectProperties = toObject.GetType().GetProperties();
             foreach (var propTo in toObjectProperties)
             {
@@ -240,6 +248,8 @@ namespace DomainCommonExtensions.DataTypeExtensions
         [CodeSource("https://learn.microsoft.com/en-us/dotnet/api/system.runtime.serialization.datacontractserializer?view=netstandard-2.0", "", "MS", "2022-12-28", "Reference source")]
         public static string SerializeToString(this object obj)
         {
+            if (obj.IsNull()) return null;
+
             using var memoryStream = new MemoryStream();
             using var reader = new StreamReader(memoryStream);
             var serializer = new DataContractSerializer(obj.GetType());
