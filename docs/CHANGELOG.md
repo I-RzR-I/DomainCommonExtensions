@@ -108,3 +108,7 @@
 
 ### **v1.1.2.3434** 
 -> Add new string extensions: `AsRedacted`, `TrimPrefix`, `TrimSuffix`.<br />
+
+### **v1.2.0.0** 
+-> Add/adjust input validations in the `DataTypeExtensions` foler with extensions;<br />
+-> Add new string extensions: `IfNullThenEmpty`.<br />
