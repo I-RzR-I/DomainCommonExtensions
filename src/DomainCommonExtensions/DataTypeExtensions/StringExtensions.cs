@@ -113,7 +113,7 @@ namespace DomainCommonExtensions.DataTypeExtensions
         /// <returns></returns>
         public static SecureString ToSecureString(this string str)
         {
-            if (str.IsNull())
+            if (str.IsNull() || str.IsMissing())
                 throw new ArgumentNullException(nameof(str));
 
             var secureString = new SecureString();
@@ -147,19 +147,19 @@ namespace DomainCommonExtensions.DataTypeExtensions
         {
             // replaces the truncated string to a ...
             const string suffix = "...";
-            var truncatedString = text;
+            var truncatedString = text ?? string.Empty;
 
             if (maxLength.IsLessOrEqualZero()) return truncatedString;
             var strLength = maxLength - (useDots.Equals(true) ? suffix.Length : 0);
 
             if (strLength.IsLessOrEqualZero()) return truncatedString;
 
-            if (text == null || text.Length <= maxLength) return truncatedString;
+            if (text.IsNullOrEmpty() || text!.Length <= maxLength) return truncatedString;
 
             truncatedString = text.Substring(0, strLength);
             truncatedString = truncatedString.TrimEnd();
 
-            if (useDots.Equals(true))
+            if (useDots.IsTrue())
                 truncatedString += suffix;
 
             return truncatedString;
@@ -173,9 +173,9 @@ namespace DomainCommonExtensions.DataTypeExtensions
         /// <returns></returns>
         public static string TruncateExactLength(this string value, int maxLength)
         {
-            if (value.IsNullOrEmpty()) return value;
+            if (value.IfNullThenEmpty().IsNullOrEmpty()) return value;
 
-            return value.Length <= maxLength ? value : value.Substring(0, maxLength);
+            return value!.Length <= maxLength ? value : value.Substring(0, maxLength);
         }
 
         /// <summary>
@@ -187,7 +187,7 @@ namespace DomainCommonExtensions.DataTypeExtensions
         {
             var rx = new Regex(RegularExpressions.URL);
 
-            return rx.IsMatch(text);
+            return rx.IsMatch(text.IfNullThenEmpty());
         }
 
         /// <summary>
@@ -228,6 +228,8 @@ namespace DomainCommonExtensions.DataTypeExtensions
         /// <returns></returns>
         public static string DecodeFromUtf8(this string utf8String)
         {
+            if (utf8String.IfNullThenEmpty().IsMissing()) return null;
+
             var utf8Bytes = new byte[utf8String.Length];
             for (var i = 0; i < utf8String.Length; ++i) utf8Bytes[i] = (byte)utf8String[i];
 
@@ -243,8 +245,9 @@ namespace DomainCommonExtensions.DataTypeExtensions
         /// <remarks></remarks>
         public static string ToHexString(this string clearText, bool withSpace = false)
         {
-            var sb = new StringBuilder();
+            if (clearText.IfNullThenEmpty().IsMissing()) return null;
 
+            var sb = new StringBuilder();
             var crs = clearText.ToCharArray();
             foreach (var c in crs) sb.Append($"{Convert.ToInt32(c):X}{(withSpace ? " " : "")}");
 
@@ -262,6 +265,7 @@ namespace DomainCommonExtensions.DataTypeExtensions
         /// <remarks></remarks>
         public static string ToStringHex(this string hexString, bool withSpace = false)
         {
+            if (hexString.IfNullThenEmpty().IsMissing()) return null;
             var sb = new StringBuilder();
 
             if (withSpace)
@@ -296,6 +300,7 @@ namespace DomainCommonExtensions.DataTypeExtensions
         /// <remarks></remarks>
         public static byte[] ToByteHex(this string hexString, bool withSpace = false)
         {
+            if (hexString.IfNullThenEmpty().IsMissing()) return null;
             var bytes = new List<byte>();
             if (withSpace)
             {
@@ -336,6 +341,8 @@ namespace DomainCommonExtensions.DataTypeExtensions
         /// <remarks></remarks>
         public static string TrimAndReduceSpace(this string value)
         {
+            if (value.IfNullThenEmpty().IsMissing()) return null;
+
             return Regex.Replace(value, @"\s+", " ").TrimIfNotNull();
         }
 
@@ -347,6 +354,7 @@ namespace DomainCommonExtensions.DataTypeExtensions
         /// <remarks></remarks>
         public static bool IsValidEmailWithMailAddress(this string emailAddress)
         {
+            if (emailAddress.IfNullThenEmpty().IsMissing()) return false;
             try
             {
                 _ = new MailAddress(emailAddress);
@@ -365,6 +373,8 @@ namespace DomainCommonExtensions.DataTypeExtensions
         /// <returns>Array of 2 string array[0] => filename, array[1] => extension</returns>
         public static string[] GetFileNameAndExtenstion(this string fullName)
         {
+            if (fullName.IfNullThenEmpty().IsMissing()) return null;
+
             var extension = fullName.Split('.')[fullName.Split('.').Length - 1];
             var fileName = fullName.Replace($".{extension}", "");
 
@@ -379,6 +389,8 @@ namespace DomainCommonExtensions.DataTypeExtensions
         /// <remarks></remarks>
         public static string Base64Encode(this string plainText)
         {
+            if (plainText.IfNullThenEmpty().IsMissing()) return null;
+
             var plainTextBytes = Encoding.UTF8.GetBytes(plainText);
 
             return Convert.ToBase64String(plainTextBytes);
@@ -392,6 +404,8 @@ namespace DomainCommonExtensions.DataTypeExtensions
         /// <remarks></remarks>
         public static string Base64Decode(this string base64EncodedData)
         {
+            if (base64EncodedData.IfNullThenEmpty().IsMissing()) return null;
+
             var base64EncodedBytes = Convert.FromBase64String(base64EncodedData);
 
             return Encoding.UTF8.GetString(base64EncodedBytes);
@@ -406,6 +420,8 @@ namespace DomainCommonExtensions.DataTypeExtensions
         /// <remarks></remarks>
         public static string FrontAppendMoveUpInDirectory(this string currentPath, int noOfLevels)
         {
+            if (currentPath.IfNullThenEmpty().IsMissing()) return null;
+
             var path = new StringBuilder();
             for (var i = 0; i < noOfLevels; i++)
                 path.Append(@"..\");
@@ -423,6 +439,8 @@ namespace DomainCommonExtensions.DataTypeExtensions
         /// <remarks></remarks>
         public static string MoveUpInDirectoryBackAppend(this string currentPath, int noOfLevels)
         {
+            if (currentPath.IfNullThenEmpty().IsMissing()) return null;
+
             var path = new StringBuilder();
             path.Append(currentPath);
             for (var i = 0; i < noOfLevels; i++)
@@ -439,6 +457,7 @@ namespace DomainCommonExtensions.DataTypeExtensions
         /// <remarks></remarks>
         public static DateTime? FormatToDate(this string inputStringDate)
         {
+            if (inputStringDate.IfNullThenEmpty().IsMissing()) return null;
             try
             {
                 var parse = DateTime.TryParseExact(inputStringDate,
@@ -530,7 +549,9 @@ namespace DomainCommonExtensions.DataTypeExtensions
                 throw new ArgumentNullException(nameof(content));
 
             var buffer = Encoding.UTF8.GetBytes(content);
+#pragma warning disable SCS0006
             var sha1 = new SHA1CryptoServiceProvider();
+#pragma warning restore SCS0006
             var bytes = sha1.ComputeHash(buffer);
             sha1.Dispose();
 
@@ -649,6 +670,7 @@ namespace DomainCommonExtensions.DataTypeExtensions
         /// <returns></returns>
         public static string Next(this string value)
         {
+            if (value.IfNullThenEmpty().IsMissing()) return null;
             var result = new StringBuilder(value);
 
             var isConditionSatisfied = false;
@@ -768,6 +790,8 @@ namespace DomainCommonExtensions.DataTypeExtensions
         /// <remarks></remarks>
         public static string FilterXml(this string xml)
         {
+            if (xml.IfNullThenEmpty().IsMissing()) return null;
+
             var output = SplitXmlWithCharSpecial(xml, @"&amp;", '&');
             output = SplitXmlWithCharSpecial(output, @"&amp;lt;", '<');
             output = SplitXmlWithCharSpecial(output, @"&amp;gt;", '>');
@@ -906,7 +930,7 @@ namespace DomainCommonExtensions.DataTypeExtensions
             if (source.IsNull())
                 throw new ArgumentNullException(nameof(source));
 
-            var match = pull.Count(source.StartsWith);
+            var match = (pull ?? new List<string>()).Count(source.StartsWith);
 
             return match > 0;
         }
@@ -971,6 +995,8 @@ namespace DomainCommonExtensions.DataTypeExtensions
         /// <remarks></remarks>
         public static string ReplaceExact(this string input, string oldValue, string newValue)
         {
+            if (input.IfNullThenEmpty().IsMissing()) return null;
+
             return Regex.Replace(input, $@"\b{oldValue}\b", newValue);
         }
 
@@ -1315,6 +1341,9 @@ namespace DomainCommonExtensions.DataTypeExtensions
         /// <remarks></remarks>
         public static string AddQueryString(this string url, string query)
         {
+            if (url.IfNullThenEmpty().IsMissing()) return null;
+            if (query.IfNullThenEmpty().IsMissing()) return url;
+
             if (!url.Contains("?"))
             {
                 url += "?";
@@ -1338,7 +1367,10 @@ namespace DomainCommonExtensions.DataTypeExtensions
         /// <remarks></remarks>
         public static string AddQueryString(this string url, string name, string value)
         {
-            return url.AddQueryString(name + "=" + UrlEncoder.Default.Encode(value));
+            if (url.IfNullThenEmpty().IsMissing()) return null;
+            if (name.IfNullThenEmpty().IsMissing()) return url;
+
+            return url.AddQueryString(name + "=" + UrlEncoder.Default.Encode(value.IfNullThenEmpty()));
         }
 #endif
         /// <summary>
@@ -1350,6 +1382,9 @@ namespace DomainCommonExtensions.DataTypeExtensions
         /// <remarks></remarks>
         public static string AddHashFragment(this string url, string query)
         {
+            if (url.IfNullThenEmpty().IsMissing()) return null;
+            if (query.IfNullThenEmpty().IsMissing()) return url;
+
             if (!url.Contains("#"))
             {
                 url += "#";
@@ -1451,5 +1486,13 @@ namespace DomainCommonExtensions.DataTypeExtensions
 
             return source;
         }
+
+        /// <summary>
+        ///     Return empty source string is null
+        /// </summary>
+        /// <param name="source">Source string</param>
+        /// <returns></returns>
+        /// <remarks></remarks>
+        public static string IfNullThenEmpty(this string source) => source ?? string.Empty;
     }
 }
