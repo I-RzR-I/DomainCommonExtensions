@@ -112,3 +112,7 @@
 ### **v1.2.0.0** 
 -> Add/adjust input validations in the `DataTypeExtensions` foler with extensions;<br />
 -> Add new string extensions: `IfNullThenEmpty`.<br />
+
+### **v1.3.0.0** 
+-> Fix test for `CalculateAge`;<br />
+-> Add new string extensions: `IsValidJson`, `IsValidJsonObject`, `IsValidJsonArray`.<br />

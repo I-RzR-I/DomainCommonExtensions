@@ -510,5 +510,30 @@ namespace DataTypeTests
 
             Assert.IsTrue(result);
         }
+
+        [DataRow("{ \"key\": \"value\" }")]
+        [DataRow("[{ \"key\": \"value\" }]")]
+        [DataRow("{ \"key\": 1 }")]
+        [DataRow("[{ \"key\": 1 }]")]
+        [TestMethod]
+        public void IsValidJson_Success_Test(string source)
+        {
+            var result = source.IsValidJson();
+
+            Assert.IsTrue(result);
+        }
+
+        [DataRow("{ \"key\": \"value\"")]
+        [DataRow("{ \"key\": \"value\"")]
+        [DataRow("[{ key: \"value\" }]")]
+        [DataRow("{ \"key\": 1 }]")]
+        [DataRow("\"key\": 1")]
+        [TestMethod]
+        public void IsValidJson_Fail_Test(string source)
+        {
+            var result = source.IsValidJson();
+
+            Assert.IsFalse(result);
+        }
     }
 }

@@ -29,6 +29,7 @@ using System.Text;
 
 #if NET || NETSTANDARD2_0_OR_GREATER
 using System.Text.Encodings.Web;
+using System.Text.Json;
 #endif
 
 using System.Text.RegularExpressions;
@@ -1373,6 +1374,7 @@ namespace DomainCommonExtensions.DataTypeExtensions
             return url.AddQueryString(name + "=" + UrlEncoder.Default.Encode(value.IfNullThenEmpty()));
         }
 #endif
+
         /// <summary>
         ///     Add hash fragment to URL
         /// </summary>
@@ -1494,5 +1496,83 @@ namespace DomainCommonExtensions.DataTypeExtensions
         /// <returns></returns>
         /// <remarks></remarks>
         public static string IfNullThenEmpty(this string source) => source ?? string.Empty;
+
+#if NET || NETSTANDARD2_0_OR_GREATER
+
+        /// <summary>
+        ///     Check if provided source is as valid JSON
+        /// </summary>
+        /// <param name="source">Source string</param>
+        /// <returns></returns>
+        /// <remarks></remarks>
+        public static bool IsValidJson(this string source)
+        {
+            try
+            {
+                if (source.IsMissing()) return false;
+                if ((source.TrimIfNotNull().StartsWith("{") && source.TrimIfNotNull().EndsWith("}")) ||
+                    (source.TrimIfNotNull().StartsWith("[") && source.TrimIfNotNull().EndsWith("]")))
+                {
+                    using var jsonDoc = JsonDocument.Parse(source);
+
+                    return true;
+                }
+                else return false;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+        /// <summary>
+        ///     Check if provided source is as valid JSON object
+        /// </summary>
+        /// <param name="source">Source string</param>
+        /// <returns></returns>
+        /// <remarks></remarks>
+        public static bool IsValidJsonObject(this string source)
+        {
+            try
+            {
+                if (source.IsMissing()) return false;
+                if (source.TrimIfNotNull().StartsWith("{")
+                    && source.TrimIfNotNull().EndsWith("}"))
+                {
+                    return source.IsValidJson();
+                }
+                else return false;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+        /// <summary>
+        ///     Check if provided source is as valid JSON array
+        /// </summary>
+        /// <param name="source">Source string</param>
+        /// <returns></returns>
+        /// <remarks></remarks>
+        public static bool IsValidJsonArray(this string source)
+        {
+            try
+            {
+                if (source.IsMissing()) return false;
+                if (source.TrimIfNotNull().StartsWith("[")
+                    && source.TrimIfNotNull().EndsWith("]"))
+                {
+                    return source.IsValidJson();
+                }
+                else return false;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+#endif
     }
 }
