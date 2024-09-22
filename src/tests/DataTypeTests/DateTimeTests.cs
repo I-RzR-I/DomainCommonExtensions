@@ -164,8 +164,12 @@ namespace DataTypeTests
             var date = new DateTime(1994, 8, 8, 13, 0, 0);
             var res = date.CalculateAge();
 
+            var age = DateTime.Now.Date.Day >= date.Day
+                ? DateTime.Now.Year - 1994
+                : (DateTime.Now.Year - 1994) + 1;
+
             Assert.IsNotNull(res);
-            Assert.IsTrue(res.Equals(29));
+            Assert.IsTrue(res.Equals(age));
         }
 
         [TestMethod]
