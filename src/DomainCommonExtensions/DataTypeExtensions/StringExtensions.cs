@@ -1574,5 +1574,20 @@ namespace DomainCommonExtensions.DataTypeExtensions
         }
 
 #endif
+
+        /// <summary>
+        ///     Escape backslash from source string
+        /// </summary>
+        /// <param name="source">Source string</param>
+        /// <param name="customCharEscape">Custom char to be escaped in source. Default value is '|'.</param>
+        /// <returns></returns>
+        /// <remarks>Replace by default '\' => '\\', and custom char(string value) from 'x' => '\x'</remarks>
+        public static string EscapeBackSlash(this string source, string customCharEscape = "|")
+        {
+            source = source.Replace(@"\", @"\\");
+            source = source.Replace(customCharEscape, @$"\{customCharEscape}");
+
+            return source;
+        }
     }
 }

@@ -52,7 +52,7 @@ namespace DomainCommonExtensions.CommonExtensions
                 var targetProperty = typeDest.GetProperty(srcProp.Name);
                 if (targetProperty.IsNull())
                     continue;
-                if (!targetProperty.CanWrite)
+                if (!targetProperty!.CanWrite)
                     continue;
                 if (targetProperty.GetSetMethod(true) != null && targetProperty.GetSetMethod(true).IsPrivate)
                     continue;

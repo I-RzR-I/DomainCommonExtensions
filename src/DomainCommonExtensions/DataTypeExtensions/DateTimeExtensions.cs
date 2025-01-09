@@ -182,6 +182,20 @@ namespace DomainCommonExtensions.DataTypeExtensions
         ///     Return DateTime not null value
         /// </summary>
         /// <param name="input">Current DateTime value</param>
+        /// <param name="defaultDateTime">The default DateTime value to set in case of null <para>input</para></param>
+        /// <returns>Return <para>defaultDateTime</para> value in case when
+        ///     <para>input</para> is null
+        /// </returns>
+        /// <remarks></remarks>
+        public static DateTime AsNotNull(this DateTime? input, DateTime defaultDateTime)
+        {
+            return input ?? defaultDateTime;
+        }
+
+        /// <summary>
+        ///     Return DateTime not null value
+        /// </summary>
+        /// <param name="input">Current DateTime value</param>
         /// <returns>Return 0001-01-01 00:00:00 in case when
         ///     <para>source</para>
         ///     is null

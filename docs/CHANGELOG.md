@@ -115,4 +115,12 @@
 
 ### **v1.3.0.0** 
 -> Fix test for `CalculateAge`;<br />
--> Add new string extensions: `IsValidJson`, `IsValidJsonObject`, `IsValidJsonArray`.<br />
+-> Add new string extensions: `IsValidJson`, `IsValidJsonObject`, `IsValidJsonArray`;<br />
+
+### **v2.0.0.0** 
+-> Fix test for `CalculateAge`;<br />
+-> Add DateTime extension method `AsNotNull`;<br />
+-> Add new tests for `AsNotNull` methods;<br />
+-> Add `EnumerateUtils` enumerable utils some tests;<br />
+-> Adjust AES encryption(`AesEncryptString`, `AesDecryptString`) and expose iv as input;<br />
+-> Adjust dynamic property/ies select avoid `System.Linq.Dynamic.Core`;<br />

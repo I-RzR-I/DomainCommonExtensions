@@ -26,6 +26,9 @@ using System.Data;
 using DomainCommonExtensions.CommonExtensions.TypeParam;
 using DomainCommonExtensions.DataTypeExtensions;
 
+// ReSharper disable UnusedParameter.Local
+// ReSharper restore PossibleMultipleEnumeration
+
 namespace DomainCommonExtensions.ArraysExtensions
 {
     /// <summary>
@@ -366,7 +369,6 @@ namespace DomainCommonExtensions.ArraysExtensions
             }
 
             return result.ToString();
-            // ReSharper restore PossibleMultipleEnumeration
         }
 
         /// <summary>

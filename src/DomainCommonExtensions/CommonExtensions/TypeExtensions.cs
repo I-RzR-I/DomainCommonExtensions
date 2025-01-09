@@ -23,7 +23,10 @@ using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Text;
 using DomainCommonExtensions.DataTypeExtensions;
+
 // ReSharper disable ExpressionIsAlwaysNull
+// ReSharper disable PossibleMultipleEnumeration
+// ReSharper disable AssignNullToNotNullAttribute
 
 #endregion
 
