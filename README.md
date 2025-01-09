@@ -3,7 +3,7 @@
 [![NuGet Version](https://img.shields.io/nuget/v/DomainCommonExtensions.svg?style=flat&logo=nuget)](https://www.nuget.org/packages/DomainCommonExtensions/)
 [![Nuget Downloads](https://img.shields.io/nuget/dt/DomainCommonExtensions.svg?style=flat&logo=nuget)](https://www.nuget.org/packages/DomainCommonExtensions)
 
-This library/ repository was created as a way to simplify the development process. Here were written the usually used methods (extension methods) for some data types like `int, string, DateTime, Enum, bool, byte, Guid`, also there was added extensions for `List, Dictionary, DynamicList(using 'System.Linq.Dynamic.Core')` and other collections(`ICollection, IEnumerable, IList, HashSet, IQueryable`).
+This library/ repository was created as a way to simplify the development process. Here were written the usually used methods (extension methods) for some data types like `int, string, DateTime, Enum, bool, byte, Guid`, also there was added extensions for `List, Dictionary, DynamicList` and other collections(`ICollection, IEnumerable, IList, HashSet, IQueryable`).
 
 In the repository was added an extension for `cryptography`, encrypting and decrypting string by key with RSA.
 
