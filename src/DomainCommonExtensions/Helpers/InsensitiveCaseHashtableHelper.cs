@@ -51,7 +51,7 @@ namespace DomainCommonExtensions.Helpers
                 {
                     var arg = arrayList;
                     if (enumerator.Current.IsNull()) continue;
-                    var dictionaryEntry = (DictionaryEntry)enumerator.Current;
+                    var dictionaryEntry = (DictionaryEntry)enumerator.Current!;
                     arg.Add(dictionaryEntry.Value);
                 }
 
