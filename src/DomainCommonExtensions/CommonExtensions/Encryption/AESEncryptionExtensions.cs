@@ -35,22 +35,21 @@ namespace DomainCommonExtensions.CommonExtensions
         /// </summary>
         /// <param name="plainText">Plaint text to be encrypted.</param>
         /// <param name="key">Encryption key.</param>
+        /// <param name="iv">Initialization vector.</param>
         /// <returns></returns>
-        public static string AesEncryptString(this string plainText, string key)
+        public static string AesEncryptString(this string plainText, string key, byte[] iv)
         {
             key.ThrowIfArgNullOrEmpty(nameof(key));
             plainText.ThrowIfArgNull(nameof(plainText));
+            iv.ThrowIfArgNull(nameof(iv));
 
-            var iv = new byte[16];
+            //var iv = new byte[16];
             byte[] array;
-
             using (var aes = Aes.Create())
             {
                 aes.Key = Encoding.UTF8.GetBytes(key);
                 aes.IV = iv;
-
                 var encryptor = aes.CreateEncryptor(aes.Key, aes.IV);
-
                 using (var memoryStream = new MemoryStream())
                 {
                     using (var cryptoStream = new CryptoStream(memoryStream, encryptor, CryptoStreamMode.Write))
@@ -73,21 +72,21 @@ namespace DomainCommonExtensions.CommonExtensions
         /// </summary>
         /// <param name="cipherText">Encrypted text to be decrypted</param>
         /// <param name="key">Decryption key.</param>
+        /// <param name="iv">Initialization vector.</param>
         /// <returns></returns>
-        public static string AesDecryptString(this string cipherText, string key)
+        public static string AesDecryptString(this string cipherText, string key, byte[] iv)
         {
             key.ThrowIfArgNullOrEmpty(nameof(key));
             cipherText.ThrowIfArgNullOrEmpty(nameof(cipherText));
+            iv.ThrowIfArgNull(nameof(iv));
 
-            var iv = new byte[16];
+            //var iv = new byte[16];
             var buffer = Convert.FromBase64String(cipherText);
-
             using (var aes = Aes.Create())
             {
                 aes.Key = Encoding.UTF8.GetBytes(key);
                 aes.IV = iv;
                 var decryptor = aes.CreateDecryptor(aes.Key, aes.IV);
-
                 using (var memoryStream = new MemoryStream(buffer))
                 {
                     using (var cryptoStream = new CryptoStream(memoryStream, decryptor, CryptoStreamMode.Read))
