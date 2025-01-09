@@ -124,3 +124,6 @@
 -> Add `EnumerateUtils` enumerable utils some tests;<br />
 -> Adjust AES encryption(`AesEncryptString`, `AesDecryptString`) and expose iv as input;<br />
 -> Adjust dynamic property/ies select avoid `System.Linq.Dynamic.Core`;<br />
+
+### **v2.0.1.8588** 
+-> Remove unused package `Microsoft.CodeAnalysis.Common`;<br />
