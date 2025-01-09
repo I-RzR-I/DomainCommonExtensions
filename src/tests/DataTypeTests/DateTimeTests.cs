@@ -19,6 +19,7 @@
 using System;
 using DomainCommonExtensions.DataTypeExtensions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+// ReSharper disable ArrangeObjectCreationWhenTypeEvident
 
 #endregion
 
@@ -164,12 +165,13 @@ namespace DataTypeTests
             var date = new DateTime(1994, 8, 8, 13, 0, 0);
             var res = date.CalculateAge();
 
-            var age = DateTime.Now.Date.Day >= date.Day
-                ? DateTime.Now.Year - 1994
-                : (DateTime.Now.Year - 1994) + 1;
+            var age = DateTime.Now.Year - date.Year;
+            if (DateTime.Now.Month < date.Month ||
+                DateTime.Now.Month == date.Month && DateTime.Now.Day < date.Day)
+                age -= 1;
 
             Assert.IsNotNull(res);
-            Assert.IsTrue(res.Equals(age));
+            Assert.AreEqual(age, res);
         }
 
         [TestMethod]
@@ -287,6 +289,30 @@ namespace DataTypeTests
             var result = date.ToTimeStamp();
 
             Assert.AreEqual(946684800, result);
+        }
+
+        [TestMethod]
+        public void AsNotNull_CurrentDate_Test()
+        {
+            DateTime? dt = null;
+
+            var newDt = dt.AsNotNull();
+
+            Assert.IsNull(dt);
+            Assert.IsNotNull(newDt);
+            Assert.AreEqual(newDt.Date, DateTime.Now.Date);
+        }
+
+        [TestMethod]
+        public void AsNotNull_CustomDate_Test()
+        {
+            DateTime? dt = null;
+            var customDt = new DateTime(2025, 12, 21);
+            var newDt = dt.AsNotNull(customDt);
+
+            Assert.IsNull(dt);
+            Assert.IsNotNull(newDt);
+            Assert.AreEqual(newDt, customDt);
         }
     }
 }
