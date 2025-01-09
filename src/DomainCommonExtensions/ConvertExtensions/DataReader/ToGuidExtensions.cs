@@ -20,6 +20,8 @@ using System;
 using System.Data;
 using DomainCommonExtensions.CommonExtensions.SystemData;
 
+// ReSharper disable RedundantCast
+
 #endregion
 
 namespace DomainCommonExtensions.ConvertExtensions.DataReader
