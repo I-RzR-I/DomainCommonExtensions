@@ -22,7 +22,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 #endregion
 
-namespace DataTypeTests
+namespace DataTypeTests.DataTests
 {
     [TestClass]
     public class SocketTests

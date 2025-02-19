@@ -21,7 +21,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 #endregion
 
-namespace DataTypeTests
+namespace DataTypeTests.DataTests
 {
     [TestClass]
     public class IntTests
@@ -29,9 +29,9 @@ namespace DataTypeTests
         [TestMethod]
         public void IsNullOrZeroTest()
         {
-            var checkNull = ((int?) null).IsNullOrZero();
-            var checkZero = ((int?) 0).IsNullOrZero();
-            var checkOne = ((int?) 1).IsNullOrZero();
+            var checkNull = ((int?)null).IsNullOrZero();
+            var checkZero = ((int?)0).IsNullOrZero();
+            var checkOne = ((int?)1).IsNullOrZero();
 
             Assert.IsTrue(checkNull);
             Assert.IsTrue(checkZero);

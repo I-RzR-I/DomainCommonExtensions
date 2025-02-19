@@ -19,7 +19,7 @@ using System;
 using System.Security.Cryptography;
 using DomainCommonExtensions.CommonExtensions;
 
-namespace DataTypeTests
+namespace DataTypeTests.DataTests
 {
     [TestClass]
     public class CryptoExtensionsTests

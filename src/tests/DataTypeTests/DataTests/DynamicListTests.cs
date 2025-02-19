@@ -22,7 +22,7 @@ using DomainCommonExtensions.ArraysExtensions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 // ReSharper disable ArrangeObjectCreationWhenTypeEvident
 
-namespace DataTypeTests
+namespace DataTypeTests.DataTests
 {
     [TestClass]
     public class DynamicListTests

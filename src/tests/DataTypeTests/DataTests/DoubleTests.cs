@@ -21,7 +21,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 #endregion
 
-namespace DataTypeTests
+namespace DataTypeTests.DataTests
 {
     [TestClass]
     public class DoubleTests
@@ -29,7 +29,7 @@ namespace DataTypeTests
         [TestMethod]
         public void MinutesToMs_1_Min_Test()
         {
-            var mils = ((double) 1).MinutesToMs();
+            var mils = ((double)1).MinutesToMs();
 
             Assert.IsNotNull(mils);
             Assert.IsTrue(60000 == mils);
@@ -47,7 +47,7 @@ namespace DataTypeTests
         [TestMethod]
         public void MinutesToSeconds_1_Min_Test()
         {
-            var sec = ((double) 1).MinutesToSeconds();
+            var sec = ((double)1).MinutesToSeconds();
 
             Assert.IsNotNull(sec);
             Assert.AreEqual(60, sec);

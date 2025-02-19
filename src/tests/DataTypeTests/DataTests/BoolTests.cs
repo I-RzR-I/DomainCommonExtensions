@@ -21,7 +21,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 #endregion
 
-namespace DataTypeTests
+namespace DataTypeTests.DataTests
 {
     [TestClass]
     public class BoolTests
@@ -38,7 +38,7 @@ namespace DataTypeTests
         [TestMethod]
         public void NegateNullTest()
         {
-            var neg = ((bool?) null).Negate();
+            var neg = ((bool?)null).Negate();
 
             Assert.IsTrue(neg.Equals(true));
         }
