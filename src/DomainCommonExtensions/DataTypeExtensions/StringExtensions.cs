@@ -37,7 +37,6 @@ using CodeSource;
 using DomainCommonExtensions.ArraysExtensions;
 using DomainCommonExtensions.CommonExtensions;
 using DomainCommonExtensions.Resources;
-using static System.Net.Mime.MediaTypeNames;
 
 #endregion
 
