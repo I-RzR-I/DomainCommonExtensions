@@ -24,14 +24,14 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 #endregion
 
-namespace DataTypeTests
+namespace DataTypeTests.DataTests
 {
     internal enum ResultEnum
     {
         [EnumMember(Value = "IDK")]
         Unknown,
 
-        [System.ComponentModel.Description("Description-Valid")] 
+        [System.ComponentModel.Description("Description-Valid")]
         [Display(Name = "Display-Valid")]
         Valid,
 

@@ -18,7 +18,7 @@ using System.Linq;
 using DomainCommonExtensions.Utilities;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace DataTypeTests
+namespace DataTypeTests.UtilsTests
 {
     [TestClass]
     public class EnumerateUtilsTests

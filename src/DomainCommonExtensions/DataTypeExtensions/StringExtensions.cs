@@ -34,6 +34,7 @@ using System.Text.Json;
 
 using System.Text.RegularExpressions;
 using CodeSource;
+using DomainCommonExtensions.ArraysExtensions;
 using DomainCommonExtensions.CommonExtensions;
 using DomainCommonExtensions.Resources;
 
@@ -1588,6 +1589,34 @@ namespace DomainCommonExtensions.DataTypeExtensions
             source = source.Replace(customCharEscape, @$"\{customCharEscape}");
 
             return source;
+        }
+
+        /// <summary>
+        ///     Cast source string to array of letters.
+        /// </summary>
+        /// <param name="source">Source string</param>
+        /// <param name="returnEmptyIfMissing">Indicate if source is empty return empty array, otherwise return null.</param>
+        /// <returns>Returns array of strings.</returns>
+        /// <remarks></remarks>
+        public static string[] ToStringArray(this string source, bool returnEmptyIfMissing = false)
+        {
+            if (source.IsMissing()) return returnEmptyIfMissing.IsTrue() ? new string[0] : null;
+
+            return source.ToCharArray().Select(c => c.ToString()).ToArray();
+        }
+        
+        /// <summary>
+        ///     Cast source array of letters/string value to one string.
+        /// </summary>
+        /// <param name="source">Source string array.</param>
+        /// <param name="returnEmptyIfMissing">Indicate if source is empty return string.Empty, otherwise return null.</param>
+        /// <returns>Returns string.</returns>
+        /// <remarks></remarks>
+        public static string ArrayToString(this string[] source, bool returnEmptyIfMissing = false)
+        {
+            if (source.IsNullOrEmptyEnumerable()) return returnEmptyIfMissing.IsTrue() ? string.Empty : null;
+
+            return string.Concat(source);
         }
     }
 }

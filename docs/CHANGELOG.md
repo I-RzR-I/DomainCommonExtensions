@@ -127,3 +127,9 @@
 
 ### **v2.0.1.8588** 
 -> Remove unused package `Microsoft.CodeAnalysis.Common`;<br />
+
+### **v2.1.0.0** 
+-> Add new string extensions: `ToStringArray`, `ArrayToString`;<br />
+-> Add new array extensions: `AppendItem`, `AppendIfNotExists`, `RemoveItem`, `RemoveAtIdx`;<br />
+-> Add new enumerable extensions: `GetDuplicates`, `ForEach`, `ForEachAndReturn`;<br />
+-> Add passcode/password generation util;<br />

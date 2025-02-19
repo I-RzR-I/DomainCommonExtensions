@@ -18,7 +18,7 @@ using System;
 using DomainCommonExtensions.DataTypeExtensions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace DataTypeTests
+namespace DataTypeTests.DataTests
 {
     [TestClass]
     public class StringTests
@@ -534,6 +534,28 @@ namespace DataTypeTests
             var result = source.IsValidJson();
 
             Assert.IsFalse(result);
+        }
+
+        [TestMethod]
+        public void ToStringArray_Test()
+        {
+            var source = "abcde";
+            var result = source.ToStringArray();
+
+            Assert.IsNotNull(result);
+            Assert.AreEqual(5, result.Length);
+            Assert.AreEqual("b", result[1]);
+            Assert.AreEqual("e", result[4]);
+        }
+
+        [TestMethod]
+        public void ArrayToString_Test()
+        {
+            var source = new string[2] { "a", "b" };
+            var result = source.ArrayToString();
+
+            Assert.IsNotNull(result);
+            Assert.AreEqual("ab", result);
         }
     }
 }

@@ -467,5 +467,57 @@ namespace DomainCommonExtensions.ArraysExtensions
 
             return duplicates.ToArray();
         }
+
+        /// <summary>
+        ///     Get list duplicates
+        /// </summary>
+        /// <param name="list">Source list</param>
+        /// <typeparam name="T">Type of list</typeparam>
+        /// <returns></returns>
+        /// <remarks></remarks>
+        public static IEnumerable<T> GetDuplicates<T>(this IEnumerable<T> list)
+        {
+            var duplicates = list
+                .GroupBy(x => x)
+                .Where(g => g.Count() > 1)
+                .Select(y => y.Key)
+                .ToArray();
+
+            return duplicates.ToArray();
+        }
+
+        /// <summary>
+        ///     Execute action for every item
+        /// </summary>
+        /// <param name="list">Source list</param>
+        /// <param name="action">Action to be executed</param>
+        /// <typeparam name="T">Type of list</typeparam>
+        /// <returns></returns>
+        /// <remarks></remarks>
+        public static void ForEach<T>(this IEnumerable<T> list, Action<T> action)
+        {
+            foreach (T item in list)
+            {
+                action(item);
+            }
+        }
+
+        /// <summary>
+        ///     Execute action for every item and return new data
+        /// </summary>
+        /// <param name="list">Source list</param>
+        /// <param name="action">Action to be executed</param>
+        /// <typeparam name="T">Type of list</typeparam>
+        /// <returns></returns>
+        /// <remarks></remarks>
+        public static IEnumerable<T> ForEachAndReturn<T>(this IEnumerable<T> list, Action<T> action)
+        {
+            foreach (T item in list)
+            {
+                action(item);
+            }
+
+            return list;
+        }
     }
 }

@@ -166,5 +166,21 @@ namespace DomainCommonExtensions.CommonExtensions.TypeParam
 
             return source;
         }
+
+        /// <summary>
+        ///     Get sub array
+        /// </summary>
+        /// <param name="array">Source array</param>
+        /// <param name="offset">Offset</param>
+        /// <param name="length">Take</param>
+        /// <returns></returns>
+        /// <typeparam name="T">Source type</typeparam>
+        /// <remarks></remarks>
+        public static T[] SubArray<T>(this T[] array, int offset, int length)
+        {
+            return array.Skip(offset)
+                .Take(length)
+                .ToArray();
+        }
     }
 }
