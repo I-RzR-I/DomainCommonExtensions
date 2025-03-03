@@ -133,3 +133,8 @@
 -> Add new array extensions: `AppendItem`, `AppendIfNotExists`, `RemoveItem`, `RemoveAtIdx`;<br />
 -> Add new enumerable extensions: `GetDuplicates`, `ForEach`, `ForEachAndReturn`;<br />
 -> Add passcode/password generation util;<br />
+
+### **v2.1.1.6403** 
+-> Add new string extension: `FormatWith`;<br />
+-> Add new Guid/Guid? extension: `IsEmpty`;<br />
+-> Relocate several string extensions: `IsGuid`, `ToGuid`, `FromDoubleQuotesWithBackSlashesToGuid`;<br />
