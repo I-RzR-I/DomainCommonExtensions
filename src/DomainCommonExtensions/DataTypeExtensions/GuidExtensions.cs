@@ -17,75 +17,28 @@
 #region U S A G E S
 
 using System;
-using System.Text.RegularExpressions;
-using DomainCommonExtensions.Resources;
+using DomainCommonExtensions.CommonExtensions;
 
 #endregion
 
 namespace DomainCommonExtensions.DataTypeExtensions
 {
+    /// -------------------------------------------------------------------------------------------------
     /// <summary>
-    ///     Guid extensions
+    ///     Guid extensions.
     /// </summary>
-    /// <remarks></remarks>
+    /// =================================================================================================
     public static class GuidExtensions
     {
+        /// -------------------------------------------------------------------------------------------------
         /// <summary>
-        ///     Check if is string is value
+        ///     Parse string to Guid.
         /// </summary>
-        /// <param name="source"></param>
-        /// <returns></returns>
-        public static bool IsGuid(this string source)
-        {
-            if (source.IsNullOrEmpty()) return false;
-
-            var options = RegexOptions.IgnoreCase | RegexOptions.Multiline;
-            var guidRegEx = new Regex(RegularExpressions.GUID, options);
-
-            return guidRegEx.IsMatch(source);
-        }
-
-        /// <summary>
-        ///     Parse string to Guid
-        /// </summary>
-        /// <param name="source"></param>
-        /// <returns></returns>
-        public static Guid ToGuid(this string source)
-        {
-            if (source.IsNullOrEmpty()) return Guid.Empty;
-            try
-            {
-                return Guid.Parse(source);
-            }
-            catch
-            {
-                return Guid.Empty;
-            }
-        }
-
-        /// <summary>
-        ///     Parse string to Guid from format:  "\"9ffd2c3-6er456ds\""
-        /// </summary>
-        /// <param name="source"></param>
-        /// <returns></returns>
-        public static Guid FromDoubleQuotesWithBackSlashesToGuid(this string source)
-        {
-            if (source.IsNullOrEmpty()) return Guid.Empty;
-            try
-            {
-                return Guid.ParseExact(source.Replace("-", "").Replace("\"", ""), "N");
-            }
-            catch
-            {
-                return Guid.Empty;
-            }
-        }
-
-        /// <summary>
-        ///     Parse string to Guid
-        /// </summary>
-        /// <param name="source"></param>
-        /// <returns></returns>
+        /// <param name="source">.</param>
+        /// <returns>
+        ///     A Guid?
+        /// </returns>
+        /// =================================================================================================
         public static Guid? TryToGuid(this string source)
         {
             if (source.IsNullOrEmpty()) return null;
@@ -99,11 +52,15 @@ namespace DomainCommonExtensions.DataTypeExtensions
             }
         }
 
+        /// -------------------------------------------------------------------------------------------------
         /// <summary>
-        ///     Guid to int 32
+        ///     Guid to int 32.
         /// </summary>
-        /// <param name="uuid"></param>
-        /// <returns></returns>
+        /// <param name="uuid">.</param>
+        /// <returns>
+        ///     Uuid as an int.
+        /// </returns>
+        /// =================================================================================================
         public static int ToInt32(this Guid uuid)
         {
             var gb = uuid.ToByteArray();
@@ -111,16 +68,42 @@ namespace DomainCommonExtensions.DataTypeExtensions
             return BitConverter.ToInt32(gb, 0);
         }
 
+        /// -------------------------------------------------------------------------------------------------
         /// <summary>
-        ///     Guid to long
+        ///     Guid to long.
         /// </summary>
-        /// <param name="uuid"></param>
-        /// <returns></returns>
+        /// <param name="uuid">.</param>
+        /// <returns>
+        ///     Uuid as a long.
+        /// </returns>
+        /// =================================================================================================
         public static long ToLong(this Guid uuid)
         {
             var gb = uuid.ToByteArray();
 
             return BitConverter.ToInt64(gb, 0);
         }
+
+        /// -------------------------------------------------------------------------------------------------
+        /// <summary>
+        ///     A Guid? extension method that query if 'source' is empty.
+        /// </summary>
+        /// <param name="source">Source Guid value to be checked.</param>
+        /// <returns>
+        ///     True if empty, false if not.
+        /// </returns>
+        /// =================================================================================================
+        public static bool IsEmpty(this Guid? source) => source.IsNull() || source == Guid.Empty;
+
+        /// -------------------------------------------------------------------------------------------------
+        /// <summary>
+        ///     A Guid? extension method that query if 'source' is empty.
+        /// </summary>
+        /// <param name="source">Source Guid value to be checked.</param>
+        /// <returns>
+        ///     True if empty, false if not.
+        /// </returns>
+        /// =================================================================================================
+        public static bool IsEmpty(this Guid source) => source == Guid.Empty;
     }
 }

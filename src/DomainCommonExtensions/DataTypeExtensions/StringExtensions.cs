@@ -1604,7 +1604,7 @@ namespace DomainCommonExtensions.DataTypeExtensions
 
             return source.ToCharArray().Select(c => c.ToString()).ToArray();
         }
-        
+
         /// <summary>
         ///     Cast source array of letters/string value to one string.
         /// </summary>
@@ -1617,6 +1617,70 @@ namespace DomainCommonExtensions.DataTypeExtensions
             if (source.IsNullOrEmptyEnumerable()) return returnEmptyIfMissing.IsTrue() ? string.Empty : null;
 
             return string.Concat(source);
+        }
+
+        /// <summary>
+        ///     Check if is string is value
+        /// </summary>
+        /// <param name="source">Source string value to check.</param>
+        /// <returns></returns>
+        public static bool IsGuid(this string source)
+        {
+            if (source.IsNullOrEmpty()) return false;
+
+            var options = RegexOptions.IgnoreCase | RegexOptions.Multiline;
+            var guidRegEx = new Regex(RegularExpressions.GUID, options);
+
+            return guidRegEx.IsMatch(source);
+        }
+
+        /// <summary>
+        ///     Parse string to Guid
+        /// </summary>
+        /// <param name="source">Source string value to cast as Guid.</param>
+        /// <returns>Returns Guid.Empty if source is empty or parse error.</returns>
+        public static Guid ToGuid(this string source)
+        {
+            if (source.IsNullOrEmpty()) return Guid.Empty;
+            try
+            {
+                return Guid.Parse(source);
+            }
+            catch
+            {
+                return Guid.Empty;
+            }
+        }
+
+        /// <summary>
+        ///     Parse string to Guid from format:  "\"9ffd2c3-6er456ds\""
+        /// </summary>
+        /// <param name="source"></param>
+        /// <returns></returns>
+        public static Guid FromDoubleQuotesWithBackSlashesToGuid(this string source)
+        {
+            if (source.IsNullOrEmpty()) return Guid.Empty;
+            try
+            {
+                return Guid.ParseExact(source.Replace("-", "").Replace("\"", ""), "N");
+            }
+            catch
+            {
+                return Guid.Empty;
+            }
+        }
+
+        /// <summary>
+        ///     Format source string values with parameters
+        /// </summary>
+        /// <param name="source">Parameterized source string value.</param>
+        /// <param name="args">Parameters to supply source string.</param>
+        /// <returns></returns>
+        public static string FormatWith(this string source, params object[] args)
+        {
+            if (source.IsMissing()) return string.Empty;
+
+            return string.Format(CultureInfo.CurrentCulture, source, args);
         }
     }
 }
