@@ -16,6 +16,8 @@ The list of helpful methods and extensions list isn't finished, I think in a sho
 
 I hope I'm on the right way to providing all these things to all who saw or searched for something to make easy life in development, and enjoyable. I think you will find it helpful for all projects where needed.
 
+**You can find a [demo](https://demowebutils.iamrzr.dev/) with some of the extension methods on the [demowebutils](https://demowebutils.iamrzr.dev/) website.**
+
 
 **In case you wish to use it in your project, you can install the package from <a href="https://www.nuget.org/packages/DomainCommonExtensions" target="_blank">nuget.org</a>** or specify what version you want:
 
