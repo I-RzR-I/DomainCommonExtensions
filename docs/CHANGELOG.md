@@ -1,3 +1,11 @@
+### v**2.2.0.8487** [[RzR](mailto:108324929+I-RzR-I@users.noreply.github.com)] 27-06-2025
+* [9b9d498] (RzR) -> Auto commit uncommited files
+* [e72cb92] (RzR) -> Adjust path to test projects in scripts
+* [141087f] (RzR) -> Add changelog and version scripts
+* [11e19df] (RzR) -> Add DataTable extensions `ToJson` and refactor anonimous class factory
+* [17989a2] (RzR) -> Add new Enum extensions `AreEquals`.
+* [3e56754] (RzR) -> Add new enumerable extensions `Chunked`
+
 ### **v1.0.1.0823** 
 -> Was fixed tests and was added validator for input source.<br />
 -> Was added `ToEnum<T>` from the string.<br />

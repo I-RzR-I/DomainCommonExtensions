@@ -14,17 +14,17 @@
 //  </summary>
 // ***********************************************************************
 
+using DomainCommonExtensions.CommonExtensions;
+using DomainCommonExtensions.CommonExtensions.TypeParam;
+using DomainCommonExtensions.DataTypeExtensions;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Data;
 using System.Diagnostics.Contracts;
 using System.Linq;
 using System.Text;
-using DomainCommonExtensions.CommonExtensions;
-using System.Data;
-using DomainCommonExtensions.CommonExtensions.TypeParam;
-using DomainCommonExtensions.DataTypeExtensions;
 
 // ReSharper disable UnusedParameter.Local
 // ReSharper restore PossibleMultipleEnumeration
@@ -518,6 +518,39 @@ namespace DomainCommonExtensions.ArraysExtensions
             }
 
             return list;
+        }
+
+        /// <summary>
+        ///     Chunk source array of data by size.
+        /// </summary>
+        /// <param name="source">Source list/array.</param>
+        /// <param name="chunkSize">The chunk size. Default value is 100.</param>
+        /// <typeparam name="T">Type of list</typeparam>
+        /// <returns></returns>
+        /// <remarks></remarks>
+        public static IEnumerable<IEnumerable<T>> Chunked<T>(this IEnumerable<T> source, int chunkSize = 100)
+        {
+            if (source.IsNullOrEmptyEnumerable())
+                return new List<IEnumerable<T>>();
+            if (chunkSize.IsNull() || chunkSize.IsLessOrEqualZero())
+                return new List<IEnumerable<T>>(1) { source };
+
+            var chunkArray = source.ToArray();
+            var chunksCount = (int)Math.Ceiling((double)source.Count() / chunkSize);
+            var chunks = new List<IEnumerable<T>>(chunksCount);
+
+            for (var chunkIndex = 0; chunkIndex < chunksCount; chunkIndex++)
+            {
+                var newChunkSize = chunkIndex == chunksCount - 1 ? chunkArray.Length - (chunkSize * chunkIndex) : chunkSize;
+                var newChunkSourceIndex = chunkIndex.IsZero() ? chunkIndex : (chunkSize * chunkIndex) - 1;
+
+                var chunk = new T[newChunkSize];
+                Array.Copy(chunkArray, newChunkSourceIndex, chunk, 0, newChunkSize);
+
+                chunks.Add(chunk);
+            }
+
+            return chunks;
         }
     }
 }

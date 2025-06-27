@@ -162,5 +162,19 @@ namespace DataTypeTests.DataTests
             Assert.IsNotNull(resUnknown);
             Assert.AreEqual("Unknown", resUnknown);
         }
+
+        [DataRow(ResultEnum.Invalid, ResultEnum.Invalid, true)]
+        [DataRow(ResultEnum.Invalid, ResultEnum.Unknown, false)]
+        [TestMethod]
+        public void AreEquals_Enum_Value_Test(object source, object valueToCheck, bool result)
+        {
+            var source1 = (ResultEnum)source;
+            var valueToCheck1 = (ResultEnum)valueToCheck;
+
+            var areEqualsResult = source1.AreEquals(valueToCheck1);
+
+            Assert.IsNotNull(areEqualsResult);
+            Assert.AreEqual(result, areEqualsResult);
+        }
     }
 }
