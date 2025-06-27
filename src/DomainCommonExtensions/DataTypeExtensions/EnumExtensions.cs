@@ -28,6 +28,8 @@ using System.Reflection;
 using System.Runtime.Serialization;
 #endif
 
+// ReSharper disable RedundantCast
+
 #endregion
 
 namespace DomainCommonExtensions.DataTypeExtensions
@@ -234,5 +236,17 @@ namespace DomainCommonExtensions.DataTypeExtensions
             return value.ToString();
         }
 #endif
+
+        /// <summary>
+        ///     A T extension method that determine if we are equals.
+        /// </summary>
+        /// <typeparam name="T">Generic type parameter.</typeparam>
+        /// <param name="sourceEnumValue">The sourceEnumValue to act on.</param>
+        /// <param name="compareEnumValue">The compare enum value.</param>
+        /// <returns>
+        ///     True if equals, false if not.
+        /// </returns>
+        public static bool AreEquals<T>(this T sourceEnumValue, T compareEnumValue) where T : Enum, IComparable, IFormattable
+            => Equals(sourceEnumValue, compareEnumValue);
     }
 }
