@@ -29,7 +29,7 @@ set customVersion=$null
 set solutionPath=$('..\src\RzR.Shared.Extensions.sln')
 set packResultPath=$('..\nuget\')
 set packProjectsPath=$('..\src\DomainCommonExtensions\DomainCommonExtensions.csproj')
-set testProjectsPath=$('..\tests\DataTypeTests\DataTypeTests.csproj')
+set testProjectsPath=$('..\src\tests\DataTypeTests\DataTypeTests.csproj')
 
 
 echo :::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
