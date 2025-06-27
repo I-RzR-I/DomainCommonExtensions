@@ -30,7 +30,9 @@ using CodeSource;
 using DomainCommonExtensions.CommonExtensions;
 using DomainCommonExtensions.DataTypeExtensions;
 using DomainCommonExtensions.Helpers.Internal.AnonymousSelect.Base;
+using DomainCommonExtensions.Models;
 
+// ReSharper disable RedundantExplicitArrayCreation
 // ReSharper disable UseArrayEmptyMethod
 // ReSharper disable CommentTypo
 // ReSharper disable IdentifierTypo
@@ -46,63 +48,71 @@ namespace DomainCommonExtensions.Helpers.Internal.AnonymousSelect.Factory
     /// =================================================================================================
     [CodeSource(SourceUrl = "https://stackoverflow.com/questions/29413942/c-sharp-anonymous-object-with-properties-from-dictionary", Version = 1.0D, Comment = "Access the source URL from more info.")]
     [CodeSource(SourceUrl = "https://stackoverflow.com/questions/606104/how-to-create-linq-expression-tree-to-select-an-anonymous-type", Version = 1.0D, Comment = "Access the source URL from more info.")]
-    internal static class AnonymousClassFactory
+    internal static partial class AnonymousClassFactory
     {
         /// -------------------------------------------------------------------------------------------------
         /// <summary>
         ///     (Immutable) the current assembly version.
         /// </summary>
         /// =================================================================================================
-        private static readonly string CurrentAssemblyVersion = FileVersionInfo.GetVersionInfo(Assembly.GetExecutingAssembly().Location).FileVersion;
+        private static readonly string CurrentAssemblyVersion 
+            = FileVersionInfo.GetVersionInfo(Assembly.GetExecutingAssembly().Location).FileVersion;
 
         /// -------------------------------------------------------------------------------------------------
         /// <summary>
         ///     (Immutable) name of the anonymous assembly.
         /// </summary>
         /// =================================================================================================
-        private static readonly string AnonymousAssemblyName = $"DomainCommonExtensions.Helpers.Factory.Internal.AnonymousClassFactory, Version={CurrentAssemblyVersion}";
+        private static readonly string AnonymousAssemblyName 
+            = $"DomainCommonExtensions.Helpers.Factory.Internal.AnonymousClassFactory, Version={CurrentAssemblyVersion}";
 
         /// -------------------------------------------------------------------------------------------------
         /// <summary>
         ///     (Immutable) name of the anonymous module.
         /// </summary>
         /// =================================================================================================
-        private const string AnonymousModuleName = "DomainCommonExtensions.Helpers.Factory.Internal.AnonymousClassFactory";
+        private const string AnonymousModuleName 
+            = "DomainCommonExtensions.Helpers.Factory.Internal.AnonymousClassFactory";
 
         /// -------------------------------------------------------------------------------------------------
         /// <summary>
         ///     (Immutable) the compiler generated attribute builder.
         /// </summary>
         /// =================================================================================================
-        private static readonly CustomAttributeBuilder CompilerGeneratedAttributeBuilder = new CustomAttributeBuilder(typeof(CompilerGeneratedAttribute).GetConstructor(Type.EmptyTypes)!, new object[0]);
+        private static readonly CustomAttributeBuilder CompilerGeneratedAttributeBuilder 
+            = new CustomAttributeBuilder(typeof(CompilerGeneratedAttribute).GetConstructor(Type.EmptyTypes)!, new object[0]);
 
         /// -------------------------------------------------------------------------------------------------
         /// <summary>
         ///     (Immutable) the debugger hidden attribute builder.
         /// </summary>
         /// =================================================================================================
-        private static readonly CustomAttributeBuilder DebuggerHiddenAttributeBuilder = new CustomAttributeBuilder(typeof(DebuggerHiddenAttribute).GetConstructor(Type.EmptyTypes)!, new object[0]);
+        private static readonly CustomAttributeBuilder DebuggerHiddenAttributeBuilder 
+            = new CustomAttributeBuilder(typeof(DebuggerHiddenAttribute).GetConstructor(Type.EmptyTypes)!, new object[0]);
 
         /// -------------------------------------------------------------------------------------------------
         /// <summary>
         ///     (Immutable) the debugger browsable attribute builder.
         /// </summary>
         /// =================================================================================================
-        private static readonly CustomAttributeBuilder DebuggerBrowsableAttributeBuilder = new CustomAttributeBuilder(typeof(DebuggerBrowsableAttribute).GetConstructor(new[] { typeof(DebuggerBrowsableState) })!, new object[] { DebuggerBrowsableState.Never });
+        private static readonly CustomAttributeBuilder DebuggerBrowsableAttributeBuilder
+            = new CustomAttributeBuilder(typeof(DebuggerBrowsableAttribute).GetConstructor(new[] { typeof(DebuggerBrowsableState) })!, new object[] { DebuggerBrowsableState.Never });
 
         /// -------------------------------------------------------------------------------------------------
         /// <summary>
         ///     (Immutable) the object constructor.
         /// </summary>
         /// =================================================================================================
-        private static readonly ConstructorInfo ObjectCtor = typeof(object).GetConstructor(Type.EmptyTypes)!;
+        private static readonly ConstructorInfo ObjectCtor 
+            = typeof(object).GetConstructor(Type.EmptyTypes)!;
 
         /// -------------------------------------------------------------------------------------------------
         /// <summary>
         ///     (Immutable) the string builder constructor.
         /// </summary>
         /// =================================================================================================
-        private static readonly ConstructorInfo StringBuilderCtor = typeof(StringBuilder).GetConstructor(Type.EmptyTypes)!;
+        private static readonly ConstructorInfo StringBuilderCtor 
+            = typeof(StringBuilder).GetConstructor(Type.EmptyTypes)!;
 
         /// -------------------------------------------------------------------------------------------------
         /// <summary>
@@ -155,7 +165,7 @@ namespace DomainCommonExtensions.Helpers.Internal.AnonymousSelect.Factory
         /// </summary>
         /// =================================================================================================
         private static readonly MethodInfo StringBuilderAppendString = typeof(StringBuilder).GetMethod(nameof(StringBuilder.Append), new[] { typeof(string) })!;
-        
+
         /// -------------------------------------------------------------------------------------------------
         /// <summary>
         ///     (Immutable) the string builder append object.
@@ -209,19 +219,42 @@ namespace DomainCommonExtensions.Helpers.Internal.AnonymousSelect.Factory
         ///     The new type.
         /// </returns>
         /// =================================================================================================
-        public static Type CreateType(IList<PropertyInfo> properties, bool createParameterCtor = true)
+        public static Type CreateType(IEnumerable<PropertyInfo> properties, bool createParameterCtor = true)
         {
-            var key = GenerateKey(properties, createParameterCtor);
+            var fields = properties.Select(x => new AnonymousFieldGeneratorModel(x.PropertyType, x.Name)).ToArray();
+            var key = GenerateKey(fields, createParameterCtor);
 
             // ReSharper disable once InconsistentlySynchronizedField
             if (!GeneratedTypes.TryGetValue(key, out var type))
                 // We create only a single class at a time, through this lock.
                 // Note that this is a variant of the double-checked locking.
                 // It is safe because we are using a thread safe class.
+            {
                 lock (GeneratedTypes)
                 {
-                    return GeneratedTypes.GetOrAdd(key, _ => EmitType(properties, createParameterCtor));
+                    return GeneratedTypes.GetOrAdd(key, _ => EmitType(fields, createParameterCtor));
                 }
+            }
+
+            return type;
+        }
+
+        public static Type CreateType(Type[] sourceTypes, string[] sourceNames, bool createParameterCtor = true)
+        {
+            var fields = sourceNames.Select((t, i) => new AnonymousFieldGeneratorModel(sourceTypes[i], t)).ToArray();
+            var key = GenerateKey(fields, createParameterCtor);
+
+            // ReSharper disable once InconsistentlySynchronizedField
+            if (!GeneratedTypes.TryGetValue(key, out var type))
+                // We create only a single class at a time, through this lock.
+                // Note that this is a variant of the double-checked locking.
+                // It is safe because we are using a thread safe class.
+            {
+                lock (GeneratedTypes)
+                {
+                    return GeneratedTypes.GetOrAdd(key, _ => EmitType(fields, createParameterCtor));
+                }
+            }
 
             return type;
         }
@@ -230,18 +263,19 @@ namespace DomainCommonExtensions.Helpers.Internal.AnonymousSelect.Factory
         /// <summary>
         ///     Emit type.
         /// </summary>
-        /// <param name="properties">The properties.</param>
+        /// <param name="fields">The properties.</param>
         /// <param name="createParameterCtor">True to create parameter constructor.</param>
         /// <returns>
         ///     A Type.
         /// </returns>
         /// =================================================================================================
         [CodeSource(SourceUrl = "https://stackoverflow.com/questions/29413942/c-sharp-anonymous-object-with-properties-from-dictionary", Version = 1.0D)]
-        private static Type EmitType(IList<PropertyInfo> properties, bool createParameterCtor)
+        private static Type EmitType(AnonymousFieldGeneratorModel[] fields, bool createParameterCtor)
         {
+            var fieldCount = fields.Count();
             var typeIndex = Interlocked.Increment(ref _index);
-            var typeName = properties.Any()
-                ? $"<>f__AnonymousType{typeIndex}`{properties.Count}"
+            var typeName = fields.Any()
+                ? $"<>f__AnonymousType{typeIndex}`{fieldCount}"
                 : $"<>f__AnonymousType{typeIndex}";
 
             var typeBuilder = ModuleBuilder.DefineType(typeName,
@@ -249,292 +283,98 @@ namespace DomainCommonExtensions.Helpers.Internal.AnonymousSelect.Factory
                 TypeAttributes.BeforeFieldInit, typeof(AnonymousClass));
             typeBuilder.SetCustomAttribute(CompilerGeneratedAttributeBuilder);
 
-            var fieldBuilders = new FieldBuilder[properties.Count];
+            var fieldBuilders = new FieldBuilder[fieldCount];
 
             // There are two for-loops because we want to have all the getter methods before all the other methods
-            for (var i = 0; i < properties.Count; i++)
+            for (var i = 0; i < fieldCount; i++)
             {
-                var fieldName = properties[i].Name;
-                var fieldType = properties[i].PropertyType;
+                var fieldName = fields[i].FieldName;
+                var fieldType = fields[i].FieldType;
 
                 // field
                 fieldBuilders[i] = typeBuilder.DefineField($"<{fieldName}>i__Field", fieldType,
                     FieldAttributes.Private | FieldAttributes.InitOnly);
                 fieldBuilders[i].SetCustomAttribute(DebuggerBrowsableAttributeBuilder);
 
-                var propertyBuilder = typeBuilder.DefineProperty(fieldName, PropertyAttributes.None,
-                    CallingConventions.HasThis, fieldType, Type.EmptyTypes);
-
-                // getter
-                var getter = typeBuilder.DefineMethod($"get_{fieldName}",
-                    MethodAttributes.Public | MethodAttributes.HideBySig | MethodAttributes.SpecialName,
-                    CallingConventions.HasThis, fieldType, null);
-                getter.SetCustomAttribute(CompilerGeneratedAttributeBuilder);
-
-                var ilgeneratorGetter = getter.GetILGenerator();
-                ilgeneratorGetter.Emit(OpCodes.Ldarg_0);
-                ilgeneratorGetter.Emit(OpCodes.Ldfld, fieldBuilders[i]);
-                ilgeneratorGetter.Emit(OpCodes.Ret);
-                propertyBuilder.SetGetMethod(getter);
-
-                // setter
-                var setter = typeBuilder.DefineMethod($"set_{fieldName}",
-                    MethodAttributes.Public | MethodAttributes.HideBySig | MethodAttributes.SpecialName,
-                    CallingConventions.HasThis, null, new[] { fieldType });
-                setter.SetCustomAttribute(CompilerGeneratedAttributeBuilder);
-
-                // workaround for https://github.com/dotnet/corefx/issues/7792
-                setter.DefineParameter(1, ParameterAttributes.In, properties[i].Name);
-
-                var ilgeneratorSetter = setter.GetILGenerator();
-                ilgeneratorSetter.Emit(OpCodes.Ldarg_0);
-                ilgeneratorSetter.Emit(OpCodes.Ldarg_1);
-                ilgeneratorSetter.Emit(OpCodes.Stfld, fieldBuilders[i]);
-                ilgeneratorSetter.Emit(OpCodes.Ret);
-                propertyBuilder.SetSetMethod(setter);
+                BuildFieldGetAndSetMethods(ref typeBuilder, ref fieldBuilders[i], fieldName, fieldType);
             }
 
             // ToString()
-            var toString = typeBuilder.DefineMethod(nameof(ToString),
-                MethodAttributes.Public | MethodAttributes.Virtual | MethodAttributes.HideBySig,
-                CallingConventions.HasThis, typeof(string), Type.EmptyTypes);
-            toString.SetCustomAttribute(DebuggerHiddenAttributeBuilder);
-
-            var ilgeneratorToString = toString.GetILGenerator();
-            ilgeneratorToString.DeclareLocal(typeof(StringBuilder));
-            ilgeneratorToString.Emit(OpCodes.Newobj, StringBuilderCtor);
-            ilgeneratorToString.Emit(OpCodes.Stloc_0);
+            var toString = GenerateIlGeneratorToString(ref typeBuilder);
 
             // Equals()
-            var equals = typeBuilder.DefineMethod(nameof(Equals),
-                MethodAttributes.Public | MethodAttributes.Virtual | MethodAttributes.HideBySig,
-                CallingConventions.HasThis, typeof(bool), new[] { typeof(object) });
-            equals.DefineParameter(1, ParameterAttributes.In, "value");
-            equals.SetCustomAttribute(DebuggerHiddenAttributeBuilder);
-
-            var ilgeneratorEquals = equals.GetILGenerator();
-            ilgeneratorEquals.DeclareLocal(typeBuilder.AsType());
-            ilgeneratorEquals.Emit(OpCodes.Ldarg_1);
-            ilgeneratorEquals.Emit(OpCodes.Isinst, typeBuilder.AsType());
-            ilgeneratorEquals.Emit(OpCodes.Stloc_0);
-            ilgeneratorEquals.Emit(OpCodes.Ldloc_0);
+            var equals = GenerateIlGeneratorEquals(ref typeBuilder);
 
             // GetHashCode()
-            var getHashCode = typeBuilder.DefineMethod(nameof(GetHashCode),
-                MethodAttributes.Public | MethodAttributes.Virtual | MethodAttributes.HideBySig,
-                CallingConventions.HasThis, typeof(int), Type.EmptyTypes);
-            getHashCode.SetCustomAttribute(DebuggerHiddenAttributeBuilder);
+            var getHashCode = GenerateIlGeneratorGetHashCode(ref typeBuilder, ref fieldBuilders, fieldCount);
 
-            var ilgeneratorGetHashCode = getHashCode.GetILGenerator();
-            ilgeneratorGetHashCode.DeclareLocal(typeof(int));
+            var equalsLabel = equals.IlGenerator.DefineLabel();
 
-            if (properties.Count == 0)
+            for (var i = 0; i < fieldCount; i++)
             {
-                ilgeneratorGetHashCode.Emit(OpCodes.Ldc_I4_0);
-            }
-            else
-            {
-                // As done by Roslyn
-                // Note that initHash can vary, because string.GetHashCode() isn't "stable" for different compilation of the code
-                var initHash = 0;
-
-                for (var i = 0; i < properties.Count; i++)
-                    initHash = unchecked(initHash * -1521134295 + fieldBuilders[i].Name.GetHashCode());
-
-                // Note that the CSC seems to generate a different seed for every anonymous class
-                ilgeneratorGetHashCode.Emit(OpCodes.Ldc_I4, initHash);
-            }
-
-            var equalsLabel = ilgeneratorEquals.DefineLabel();
-
-            for (var i = 0; i < properties.Count; i++)
-            {
-                var fieldName = properties[i].Name;
-                var fieldType = properties[i].PropertyType;
+                var fieldName = fields[i].FieldName;
+                var fieldType = fields[i].FieldType;
                 var equalityComparerT = EqualityComparer.MakeGenericType(fieldType);
 
                 // Equals()
                 var equalityComparerTDefault =
                     equalityComparerT.GetMethod("get_Default", BindingFlags.Static | BindingFlags.Public)!;
                 var equalityComparerTEquals = equalityComparerT.GetMethod(nameof(EqualityComparer.Equals),
-                    BindingFlags.Instance | BindingFlags.Public, null, new[] { fieldType, fieldType }, null)!;
+                    BindingFlags.Instance | BindingFlags.Public, null, new Type[] { fieldType, fieldType }, null)!;
 
-                // Illegal one-byte branch at position: 9. Requested branch was: 143.
-                // So replace OpCodes.Brfalse_S to OpCodes.Brfalse
-                ilgeneratorEquals.Emit(OpCodes.Brfalse, equalsLabel);
-                ilgeneratorEquals.Emit(OpCodes.Call, equalityComparerTDefault);
-                ilgeneratorEquals.Emit(OpCodes.Ldarg_0);
-                ilgeneratorEquals.Emit(OpCodes.Ldfld, fieldBuilders[i]);
-                ilgeneratorEquals.Emit(OpCodes.Ldloc_0);
-                ilgeneratorEquals.Emit(OpCodes.Ldfld, fieldBuilders[i]);
-                ilgeneratorEquals.Emit(OpCodes.Callvirt, equalityComparerTEquals);
+                EmitIlGeneratorEquals(equals.IlGenerator, equalsLabel, equalityComparerTDefault, equalityComparerTEquals,
+                    ref fieldBuilders[i]);
 
                 // GetHashCode();
-                var equalityComparerTGetHashCode = equalityComparerT.GetMethod(nameof(EqualityComparer.GetHashCode),
-                    BindingFlags.Instance | BindingFlags.Public, null, new[] { fieldType }, null)!;
-                ilgeneratorGetHashCode.Emit(OpCodes.Stloc_0);
-                ilgeneratorGetHashCode.Emit(OpCodes.Ldc_I4, -1521134295);
-                ilgeneratorGetHashCode.Emit(OpCodes.Ldloc_0);
-                ilgeneratorGetHashCode.Emit(OpCodes.Mul);
-                ilgeneratorGetHashCode.Emit(OpCodes.Call, equalityComparerTDefault);
-                ilgeneratorGetHashCode.Emit(OpCodes.Ldarg_0);
-                ilgeneratorGetHashCode.Emit(OpCodes.Ldfld, fieldBuilders[i]);
-                ilgeneratorGetHashCode.Emit(OpCodes.Callvirt, equalityComparerTGetHashCode);
-                ilgeneratorGetHashCode.Emit(OpCodes.Add);
+                EmitIlGeneratorGetHashCode(getHashCode.IlGenerator, equalityComparerTDefault, equalityComparerT,
+                    fieldType, ref fieldBuilders[i]);
 
                 // ToString();
-                ilgeneratorToString.Emit(OpCodes.Ldloc_0);
-                ilgeneratorToString.Emit(OpCodes.Ldstr, i == 0 ? $"{{ {fieldName} = " : $", {fieldName} = ");
-                ilgeneratorToString.Emit(OpCodes.Callvirt, StringBuilderAppendString);
-                ilgeneratorToString.Emit(OpCodes.Pop);
-                ilgeneratorToString.Emit(OpCodes.Ldloc_0);
-                ilgeneratorToString.Emit(OpCodes.Ldarg_0);
-                ilgeneratorToString.Emit(OpCodes.Ldfld, fieldBuilders[i]);
-                ilgeneratorToString.Emit(OpCodes.Box, properties[i].PropertyType);
-                ilgeneratorToString.Emit(OpCodes.Callvirt, StringBuilderAppendObject);
-                ilgeneratorToString.Emit(OpCodes.Pop);
+                EmitIlGeneratorToString(toString.IlGenerator, fieldType, fieldName, i, ref fieldBuilders[i]);
             }
 
             // Only create the default and with params constructor when there are any params.
             // Otherwise default constructor is not needed because it matches the default
             // one provided by the runtime when no constructor is present
-            if (createParameterCtor && properties.Any())
-            {
-                // .ctor default
-                var constructorDef = typeBuilder.DefineConstructor(MethodAttributes.Public | MethodAttributes.HideBySig,
-                    CallingConventions.HasThis, Type.EmptyTypes);
-                constructorDef.SetCustomAttribute(DebuggerHiddenAttributeBuilder);
-
-                var ilgeneratorConstructorDef = constructorDef.GetILGenerator();
-                ilgeneratorConstructorDef.Emit(OpCodes.Ldarg_0);
-                ilgeneratorConstructorDef.Emit(OpCodes.Call, ObjectCtor);
-                ilgeneratorConstructorDef.Emit(OpCodes.Ret);
-
-                // .ctor with params
-                var types = properties.Select(p => p.PropertyType).ToArray();
-                var constructor = typeBuilder.DefineConstructor(MethodAttributes.Public | MethodAttributes.HideBySig,
-                    CallingConventions.HasThis, types);
-                constructor.SetCustomAttribute(DebuggerHiddenAttributeBuilder);
-
-                var ilgeneratorConstructor = constructor.GetILGenerator();
-                ilgeneratorConstructor.Emit(OpCodes.Ldarg_0);
-                ilgeneratorConstructor.Emit(OpCodes.Call, ObjectCtor);
-
-                for (var i = 0; i < properties.Count; i++)
-                {
-                    constructor.DefineParameter(i + 1, ParameterAttributes.None, properties[i].Name);
-                    ilgeneratorConstructor.Emit(OpCodes.Ldarg_0);
-
-                    if (i == 0)
-                        ilgeneratorConstructor.Emit(OpCodes.Ldarg_1);
-                    else if (i == 1)
-                        ilgeneratorConstructor.Emit(OpCodes.Ldarg_2);
-                    else if (i == 2)
-                        ilgeneratorConstructor.Emit(OpCodes.Ldarg_3);
-                    else if (i < 255)
-                        ilgeneratorConstructor.Emit(OpCodes.Ldarg_S, (byte)(i + 1));
-                    else
-                        // Ldarg uses an ushort, but the Emit only accepts short, so we use a unchecked(...), cast to short and let the CLR interpret it as ushort.
-                        ilgeneratorConstructor.Emit(OpCodes.Ldarg, unchecked((short)(i + 1)));
-
-                    ilgeneratorConstructor.Emit(OpCodes.Stfld, fieldBuilders[i]);
-                }
-
-                ilgeneratorConstructor.Emit(OpCodes.Ret);
-            }
+            if (createParameterCtor.IsTrue() && fields.Any())
+                GenerateConstructor(ref typeBuilder, ref fieldBuilders, createParameterCtor, fields);
 
             // Equals()
-            if (properties.Count == 0)
+            if (fieldCount == 0)
             {
-                ilgeneratorEquals.Emit(OpCodes.Ldnull);
-                ilgeneratorEquals.Emit(OpCodes.Ceq);
-                ilgeneratorEquals.Emit(OpCodes.Ldc_I4_0);
-                ilgeneratorEquals.Emit(OpCodes.Ceq);
+                equals.IlGenerator.Emit(OpCodes.Ldnull);
+                equals.IlGenerator.Emit(OpCodes.Ceq);
+                equals.IlGenerator.Emit(OpCodes.Ldc_I4_0);
+                equals.IlGenerator.Emit(OpCodes.Ceq);
             }
             else
             {
-                ilgeneratorEquals.Emit(OpCodes.Ret);
-                ilgeneratorEquals.MarkLabel(equalsLabel);
-                ilgeneratorEquals.Emit(OpCodes.Ldc_I4_0);
+                equals.IlGenerator.Emit(OpCodes.Ret);
+                equals.IlGenerator.MarkLabel(equalsLabel);
+                equals.IlGenerator.Emit(OpCodes.Ldc_I4_0);
             }
 
-            ilgeneratorEquals.Emit(OpCodes.Ret);
+            equals.IlGenerator.Emit(OpCodes.Ret);
 
             // GetHashCode()
-            ilgeneratorGetHashCode.Emit(OpCodes.Stloc_0);
-            ilgeneratorGetHashCode.Emit(OpCodes.Ldloc_0);
-            ilgeneratorGetHashCode.Emit(OpCodes.Ret);
+            getHashCode.IlGenerator.Emit(OpCodes.Stloc_0);
+            getHashCode.IlGenerator.Emit(OpCodes.Ldloc_0);
+            getHashCode.IlGenerator.Emit(OpCodes.Ret);
 
             // ToString()
-            ilgeneratorToString.Emit(OpCodes.Ldloc_0);
-            ilgeneratorToString.Emit(OpCodes.Ldstr, properties.Count == 0 ? "{ }" : " }");
-            ilgeneratorToString.Emit(OpCodes.Callvirt, StringBuilderAppendString);
-            ilgeneratorToString.Emit(OpCodes.Pop);
-            ilgeneratorToString.Emit(OpCodes.Ldloc_0);
-            ilgeneratorToString.Emit(OpCodes.Callvirt, ObjectToString);
-            ilgeneratorToString.Emit(OpCodes.Ret);
+            toString.IlGenerator.Emit(OpCodes.Ldloc_0);
+            toString.IlGenerator.Emit(OpCodes.Ldstr, fieldCount == 0 ? "{ }" : " }");
+            toString.IlGenerator.Emit(OpCodes.Callvirt, StringBuilderAppendString);
+            toString.IlGenerator.Emit(OpCodes.Pop);
+            toString.IlGenerator.Emit(OpCodes.Ldloc_0);
+            toString.IlGenerator.Emit(OpCodes.Callvirt, ObjectToString);
+            toString.IlGenerator.Emit(OpCodes.Ret);
 
-            EmitEqualityOperators(typeBuilder, equals);
+            var equalsMethodBuilder = equals.MethodBuilder;
+            EmitEqualityOperators(ref typeBuilder, ref equalsMethodBuilder);
 
             return typeBuilder.CreateType();
-        }
 
-        /// -------------------------------------------------------------------------------------------------
-        /// <summary>
-        ///     Emit equality operators.
-        /// </summary>
-        /// <param name="typeBuilder">The type builder.</param>
-        /// <param name="equals">The equals.</param>
-        /// =================================================================================================
-        private static void EmitEqualityOperators(TypeBuilder typeBuilder, MethodBuilder equals)
-        {
-            // Define the '==' operator
-            var equalityOperator = typeBuilder.DefineMethod(
-                "op_Equality",
-                MethodAttributes.Public | MethodAttributes.Static | MethodAttributes.SpecialName |
-                MethodAttributes.HideBySig,
-                typeof(bool),
-                new[] { typeBuilder.AsType(), typeBuilder.AsType() });
-
-            var ilgeneratorEqualityOperator = equalityOperator.GetILGenerator();
-
-            // if (left == null || right == null) return ReferenceEquals(left, right);
-            var endLabel = ilgeneratorEqualityOperator.DefineLabel();
-            ilgeneratorEqualityOperator.Emit(OpCodes.Ldarg_0);
-            ilgeneratorEqualityOperator.Emit(OpCodes.Brfalse_S, endLabel);
-            ilgeneratorEqualityOperator.Emit(OpCodes.Ldarg_1);
-            ilgeneratorEqualityOperator.Emit(OpCodes.Brfalse_S, endLabel);
-
-            // return left.Equals(right);
-            ilgeneratorEqualityOperator.Emit(OpCodes.Ldarg_0);
-            ilgeneratorEqualityOperator.Emit(OpCodes.Ldarg_1);
-            ilgeneratorEqualityOperator.Emit(OpCodes.Callvirt, equals);
-            ilgeneratorEqualityOperator.Emit(OpCodes.Ret);
-
-            // Return false if one is null
-            ilgeneratorEqualityOperator.MarkLabel(endLabel);
-            ilgeneratorEqualityOperator.Emit(OpCodes.Ldarg_0);
-            ilgeneratorEqualityOperator.Emit(OpCodes.Ldarg_1);
-            ilgeneratorEqualityOperator.Emit(OpCodes.Call, typeof(object).GetMethod("ReferenceEquals")!);
-            ilgeneratorEqualityOperator.Emit(OpCodes.Ret);
-
-            // Define the '!=' operator
-            var inequalityOperator = typeBuilder.DefineMethod(
-                "op_Inequality",
-                MethodAttributes.Public | MethodAttributes.Static | MethodAttributes.SpecialName |
-                MethodAttributes.HideBySig,
-                typeof(bool),
-                new[] { typeBuilder.AsType(), typeBuilder.AsType() });
-
-            var ilNeq = inequalityOperator.GetILGenerator();
-
-            // return !(left == right);
-            ilNeq.Emit(OpCodes.Ldarg_0);
-            ilNeq.Emit(OpCodes.Ldarg_1);
-            ilNeq.Emit(OpCodes.Call, equalityOperator);
-            ilNeq.Emit(OpCodes.Ldc_I4_0);
-            ilNeq.Emit(OpCodes.Ceq);
-            ilNeq.Emit(OpCodes.Ret);
         }
 
         /// -------------------------------------------------------------------------------------------------
@@ -547,7 +387,7 @@ namespace DomainCommonExtensions.Helpers.Internal.AnonymousSelect.Factory
         ///     The key.
         /// </returns>
         /// =================================================================================================
-        private static string GenerateKey(IEnumerable<PropertyInfo> dynamicProperties, bool createParameterCtor)
-        => $"{string.Join("|", dynamicProperties.Select(p => p.Name.EscapeBackSlash() + "~" + p.PropertyType).ToArray())}_{(createParameterCtor ? "c" : string.Empty)}";
+        private static string GenerateKey(IEnumerable<AnonymousFieldGeneratorModel> dynamicProperties, bool createParameterCtor)
+            => $"{string.Join("|", dynamicProperties.Select(p => p.FieldName.EscapeBackSlash() + "~" + p.FieldType).ToArray())}_{(createParameterCtor ? "c" : string.Empty)}";
     }
 }
