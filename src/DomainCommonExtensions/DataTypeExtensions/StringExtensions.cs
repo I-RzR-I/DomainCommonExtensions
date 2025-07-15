@@ -1682,5 +1682,33 @@ namespace DomainCommonExtensions.DataTypeExtensions
 
             return string.Format(CultureInfo.CurrentCulture, source, args);
         }
+
+        /// <summary>
+        ///     A string extension method that if contains.
+        /// </summary>
+        /// <param name="source">The input.</param>
+        /// <param name="searchValue">The search value.</param>
+        /// <param name="resultValue">Default value to return.</param>
+        /// <returns>
+        ///     A string.
+        /// </returns>
+        public static string IfContains(this string source, string searchValue, string resultValue)
+        {
+            return source.Contains(searchValue).IsTrue() ? resultValue : source;
+        }
+
+        /// <summary>
+        ///     A string extension method that if not contains.
+        /// </summary>
+        /// <param name="source">The input.</param>
+        /// <param name="searchValue">The search value.</param>
+        /// <param name="resultValue">Default value to return.</param>
+        /// <returns>
+        ///     A string.
+        /// </returns>
+        public static string IfNotContains(this string source, string searchValue, string resultValue)
+        {
+            return source.Contains(searchValue).IsFalse() ? resultValue : source;
+        }
     }
 }

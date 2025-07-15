@@ -557,5 +557,27 @@ namespace DataTypeTests.DataTests
             Assert.IsNotNull(result);
             Assert.AreEqual("ab", result);
         }
+
+        [DataRow("$FFFFFF", "$", "$FFFFFF")]
+        [DataRow("FFFFFF", "$", "FFFFFF")]
+        [TestMethod]
+        public void IfContains_Test(string source, string checkValue, string exceptedResult)
+        {
+            var res = source.IfContains(checkValue, exceptedResult);
+            
+            Assert.IsNotNull(res);
+            Assert.AreEqual(exceptedResult, res);
+        }
+
+        [DataRow("$FFFFFF", "$", "$FFFFFF")]
+        [DataRow("FFFFFF", "$", "$FFFFFF")]
+        [TestMethod]
+        public void IfNotContains_Test(string source, string checkValue, string exceptedResult)
+        {
+            var res = source.IfNotContains(checkValue, exceptedResult);
+            
+            Assert.IsNotNull(res);
+            Assert.AreEqual(exceptedResult, res);
+        }
     }
 }
