@@ -1,3 +1,11 @@
+### **v2.3.0.7698** [[RzR](mailto:108324929+I-RzR-I@users.noreply.github.com)] 15-07-2025
+* [f300bd2] (RzR) -> Auto commit uncommited files
+* [067dd42] (RzR) -> Add alternative extension method for `WithIndex`
+* [4839a72] (RzR) -> Add string extension methods `IfStartsWith` and `IfNotStartsWith`.
+* [572b664] (RzR) -> Add string extension methods `IfContains` and `IfNotContains`
+* [872a4f6] (RzR) -> Add generic equality compare object `IfEquals` and `IfNotEquals`
+* [50c5dcc] (RzR) -> Add func extensions sync/async `IsTrue`, `IsFalse`.
+
 ### v**2.2.0.8487** [[RzR](mailto:108324929+I-RzR-I@users.noreply.github.com)] 27-06-2025
 * [9b9d498] (RzR) -> Auto commit uncommited files
 * [e72cb92] (RzR) -> Adjust path to test projects in scripts
