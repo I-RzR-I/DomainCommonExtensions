@@ -14,7 +14,9 @@
 //  </summary>
 // ***********************************************************************
 
+using System.Collections.Generic;
 using System.Linq;
+using DataTypeTests.Models;
 using DomainCommonExtensions.ArraysExtensions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -64,6 +66,106 @@ namespace DataTypeTests.DataTests
             Assert.IsNotNull(chunks);
             Assert.AreEqual(1, chunks.Count());
             Assert.AreEqual(12, chunks[0].Count());
+        }
+
+        [TestMethod]
+        public void WithIndex_Null_Test()
+        {
+            List<Models.IdNameActiveModel> array = null;
+
+            var arrayWithIndex = array.WithIndex();
+
+            Assert.IsNotNull(arrayWithIndex);
+            Assert.AreEqual(0, arrayWithIndex.Count());
+        }
+
+        [TestMethod]
+        public void WithIndex_Empty_Test()
+        {
+            var array = new List<Models.IdNameActiveModel>();
+
+            var arrayWithIndex = array.WithIndex();
+
+            Assert.IsNotNull(arrayWithIndex);
+            Assert.AreEqual(0, arrayWithIndex.Count());
+        }
+
+        [TestMethod]
+        public void WithIndex_Test()
+        {
+            var array = new List<Models.IdNameActiveModel>()
+            {
+                new IdNameActiveModel()
+                {
+                    Id = 0,
+                    Name = "Test 0",
+                    IsActive = true
+                },
+                new IdNameActiveModel()
+                {
+                    Id = 1,
+                    Name = "Test 1",
+                    IsActive = false
+                }
+            };
+
+            var arrayWithIndex = array.WithIndex();
+
+            Assert.IsNotNull(arrayWithIndex);
+            Assert.AreEqual(2, arrayWithIndex.Count());
+        }
+
+        [TestMethod]
+        public void WithIndexModel_Null_Test()
+        {
+            List<Models.IdNameActiveModel> array = null;
+
+            var arrayWithIndex = array.WithIndexModel();
+
+            Assert.IsNotNull(arrayWithIndex);
+            Assert.AreEqual(0, arrayWithIndex.Count());
+        }
+
+        [TestMethod]
+        public void WithIndexModel_Empty_Test()
+        {
+            var array = new List<Models.IdNameActiveModel>();
+
+            var arrayWithIndex = array.WithIndexModel();
+
+            Assert.IsNotNull(arrayWithIndex);
+            Assert.AreEqual(0, arrayWithIndex.Count());
+        }
+
+        [TestMethod]
+        public void WithIndexModel_Test()
+        {
+            var array = new List<Models.IdNameActiveModel>()
+            {
+                new IdNameActiveModel()
+                {
+                    Id = 0,
+                    Name = "Test 0",
+                    IsActive = true
+                },
+                new IdNameActiveModel()
+                {
+                    Id = 1,
+                    Name = "Test 1",
+                    IsActive = false
+                }
+            };
+
+            var arrayWithIndex = array.WithIndexModel();
+
+            Assert.IsNotNull(arrayWithIndex);
+            Assert.AreEqual(2, arrayWithIndex.Count());
+
+            var last = arrayWithIndex.Last();
+            Assert.IsNotNull(last);
+            Assert.IsNotNull(last.Item);
+            Assert.AreEqual(1, last.Item.Id);
+            Assert.AreEqual(1, last.Index);
         }
     }
 }
