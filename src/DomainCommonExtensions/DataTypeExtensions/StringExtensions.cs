@@ -1684,7 +1684,7 @@ namespace DomainCommonExtensions.DataTypeExtensions
         }
 
         /// <summary>
-        ///     A string extension method that if contains.
+        ///     A string extension method that check if source contains.
         /// </summary>
         /// <param name="source">The input.</param>
         /// <param name="searchValue">The search value.</param>
@@ -1698,7 +1698,7 @@ namespace DomainCommonExtensions.DataTypeExtensions
         }
 
         /// <summary>
-        ///     A string extension method that if not contains.
+        ///     A string extension method that check if source not contains.
         /// </summary>
         /// <param name="source">The input.</param>
         /// <param name="searchValue">The search value.</param>
@@ -1709,6 +1709,34 @@ namespace DomainCommonExtensions.DataTypeExtensions
         public static string IfNotContains(this string source, string searchValue, string resultValue)
         {
             return source.Contains(searchValue).IsFalse() ? resultValue : source;
+        }
+
+        /// <summary>
+        ///     A string extension method that check if source starts with.
+        /// </summary>
+        /// <param name="source">The input.</param>
+        /// <param name="searchValue">The search value.</param>
+        /// <param name="resultValue">Default value to return.</param>
+        /// <returns>
+        ///     A string.
+        /// </returns>
+        public static string IfStartsWith(this string source, string searchValue, string resultValue)
+        {
+            return source.StartsWith(searchValue).IsTrue() ? resultValue : source;
+        }
+
+        /// <summary>
+        ///     A string extension method that check if source not starts with.
+        /// </summary>
+        /// <param name="source">The input.</param>
+        /// <param name="searchValue">The search value.</param>
+        /// <param name="resultValue">Default value to return.</param>
+        /// <returns>
+        ///     A string.
+        /// </returns>
+        public static string IfNotStartsWith(this string source, string searchValue, string resultValue)
+        {
+            return source.StartsWith(searchValue).IsFalse() ? resultValue : source;
         }
     }
 }
