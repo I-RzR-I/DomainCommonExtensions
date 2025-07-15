@@ -16,10 +16,12 @@
 
 #region U S A G E S
 
+using System;
 using DataTypeTests.Models;
-using DomainCommonExtensions.CommonExtensions;
 using DomainCommonExtensions.CommonExtensions.TypeParam;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using DomainCommonExtensions.CommonExtensions;
+using DomainCommonExtensions.DataTypeExtensions;
 
 #endregion
 
@@ -90,74 +92,144 @@ namespace DataTypeTests.DataTests
             Assert.AreEqual(testModel2, test2);
         }
 
+        [DataRow("a", "a", "a")]
+        [DataRow("a", "g", "a")]
+        [DataRow("a", null, "a")]
+        [DataRow(null, "r", null)]
+        [DataRow(null, null, null)]
         [TestMethod]
-        public void IfIsNulOrFunc_Null_Test()
+        public void IfEquals_string_Test(string sourceValue, string checkValue, string exceptedResult)
         {
-            int? i = null;
+            var r = sourceValue.IfEquals(checkValue, exceptedResult);
 
-            var test = i.IfIsNullOrFuncIsTrue(0, () => i == 0);
-
-            Assert.AreEqual(0, test);
+            if (sourceValue.IsNull())
+                Assert.IsNull(r);
+            else
+                Assert.IsNotNull(r);
+            Assert.AreEqual(exceptedResult, r);
         }
 
+        [DataRow(1, 1, 1)]
+        [DataRow(2, 1, 2)]
+        [DataRow(3, null, 3)]
+        [DataRow(null, 2, null)]
+        [DataRow(null, null, null)]
         [TestMethod]
-        public void IfIsNulOrFunc_Zero_Equal_Zero_Test()
+        public void IfEquals_int_Test(int sourceValue, int checkValue, int exceptedResult)
         {
-            int? i = 0;
+            var r = sourceValue.IfEquals(checkValue, exceptedResult);
 
-            var test = i.IfIsNullOrFuncIsTrue(-1, () => i == 0);
-
-            Assert.AreEqual(-1, test);
+            if (sourceValue.IsNull())
+                Assert.IsNull(r);
+            else
+                Assert.IsNotNull(r);
+            Assert.AreEqual(exceptedResult, r);
         }
 
+        [DataRow(1, 1, 1)]
+        [DataRow(2, 1, 2)]
+        [DataRow(3, null, 3)]
+        [DataRow(null, 2, null)]
+        [DataRow(null, null, null)]
         [TestMethod]
-        public void IfIsNulOrFunc_One_Equal_Zero_False_Test()
+        public void IfEquals_long_Test(long sourceValue, long checkValue, long exceptedResult)
         {
-            int? i = 1;
+            var r = sourceValue.IfEquals(checkValue, exceptedResult);
 
-            var test = i.IfIsNullOrFuncIsTrue(0, () => i == 0);
-
-            Assert.AreEqual(1, test);
+            if (sourceValue.IsNull())
+                Assert.IsNull(r);
+            else
+                Assert.IsNotNull(r);
+            Assert.AreEqual(exceptedResult, r);
         }
 
+        [DataRow(1.2, 1.21, 1.2)]
+        [DataRow(2, 1, 2)]
+        [DataRow(3, null, 3)]
+        [DataRow(null, 2, null)]
+        [DataRow(null, null, null)]
         [TestMethod]
-        public void IfIsNulOrFunc_Null_Func_True_Test()
+        public void IfEquals_double_Test(double sourceValue, double checkValue, double exceptedResult)
         {
-            int? i = null;
+            var r = sourceValue.IfEquals(checkValue, exceptedResult);
 
-            var test = i.IfFunc(0, () => i != 0 && i.IsNull(), true);
-
-            Assert.AreEqual(0, test);
+            if (sourceValue.IsNull())
+                Assert.IsNull(r);
+            else
+                Assert.IsNotNull(r);
+            Assert.AreEqual(exceptedResult, r);
         }
 
+        [DataRow("5e9d1a52-d737-4dd0-9075-e9b0f46c19d2", "5e9d1a52-d737-4dd0-9075-e9b0f46c19d2", "00000000-0000-0000-0000-000000000000")]
+        [DataRow("5e9d1a52-d737-4dd0-9075-e9b0f46c19d2", "00000000-0000-0000-0000-000000000000", "5e9d1a52-d737-4dd0-9075-e9b0f46c19d2")]
+        [DataRow("5e9d1a52-d737-4dd0-9075-e9b0f46c19d2", null, "5e9d1a52-d737-4dd0-9075-e9b0f46c19d2")]
+        [DataRow(null, "00000000-0000-0000-0000-000000000000", null)]
+        [DataRow(null, null, null)]
         [TestMethod]
-        public void IfIsNulOrFunc_Null_Func_False_Test()
+        public void IfEquals_Guid_Test(string sourceValue, string checkValue, string exceptedResult)
         {
-            int? i = null;
+            var sourceGuid = (Guid?)sourceValue.ToGuid();
+            var checkValueGuid = (Guid?)checkValue.ToGuid();
+            var exceptedResultGuid = (Guid?)exceptedResult.ToGuid();
 
-            var test = i.IfFunc(0, () => i != 0 && i.IsNull(), false);
+            var r = sourceGuid.IfEquals(checkValueGuid, exceptedResultGuid);
 
-            Assert.AreEqual(null, test);
+            if (sourceGuid.IsNull())
+                Assert.IsNull(r);
+            else
+                Assert.IsNotNull(r);
+            Assert.AreEqual(exceptedResultGuid, r);
         }
 
+        [DataRow("a", "a", "a")]
+        [DataRow("a", "g", "a")]
+        [DataRow("a", null, "a")]
+        [DataRow(null, "r", null)]
+        [DataRow(null, null, null)]
         [TestMethod]
-        public void IfIsNulOrFunc_1_Func_True_Test()
+        public void IfNotEquals_string_Test(string sourceValue, string checkValue, string exceptedResult)
         {
-            int? i = 1;
+            var r = sourceValue.IfNotEquals(checkValue, exceptedResult);
 
-            var test = i.IfFunc(0, () => i != 0 && i.IsNull(), true);
-
-            Assert.AreEqual(1, test);
+            if (sourceValue.IsNull())
+                Assert.IsNull(r);
+            else
+                Assert.IsNotNull(r);
+            Assert.AreEqual(exceptedResult, r);
         }
 
+        [DataRow(1, 1, 1)]
+        [DataRow(2, 1, 2)]
+        [DataRow(3, null, 3)]
+        [DataRow(null, 2, null)]
+        [DataRow(null, null, null)]
         [TestMethod]
-        public void IfIsNulOrFunc_1_Func_False_Test()
+        public void IfNotEquals_int_Test(int sourceValue, int checkValue, int exceptedResult)
         {
-            int? i = 1;
+            var r = sourceValue.IfNotEquals(checkValue, exceptedResult);
 
-            var test = i.IfFunc(0, () => i != 0 && i.IsNull(), false);
+            if (sourceValue.IsNull())
+                Assert.IsNull(r);
+            else
+                Assert.IsNotNull(r);
+            Assert.AreEqual(exceptedResult, r);
+        }
 
-            Assert.AreEqual(0, test);
+        [DataRow(1, 1, 1)]
+        [DataRow(2, 1, 2)]
+        [DataRow(3, null, 3)]
+        [DataRow(null, 2, null)]
+        [DataRow(null, null, null)]
+        [TestMethod]
+        public void IfNotEquals_long_Test(long sourceValue, long checkValue, long exceptedResult)
+        {
+            var r = sourceValue.IfNotEquals(checkValue, exceptedResult);
+
+            if (sourceValue.IsNull())
+                Assert.IsNull(r);
+            else
+                Assert.IsNotNull(r);
+            Assert.AreEqual(exceptedResult, r);
         }
     }
 }

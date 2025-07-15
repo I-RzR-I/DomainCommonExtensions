@@ -182,5 +182,41 @@ namespace DomainCommonExtensions.CommonExtensions.TypeParam
                 .Take(length)
                 .ToArray();
         }
+
+        /// <summary>
+        ///     A T extension method that check if source and search value are equals.
+        /// </summary>
+        /// <typeparam name="T">Generic type parameter.</typeparam>
+        /// <param name="source">Source object value.</param>
+        /// <param name="searchValue">The search value.</param>
+        /// <param name="resultValue">Result object value.</param>
+        /// <returns>
+        ///     A T. If objects are equals then return defaultValue.
+        /// </returns>
+        public static T IfEquals<T>(this T source, T searchValue, T resultValue)
+        {
+            if (source.IsNull() || searchValue.IsNull())
+                return resultValue;
+
+            return EqualityComparer<T>.Default.Equals(source, searchValue) ? resultValue : source;
+        }
+
+        /// <summary>
+        ///     A T extension method that check if source and search value are not equals.
+        /// </summary>
+        /// <typeparam name="T">Generic type parameter.</typeparam>
+        /// <param name="source">Source object value.</param>
+        /// <param name="searchValue">The search value.</param>
+        /// <param name="resultValue">Result object value.</param>
+        /// <returns>
+        ///     A T. If objects are not equals then return resultValue.
+        /// </returns>
+        public static T IfNotEquals<T>(this T source, T searchValue, T resultValue)
+        {
+            if (source.IsNull() || searchValue.IsNull())
+                return resultValue;
+
+            return EqualityComparer<T>.Default.Equals(source, searchValue).IsFalse() ? resultValue : source;
+        }
     }
 }
