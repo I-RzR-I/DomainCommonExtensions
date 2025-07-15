@@ -17,6 +17,7 @@
 using DomainCommonExtensions.CommonExtensions;
 using DomainCommonExtensions.CommonExtensions.TypeParam;
 using DomainCommonExtensions.DataTypeExtensions;
+using DomainCommonExtensions.Models;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -343,6 +344,23 @@ namespace DomainCommonExtensions.ArraysExtensions
             return self?.Select((item, index) => (item, index)) ?? new List<(T, int)>();
         }
 #endif
+
+        /// <summary>
+        ///     Format list to list with item index
+        /// </summary>
+        /// <param name="self">Input list</param>
+        /// <returns></returns>
+        /// <typeparam name="T">List type</typeparam>
+        /// <remarks></remarks>
+        public static IEnumerable<WithIndexModel<T>> WithIndexModel<T>(this IEnumerable<T> self)
+        {
+            return self?.Select(
+                (item, index) => new WithIndexModel<T>()
+                {
+                    Index = index,
+                    Item = item
+                }) ?? new List<WithIndexModel<T>>();
+        }
 
         /// <summary>
         ///     Generates a string from a list of values with the given delimiter
