@@ -17,6 +17,7 @@
 using System;
 using System.IO;
 using System.Linq;
+using DomainCommonExtensions.DataTypeExtensions;
 
 namespace DomainCommonExtensions.Helpers
 {
@@ -32,7 +33,7 @@ namespace DomainCommonExtensions.Helpers
         /// <remarks></remarks>
         public static void CreateDirectory(string path)
         {
-            if (!Directory.Exists(path))
+            if (Directory.Exists(path).IsFalse())
                 Directory.CreateDirectory(path);
         }
 
@@ -44,7 +45,7 @@ namespace DomainCommonExtensions.Helpers
         /// <remarks></remarks>
         public static void CopyDirectory(DirectoryInfo source, DirectoryInfo target)
         {
-            if (!target.Exists)
+            if (target.Exists.IsFalse())
                 target.Create();
 
             foreach (var fileInfo in source.GetFiles())
@@ -73,7 +74,7 @@ namespace DomainCommonExtensions.Helpers
         /// <remarks></remarks>
         public static void DeleteDirectory(DirectoryInfo source)
         {
-            if (!source.Exists) return;
+            if (source.Exists.IsFalse()) return;
 
             foreach (var fileInfo in source.GetFiles()) fileInfo.Delete();
             foreach (var childDirectory in source.GetDirectories()) DeleteDirectory(childDirectory);

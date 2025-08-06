@@ -20,6 +20,7 @@ using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using DomainCommonExtensions.DataTypeExtensions;
+using DomainCommonExtensions.Utilities.Ensure;
 
 // ReSharper disable InconsistentNaming
 // ReSharper disable CheckNamespace

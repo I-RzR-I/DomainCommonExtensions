@@ -78,6 +78,6 @@ namespace DomainCommonExtensions.DataTypeExtensions
         /// <returns></returns>
         /// <remarks></remarks>
         public static bool IsFalse(this bool? source)
-                    => source.IsNull() || source.Equals(false);
+            => source.IsNull() || source.Equals(false);
     }
 }

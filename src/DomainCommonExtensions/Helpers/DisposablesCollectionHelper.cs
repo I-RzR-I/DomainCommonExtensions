@@ -37,7 +37,7 @@ namespace DomainCommonExtensions.Helpers
         /// <inheritdoc />
         public void Dispose()
         {
-            if (!_disposables.IsNull())
+            if (_disposables.IsNotNull())
                 while (_disposables.Count.IsGreaterThanZero())
                     _disposables.Pop().Dispose();
         }

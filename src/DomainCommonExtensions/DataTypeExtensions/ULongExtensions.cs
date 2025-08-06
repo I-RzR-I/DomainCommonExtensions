@@ -14,7 +14,11 @@
 //  </summary>
 // ***********************************************************************
 
+#region U S A G E S
+
 using DomainCommonExtensions.CommonExtensions;
+
+#endregion
 
 namespace DomainCommonExtensions.DataTypeExtensions
 {

@@ -14,8 +14,12 @@
 //  </summary>
 // ***********************************************************************
 
+#region U S A G E S
+
 using System.Collections;
 using DomainCommonExtensions.CommonExtensions;
+
+#endregion
 
 namespace DomainCommonExtensions.Helpers
 {
