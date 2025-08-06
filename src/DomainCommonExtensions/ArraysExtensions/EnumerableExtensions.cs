@@ -14,6 +14,8 @@
 //  </summary>
 // ***********************************************************************
 
+#region U S A G E S
+
 using DomainCommonExtensions.CommonExtensions;
 using DomainCommonExtensions.CommonExtensions.Reflection;
 using DomainCommonExtensions.CommonExtensions.TypeParam;
@@ -30,6 +32,8 @@ using System.Text;
 
 // ReSharper disable UnusedParameter.Local
 // ReSharper restore PossibleMultipleEnumeration
+
+#endregion
 
 namespace DomainCommonExtensions.ArraysExtensions
 {

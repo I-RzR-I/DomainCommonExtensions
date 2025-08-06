@@ -14,10 +14,14 @@
 //  </summary>
 // ***********************************************************************
 
+#region U S A G E S
+
 using DomainCommonExtensions.ArraysExtensions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace DataTypeTests.DataTests
+#endregion
+
+namespace DataTypeTests.DataTests.Array
 {
     [TestClass]
     public class ArrayTests
@@ -102,6 +106,31 @@ namespace DataTypeTests.DataTests
             Assert.IsNotNull(result);
             Assert.AreEqual(3, result.Length);
             Assert.AreEqual(-1, result.IndexOf("c"));
+        }
+
+        [TestMethod]
+        public void NotNull_Null_Test()
+        {
+            int[] array = null;
+
+            var array2 = array.NotNull();
+
+            Assert.IsNull(array);
+            Assert.IsNotNull(array2);
+            Assert.AreEqual(0, array2.Length);
+        }
+
+        [TestMethod]
+        public void NotNull_WithData_Test()
+        {
+            int[] array = new[] { 1, 2, 3 };
+
+            var array2 = array.NotNull();
+
+            Assert.IsNotNull(array);
+            Assert.IsNotNull(array2);
+            Assert.AreEqual(3, array.Length);
+            Assert.AreEqual(3, array2.Length);
         }
     }
 }

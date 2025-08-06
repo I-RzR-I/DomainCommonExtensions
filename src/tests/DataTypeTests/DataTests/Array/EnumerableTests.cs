@@ -20,7 +20,7 @@ using DataTypeTests.Models;
 using DomainCommonExtensions.ArraysExtensions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace DataTypeTests.DataTests
+namespace DataTypeTests.DataTests.Array
 {
     [TestClass]
     public class EnumerableTests
@@ -71,7 +71,7 @@ namespace DataTypeTests.DataTests
         [TestMethod]
         public void WithIndex_Null_Test()
         {
-            List<Models.IdNameActiveModel> array = null;
+            List<IdNameActiveModel> array = null;
 
             var arrayWithIndex = array.WithIndex();
 
@@ -82,7 +82,7 @@ namespace DataTypeTests.DataTests
         [TestMethod]
         public void WithIndex_Empty_Test()
         {
-            var array = new List<Models.IdNameActiveModel>();
+            var array = new List<IdNameActiveModel>();
 
             var arrayWithIndex = array.WithIndex();
 
@@ -93,7 +93,7 @@ namespace DataTypeTests.DataTests
         [TestMethod]
         public void WithIndex_Test()
         {
-            var array = new List<Models.IdNameActiveModel>()
+            var array = new List<IdNameActiveModel>()
             {
                 new IdNameActiveModel()
                 {
@@ -118,7 +118,7 @@ namespace DataTypeTests.DataTests
         [TestMethod]
         public void WithIndexModel_Null_Test()
         {
-            List<Models.IdNameActiveModel> array = null;
+            List<IdNameActiveModel> array = null;
 
             var arrayWithIndex = array.WithIndexModel();
 
@@ -129,7 +129,7 @@ namespace DataTypeTests.DataTests
         [TestMethod]
         public void WithIndexModel_Empty_Test()
         {
-            var array = new List<Models.IdNameActiveModel>();
+            var array = new List<IdNameActiveModel>();
 
             var arrayWithIndex = array.WithIndexModel();
 
@@ -140,7 +140,7 @@ namespace DataTypeTests.DataTests
         [TestMethod]
         public void WithIndexModel_Test()
         {
-            var array = new List<Models.IdNameActiveModel>()
+            var array = new List<IdNameActiveModel>()
             {
                 new IdNameActiveModel()
                 {
@@ -166,6 +166,31 @@ namespace DataTypeTests.DataTests
             Assert.IsNotNull(last.Item);
             Assert.AreEqual(1, last.Item.Id);
             Assert.AreEqual(1, last.Index);
+        }
+
+        [TestMethod]
+        public void NotNull_Null_Test()
+        {
+            List<int> array = null;
+
+            var array2 = array.NotNull();
+
+            Assert.IsNull(array);
+            Assert.IsNotNull(array2);
+            Assert.AreEqual(0, array2.Count());
+        }
+
+        [TestMethod]
+        public void NotNull_WithData_Test()
+        {
+            List<int> array = new List<int>() { 1, 2, 3 };
+
+            var array2 = array.NotNull();
+
+            Assert.IsNotNull(array);
+            Assert.IsNotNull(array2);
+            Assert.AreEqual(3, array.Count);
+            Assert.AreEqual(3, array2.Count());
         }
     }
 }
