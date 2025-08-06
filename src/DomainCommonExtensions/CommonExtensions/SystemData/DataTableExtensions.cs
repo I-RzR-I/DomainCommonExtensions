@@ -60,7 +60,7 @@ namespace DomainCommonExtensions.CommonExtensions.SystemData
                 foreach (var typeProperty in typeProperties)
                 {
                     var value = row[typeProperty.PropertyInfo.Name];
-                    var safeValue = value == null || DBNull.Value.Equals(value)
+                    var safeValue = value.IsNull() || DBNull.Value.Equals(value)
                         ? null
                         : Convert.ChangeType(value, typeProperty.Type);
 
@@ -98,7 +98,7 @@ namespace DomainCommonExtensions.CommonExtensions.SystemData
                 foreach (var typeProperty in typeProperties)
                 {
                     var value = row[typeProperty.PropertyInfo.Name];
-                    var safeValue = value == null || DBNull.Value.Equals(value)
+                    var safeValue = value.IsNull() || DBNull.Value.Equals(value)
                         ? null
                         : Convert.ChangeType(value, typeProperty.Type);
 

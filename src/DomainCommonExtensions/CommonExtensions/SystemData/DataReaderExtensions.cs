@@ -32,8 +32,8 @@ namespace DomainCommonExtensions.CommonExtensions.SystemData
     public static class DataReaderExtensions
     {
         /// <summary>
-        ///     Reads one row from DbDataReader, use only nullable types, generic types are not implemented yet. Returns default(T)
-        ///     if reader is empty
+        ///     Reads one row from DbDataReader, use only nullable types, generic types are not implemented yet. 
+        ///     Returns default(T) if reader is empty
         /// </summary>
         /// <param name="reader">Data reader</param>
         /// <param name="obj">Result data</param>
@@ -48,7 +48,7 @@ namespace DomainCommonExtensions.CommonExtensions.SystemData
                 {
                     foreach (var item in obj.GetType().GetProperties())
                     {
-                        if (!reader.HasColumn(item.Name))
+                        if (reader.HasColumn(item.Name).IsFalse())
                             continue;
                         item.SetValue(obj, reader[item.Name] == DBNull.Value ? null : reader[item.Name], null);
                     }

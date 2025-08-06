@@ -463,10 +463,10 @@ namespace DomainCommonExtensions.DataTypeExtensions
             if (inputStringDate.IfNullThenEmpty().IsMissing()) return null;
             try
             {
-                var parse = DateTime.TryParseExact(inputStringDate,
+                var parseResult = DateTime.TryParseExact(inputStringDate,
                     DateFormats, CultureInfo.InvariantCulture, DateTimeStyles.None,
                     out var date);
-                if (!parse)
+                if (parseResult.IsFalse())
                     return null;
 
                 return date;

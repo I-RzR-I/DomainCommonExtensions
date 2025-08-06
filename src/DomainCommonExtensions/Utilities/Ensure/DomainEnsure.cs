@@ -161,7 +161,7 @@ namespace DomainCommonExtensions.Utilities.Ensure
         public static void IsValidEnum<TEnum>(TEnum? value, string parameterName)
             where TEnum : struct
         {
-            if (Enum.GetValues(typeof(TEnum?)).Cast<TEnum?>().Contains(value).IsFalse())
+            if (Enum.GetValues(typeof(TEnum)).Cast<TEnum?>().Contains(value).IsFalse())
             {
                 InternalThrowException(ExceptionType.ArgumentException, value, parameterName,
                     ValueInvalidForEnumType.FormatWith(parameterName, value, typeof(TEnum?).Name));

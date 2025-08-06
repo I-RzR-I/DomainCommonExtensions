@@ -88,7 +88,7 @@ namespace DomainCommonExtensions.Helpers
         /// <param name="sourcePath">Source directory path</param>
         /// <remarks></remarks>
         public static void DeleteDirectory(string sourcePath)
-        => DeleteDirectory(new DirectoryInfo(sourcePath));
+            => DeleteDirectory(new DirectoryInfo(sourcePath));
 
         /// <summary>
         ///     Count file in directory
