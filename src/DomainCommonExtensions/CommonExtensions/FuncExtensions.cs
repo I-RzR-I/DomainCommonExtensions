@@ -19,6 +19,7 @@
 using System;
 using System.Threading.Tasks;
 using DomainCommonExtensions.DataTypeExtensions;
+using DomainCommonExtensions.Utilities.Ensure;
 
 #endregion
 
@@ -73,8 +74,7 @@ namespace DomainCommonExtensions.CommonExtensions
         /// =================================================================================================
         public static bool IsTrue(this Func<Task<bool>> func)
         {
-            if (func.IsNull())
-                throw new ArgumentNullException(nameof(func));
+            DomainEnsure.IsNotNull(func, nameof(func));
 
             return func.Invoke().Result.IsTrue();
         }

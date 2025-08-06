@@ -37,6 +37,8 @@ using CodeSource;
 using DomainCommonExtensions.ArraysExtensions;
 using DomainCommonExtensions.CommonExtensions;
 using DomainCommonExtensions.Resources;
+using DomainCommonExtensions.Resources.Enums;
+using DomainCommonExtensions.Utilities.Ensure;
 
 #endregion
 
@@ -115,8 +117,8 @@ namespace DomainCommonExtensions.DataTypeExtensions
         /// <returns></returns>
         public static SecureString ToSecureString(this string str)
         {
-            if (str.IsNull() || str.IsMissing())
-                throw new ArgumentNullException(nameof(str));
+            DomainEnsure.ThrowExceptionIfFuncIsTrue(ExceptionType.ArgumentNullException, 
+                str.IsMissing, str, nameof(str));
 
             var secureString = new SecureString();
             foreach (var c in str)
@@ -199,8 +201,7 @@ namespace DomainCommonExtensions.DataTypeExtensions
         /// <returns></returns>
         public static bool IsValidIpAddress(this string s)
         {
-            return Regex.IsMatch(s,
-                RegularExpressions.IP);
+            return Regex.IsMatch(s, RegularExpressions.IP);
         }
 
         /// <summary>
@@ -547,8 +548,7 @@ namespace DomainCommonExtensions.DataTypeExtensions
         /// <remarks></remarks>
         public static byte[] GetHashSha1CryptoProv(this string content)
         {
-            if (content.IsNull())
-                throw new ArgumentNullException(nameof(content));
+            DomainEnsure.IsNotNull(content, nameof(content));
 
             var buffer = Encoding.UTF8.GetBytes(content);
 #pragma warning disable SCS0006
@@ -568,8 +568,7 @@ namespace DomainCommonExtensions.DataTypeExtensions
         /// <remarks></remarks>
         public static byte[] GetHashSha256CryptoProv(this string content)
         {
-            if (content.IsNull())
-                throw new ArgumentNullException(nameof(content));
+            DomainEnsure.IsNotNull(content, nameof(content));
 
             var buffer = Encoding.UTF8.GetBytes(content);
             var sha1 = new SHA256CryptoServiceProvider();
@@ -587,8 +586,7 @@ namespace DomainCommonExtensions.DataTypeExtensions
         /// <remarks></remarks>
         public static byte[] GetHashSha256(this string inputString)
         {
-            if (inputString.IsNull())
-                throw new ArgumentNullException(nameof(inputString));
+            DomainEnsure.IsNotNull(inputString, nameof(inputString));
 
             using HashAlgorithm algorithm = SHA256.Create();
 
@@ -603,8 +601,7 @@ namespace DomainCommonExtensions.DataTypeExtensions
         /// <remarks></remarks>
         public static string GetHashSha256String(this string inputString)
         {
-            if (inputString.IsNull())
-                throw new ArgumentNullException(nameof(inputString));
+            DomainEnsure.IsNotNull(inputString, nameof(inputString));
 
             var sb = new StringBuilder();
             foreach (var b in GetHashSha256(inputString))
@@ -621,8 +618,7 @@ namespace DomainCommonExtensions.DataTypeExtensions
         /// <remarks></remarks>
         public static byte[] DeCodeBytesFromBase64(this string encoded)
         {
-            if (encoded.IsNull())
-                throw new ArgumentNullException(nameof(encoded));
+            DomainEnsure.IsNotNull(encoded, nameof(encoded));
 
             return Convert.FromBase64String(encoded);
         }
@@ -702,10 +698,8 @@ namespace DomainCommonExtensions.DataTypeExtensions
         /// <remarks></remarks>
         public static string Next(this string value, uint next)
         {
-            if (value.IsNull())
-                throw new ArgumentNullException(nameof(value));
-            if (next.IsNull())
-                throw new ArgumentNullException(nameof(next));
+            DomainEnsure.IsNotNull(value, nameof(value));
+            DomainEnsure.IsNotNull(next, nameof(next));
 
             var result = new StringBuilder(value).ToString();
             for (var i = 0; i < next; i++) result = result.Next();
@@ -752,8 +746,7 @@ namespace DomainCommonExtensions.DataTypeExtensions
         /// <returns>The string each words are uppercase</returns>
         public static string UppercaseWords(this string value)
         {
-            if (value.IsNull())
-                throw new ArgumentNullException(nameof(value));
+            DomainEnsure.IsNotNull(value, nameof(value));
 
             var array = value.ToCharArray();
             if (array.Length >= 1)
@@ -775,8 +768,7 @@ namespace DomainCommonExtensions.DataTypeExtensions
         /// <returns>The array of bytes</returns>
         public static byte[] GetBytes(this string str)
         {
-            if (str.IsNull())
-                throw new ArgumentNullException(nameof(str));
+            DomainEnsure.IsNotNull(str, nameof(str));
 
             var bytes = new byte[str.Length * sizeof(char)];
             Buffer.BlockCopy(str.ToCharArray(), 0, bytes, 0, bytes.Length);
@@ -809,10 +801,8 @@ namespace DomainCommonExtensions.DataTypeExtensions
         /// <returns>Return similarity of two words in percentage</returns>
         public static double SimpleCompareTwoString(this string a, string b)
         {
-            if (a.IsNull())
-                throw new ArgumentNullException(nameof(a));
-            if (b.IsNull())
-                throw new ArgumentNullException(nameof(b));
+            DomainEnsure.IsNotNull(a, nameof(a));
+            DomainEnsure.IsNotNull(b, nameof(b));
 
             if (a == b)
                 return 100;
@@ -837,12 +827,9 @@ namespace DomainCommonExtensions.DataTypeExtensions
         /// <remarks></remarks>
         private static string SplitXmlWithCharSpecial(string input, string character, char separator)
         {
-            if (input.IsNull())
-                throw new ArgumentNullException(nameof(input));
-            if (character.IsNull())
-                throw new ArgumentNullException(nameof(character));
-            if (separator.IsNull())
-                throw new ArgumentNullException(nameof(separator));
+            DomainEnsure.IsNotNull(input, nameof(input));
+            DomainEnsure.IsNotNull(character, nameof(character));
+            DomainEnsure.IsNotNull(separator, nameof(separator));
 
             var tagsArray = input.Split(separator);
             var emptyElement = tagsArray.Select((value, index) => new { index, value })
@@ -906,8 +893,7 @@ namespace DomainCommonExtensions.DataTypeExtensions
         /// <remarks></remarks>
         public static List<string> GenerateStringOrderedList(this string inputData)
         {
-            if (inputData.IsNull())
-                throw new ArgumentNullException(nameof(inputData));
+            DomainEnsure.IsNotNull(inputData, nameof(inputData));
 
             var result = new List<string>();
             var splittedWord = inputData.Split(new[] { " ", ",", ", " }, StringSplitOptions.None).ToList();
@@ -929,8 +915,7 @@ namespace DomainCommonExtensions.DataTypeExtensions
         /// <remarks></remarks>
         public static bool ValidatePull(this string source, IEnumerable<string> pull)
         {
-            if (source.IsNull())
-                throw new ArgumentNullException(nameof(source));
+            DomainEnsure.IsNotNull(source, nameof(source));
 
             var match = (pull ?? new List<string>()).Count(source.StartsWith);
 
@@ -945,8 +930,7 @@ namespace DomainCommonExtensions.DataTypeExtensions
         /// <remarks></remarks>
         public static string FixBase64ForImage(this string image)
         {
-            if (image.IsNull())
-                throw new ArgumentNullException(nameof(image));
+            DomainEnsure.IsNotNull(image, nameof(image));
 
             var sbText = new StringBuilder(image, image.Length);
             sbText.Replace("\r\n", string.Empty);
@@ -964,8 +948,7 @@ namespace DomainCommonExtensions.DataTypeExtensions
         /// <remarks></remarks>
         public static T ToEnum<T>(this string value)
         {
-            if (value.IsNull())
-                throw new ArgumentNullException(nameof(value));
+            DomainEnsure.IsNotNull(value, nameof(value));
 
             try
             {
@@ -1076,90 +1059,6 @@ namespace DomainCommonExtensions.DataTypeExtensions
                 if (lastLen.IsGreaterThanZero())
                     yield return source.Substring(source.Length - lastLen);
             }
-        }
-
-        /// <summary>
-        ///     Throw exception if source is null or empty
-        /// </summary>
-        /// <param name="source">Source to check</param>
-        /// <param name="msg">Error message</param>
-        /// <remarks></remarks>
-        public static void ThrowIfNullOrEmpty(this string source, string msg)
-        {
-            if (source.IsNullOrEmpty())
-                throw new Exception(msg);
-        }
-
-        /// <summary>
-        ///     Throw exception if source is null
-        /// </summary>
-        /// <param name="source">Source to check</param>
-        /// <param name="msg">Error message</param>
-        /// <remarks></remarks>
-        public static void ThrowIfNull(this string source, string msg)
-        {
-            if (source.IsNull())
-                throw new Exception(msg);
-        }
-
-        /// <summary>
-        ///     Throw argument exception if source is null
-        /// </summary>
-        /// <param name="source">Source to check</param>
-        /// <param name="msg">Error message.</param>
-        /// <remarks></remarks>
-        public static void ThrowArgIfNull(this string source, string msg)
-        {
-            if (source.IsNull())
-                throw new ArgumentException(msg);
-        }
-
-        /// <summary>
-        ///     Throw argument exception if source is null or empty
-        /// </summary>
-        /// <param name="source">Source to check</param>
-        /// <param name="msg">Error message.</param>
-        /// <remarks></remarks>
-        public static void ThrowArgIfNullOrEmpty(this string source, string msg)
-        {
-            if (source.IsNullOrEmpty())
-                throw new ArgumentException(msg);
-        }
-
-        /// <summary>
-        ///     Throw argument null exception if source is null
-        /// </summary>
-        /// <param name="source">Source to check</param>
-        /// <param name="objectName">Object name</param>
-        /// <remarks></remarks>
-        public static void ThrowIfArgNull(this string source, string objectName)
-        {
-            if (source.IsNull())
-                throw new ArgumentNullException(objectName);
-        }
-
-        /// <summary>
-        ///     Throw argument null exception if source is null or empty
-        /// </summary>
-        /// <param name="source">Source to check</param>
-        /// <param name="objectName">Object name</param>
-        /// <remarks></remarks>
-        public static void ThrowIfArgNullOrEmpty(this string source, string objectName)
-        {
-            if (source.IsNullOrEmpty())
-                throw new ArgumentNullException(objectName);
-        }
-
-        /// <summary>
-        ///     Throw exception if source is empty
-        /// </summary>
-        /// <param name="source">Source to check</param>
-        /// <param name="msg">Error message</param>
-        /// <remarks></remarks>
-        public static void ThrowIfEmpty(this string source, string msg)
-        {
-            if (source.IsEmpty())
-                throw new Exception(msg);
         }
 
         /// <summary>

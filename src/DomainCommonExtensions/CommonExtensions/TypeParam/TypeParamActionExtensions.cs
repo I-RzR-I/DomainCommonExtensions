@@ -17,6 +17,7 @@
 #region U S A G E S
 
 using System;
+using DomainCommonExtensions.Utilities.Ensure;
 
 #endregion
 
@@ -42,8 +43,7 @@ namespace DomainCommonExtensions.CommonExtensions.TypeParam
         /// =================================================================================================
         public static void IfNotNull<TInput>(this TInput source, Action<TInput> action)
         {
-            if (action.IsNull())
-                throw new ArgumentNullException(nameof(action));
+            DomainEnsure.IsNotNull(action, nameof(action));
 
             if (source.IsNull())
                 return;
@@ -64,8 +64,7 @@ namespace DomainCommonExtensions.CommonExtensions.TypeParam
         /// =================================================================================================
         public static void IfNull<TInput>(this TInput source, Action<TInput> action)
         {
-            if (action.IsNull())
-                throw new ArgumentNullException(nameof(action));
+            DomainEnsure.IsNotNull(action, nameof(action));
 
             if (source.IsNull())
                 action(source);

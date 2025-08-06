@@ -14,7 +14,11 @@
 //  </summary>
 // ***********************************************************************
 
+#region U S A G E S
+
 using DomainCommonExtensions.CommonExtensions;
+
+#endregion
 
 namespace DomainCommonExtensions.DataTypeExtensions
 {
@@ -32,7 +36,7 @@ namespace DomainCommonExtensions.DataTypeExtensions
         /// <remarks></remarks>
         public static bool IsNullOrZero(this long? value)
         {
-            return value.IsNull() || value == 0;
+            return value.IsNull() || value.IsZero();
         }
 
         /// <summary>

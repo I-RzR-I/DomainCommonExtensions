@@ -19,7 +19,7 @@
 using System;
 using System.Net.Sockets;
 using System.Runtime.InteropServices;
-using DomainCommonExtensions.CommonExtensions;
+using DomainCommonExtensions.Utilities.Ensure;
 
 #endregion
 
@@ -40,8 +40,7 @@ namespace DomainCommonExtensions.DataTypeExtensions
         /// <param name="keepAliveInterval">The keep alive interval. (ms)</param>
         public static void SetSocketKeepAliveValues(this TcpClient tcpClient, int keepAliveTime, int keepAliveInterval)
         {
-            if (tcpClient.IsNull())
-                throw new ArgumentNullException(nameof(tcpClient));
+            DomainEnsure.IsNotNull(tcpClient, nameof(tcpClient));
 
             //KeepAliveTime: default value is 2hr
             //KeepAliveInterval: default value is 1s and Detect 5 times

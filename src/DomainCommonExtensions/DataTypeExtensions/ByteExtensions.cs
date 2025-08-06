@@ -24,7 +24,7 @@ using System.IO.Compression;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
-using DomainCommonExtensions.CommonExtensions;
+using DomainCommonExtensions.Utilities.Ensure;
 
 #endregion
 
@@ -44,8 +44,7 @@ namespace DomainCommonExtensions.DataTypeExtensions
         /// <remarks></remarks>
         public static string ToBase64String(this byte[] bytes)
         {
-            if (bytes.IsNull())
-                throw new ArgumentNullException(nameof(bytes));
+            DomainEnsure.IsNotNull(bytes, nameof(bytes));
 
             return Convert.ToBase64String(bytes, 0, bytes.Length);
         }
@@ -58,8 +57,7 @@ namespace DomainCommonExtensions.DataTypeExtensions
         /// <remarks></remarks>
         public static string GetHashSha256String(this byte[] bytes)
         {
-            if (bytes.IsNull())
-                throw new ArgumentNullException(nameof(bytes));
+            DomainEnsure.IsNotNull(bytes, nameof(bytes));
 
             var sb = new StringBuilder();
             foreach (var b in bytes)
@@ -76,8 +74,7 @@ namespace DomainCommonExtensions.DataTypeExtensions
         /// <remarks></remarks>
         public static string GetHashSha1String(this byte[] bytes)
         {
-            if (bytes.IsNull())
-                throw new ArgumentNullException(nameof(bytes));
+            DomainEnsure.IsNotNull(bytes, nameof(bytes));
 
 #pragma warning disable SCS0006
             using var sha1 = new SHA1Managed();
@@ -97,8 +94,7 @@ namespace DomainCommonExtensions.DataTypeExtensions
         // ReSharper disable once InconsistentNaming
         public static string GetStringUTF8(this byte[] bytes)
         {
-            if (bytes.IsNull())
-                throw new ArgumentNullException(nameof(bytes));
+            DomainEnsure.IsNotNull(bytes, nameof(bytes));
 
             return Encoding.UTF8.GetString(bytes);
         }
@@ -110,8 +106,7 @@ namespace DomainCommonExtensions.DataTypeExtensions
         /// <returns>The string</returns>
         public static string GetString(this byte[] bytes)
         {
-            if (bytes.IsNull())
-                throw new ArgumentNullException(nameof(bytes));
+            DomainEnsure.IsNotNull(bytes, nameof(bytes));
 
             return bytes.Aggregate(string.Empty, (current, b) => current + (char) b);
         }
@@ -124,8 +119,7 @@ namespace DomainCommonExtensions.DataTypeExtensions
         /// <remarks></remarks>
         public static string ToStringFromByteUnicode(this byte[] input)
         {
-            if (input.IsNull())
-                throw new ArgumentNullException(nameof(input));
+            DomainEnsure.IsNotNull(input, nameof(input));
 
             return Encoding.Unicode.GetString(input);
         }
@@ -140,8 +134,7 @@ namespace DomainCommonExtensions.DataTypeExtensions
         /// <remarks></remarks>
         public static string ToHexByte(this byte[] clearText, bool withSpace = false)
         {
-            if (clearText.IsNull())
-                throw new ArgumentNullException(nameof(clearText));
+            DomainEnsure.IsNotNull(clearText, nameof(clearText));
 
             var hex = new StringBuilder(clearText.Length * 2);
             foreach (var b in clearText)
@@ -184,8 +177,7 @@ namespace DomainCommonExtensions.DataTypeExtensions
         /// <remarks></remarks>
         public static byte[] GZipCompress(this byte[] source, CompressionLevel compressionLevel)
         {
-            if (source.IsNull())
-                throw new ArgumentNullException(nameof(source));
+            DomainEnsure.IsNotNull(source, nameof(source));
 
             using var memory = new MemoryStream();
             using (var gzip = new GZipStream(memory, compressionLevel, true))

@@ -19,7 +19,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
-using DomainCommonExtensions.CommonExtensions;
+using DomainCommonExtensions.CommonExtensions.Reflection;
 using DomainCommonExtensions.Helpers.Internal.AnonymousSelect;
 
 #region OLD Using System.Linq.Dynamic.Core
@@ -112,6 +112,7 @@ namespace DomainCommonExtensions.ArraysExtensions
 
             return result.Cast<dynamic>().ToList();
         }
+
         /// <summary>
         ///     Parse input data (List) to dynamic result (list)
         /// </summary>
