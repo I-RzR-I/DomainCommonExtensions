@@ -24,7 +24,7 @@ using System.Reflection.Emit;
 
 #endregion
 
-namespace DomainCommonExtensions.CommonExtensions
+namespace DomainCommonExtensions.CommonExtensions.Reflection
 {
     /// -------------------------------------------------------------------------------------------------
     /// <summary>

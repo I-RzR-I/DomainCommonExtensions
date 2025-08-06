@@ -30,13 +30,13 @@ using DomainCommonExtensions.DataTypeExtensions;
 
 #endregion
 
-namespace DomainCommonExtensions.CommonExtensions
+namespace DomainCommonExtensions.CommonExtensions.Reflection
 {
     /// <summary>
     ///     Type extensions
     /// </summary>
     /// <remarks></remarks>
-    public static class TypeExtensions
+    public static partial class TypeExtensions
     {
         private static readonly Dictionary<Type, Type> NullableTypeDict = new Dictionary<Type, Type>
         {

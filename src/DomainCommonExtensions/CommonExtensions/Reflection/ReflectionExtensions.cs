@@ -21,7 +21,7 @@ using System.Reflection;
 
 #endregion
 
-namespace DomainCommonExtensions.CommonExtensions
+namespace DomainCommonExtensions.CommonExtensions.Reflection
 {
     /// <summary>
     ///     Reflection extensions
