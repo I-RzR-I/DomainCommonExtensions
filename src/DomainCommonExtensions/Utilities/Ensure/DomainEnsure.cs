@@ -134,7 +134,7 @@ namespace DomainCommonExtensions.Utilities.Ensure
         /// <summary>
         ///     Is not null or empty.
         /// </summary>
-        /// <exception cref="ArgumentException">
+        /// <exception cref="ArgumentNullException">
         ///     Thrown when one or more arguments have unsupported or illegal values.
         /// </exception>
         /// <param name="source">Source object to be validated.</param>
@@ -158,13 +158,13 @@ namespace DomainCommonExtensions.Utilities.Ensure
         /// <typeparam name="TEnum">Type of the enum.</typeparam>
         /// <param name="value">The value.</param>
         /// <param name="parameterName">Name of the parameter.</param>
-        public static void IsValidEnum<TEnum>(TEnum value, string parameterName)
+        public static void IsValidEnum<TEnum>(TEnum? value, string parameterName)
             where TEnum : struct
         {
-            if (Enum.GetValues(typeof(TEnum)).Cast<TEnum>().Contains(value).IsFalse())
+            if (Enum.GetValues(typeof(TEnum?)).Cast<TEnum?>().Contains(value).IsFalse())
             {
                 InternalThrowException(ExceptionType.ArgumentException, value, parameterName,
-                    ValueInvalidForEnumType.FormatWith(parameterName, value, typeof(TEnum).Name));
+                    ValueInvalidForEnumType.FormatWith(parameterName, value, typeof(TEnum?).Name));
             }
         }
 
