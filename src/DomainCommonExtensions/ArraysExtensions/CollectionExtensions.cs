@@ -100,6 +100,21 @@ namespace DomainCommonExtensions.ArraysExtensions
         }
 
         /// <summary>
+        ///     Add given items to source collection
+        /// </summary>
+        /// <param name="source">Source collection</param>
+        /// <param name="items">Items to add</param>
+        /// <returns></returns>
+        /// <typeparam name="T">Collection type</typeparam>
+        /// <remarks></remarks>
+        public static ICollection<T> With<T>(this ICollection<T> source, T[] items)
+        {
+            source.AddRange(items);
+            
+            return source;
+        }
+
+        /// <summary>
         ///     Remove given item to source collection
         /// </summary>
         /// <param name="source">Source collection</param>

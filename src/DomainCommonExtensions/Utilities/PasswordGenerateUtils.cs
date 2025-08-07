@@ -23,6 +23,8 @@ using DomainCommonExtensions.CommonExtensions.TypeParam;
 using DomainCommonExtensions.DataTypeExtensions;
 using DomainCommonExtensions.Helpers;
 
+// ReSharper disable AccessToModifiedClosure
+
 #endregion
 
 namespace DomainCommonExtensions.Utilities

@@ -16,12 +16,12 @@
 
 #region U S A G E S
 
-using System;
 using System.Reflection;
+using DomainCommonExtensions.Utilities.Ensure;
 
 #endregion
 
-namespace DomainCommonExtensions.CommonExtensions
+namespace DomainCommonExtensions.CommonExtensions.Reflection
 {
     /// <summary>
     ///     Reflection extensions
@@ -36,9 +36,7 @@ namespace DomainCommonExtensions.CommonExtensions
         /// <param name="destination">The destination.</param>
         public static void CopyProperties(this object source, object destination)
         {
-            //if any this null throw an exception
-            if (source.IsNull() || destination.IsNull())
-                throw new Exception("Source or/and Destination Objects are null");
+            DomainEnsure.IsNotNullAll("Source or/and Destination Objects are null", source, destination);
 
             var typeDest = destination.GetType();
             var typeSrc = source.GetType();

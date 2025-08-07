@@ -23,6 +23,7 @@ using System.ComponentModel.DataAnnotations;
 #endif
 using System.Globalization;
 using DomainCommonExtensions.CommonExtensions;
+using DomainCommonExtensions.Utilities.Ensure;
 
 #endregion
 
@@ -41,8 +42,7 @@ namespace DomainCommonExtensions.DataTypeExtensions
         /// <returns></returns>
         public static DateTime AsUtc(this DateTime input)
         {
-            if (input.IsNull())
-                throw new ArgumentNullException(nameof(input));
+            DomainEnsure.IsNotNull(input, nameof(input));
 
             return input.Kind switch
             {
@@ -70,8 +70,7 @@ namespace DomainCommonExtensions.DataTypeExtensions
         /// <remarks></remarks>
         public static string FormatDateToString_112(this DateTime input)
         {
-            if (input.IsNull())
-                throw new ArgumentNullException(nameof(input));
+            DomainEnsure.IsNotNull(input, nameof(input));
 
             return input.ToString("yyyyMMdd");
         }
@@ -85,8 +84,7 @@ namespace DomainCommonExtensions.DataTypeExtensions
         /// <remarks></remarks>
         public static string FormatToString(this DateTime input, string format = null)
         {
-            if (input.IsNull())
-                throw new ArgumentNullException(nameof(input));
+            DomainEnsure.IsNotNull(input, nameof(input));
 
             return format.IsNullOrEmpty() ? input.FormatDateToString_112() : input.ToString(format);
         }
@@ -102,8 +100,7 @@ namespace DomainCommonExtensions.DataTypeExtensions
         {
             if (value.IsNullOrEmpty())
                 return false;
-            if (cultureInfo.IsNullOrEmpty())
-                throw new ArgumentException(nameof(cultureInfo));
+            DomainEnsure.IsNotNullOrEmpty(cultureInfo, nameof(cultureInfo));
 
             try
             {
@@ -131,8 +128,7 @@ namespace DomainCommonExtensions.DataTypeExtensions
         /// <remarks></remarks>
         public static bool TimeBetween(this DateTime input, int hourStart, int hourStop)
         {
-            if (input.IsNull())
-                throw new ArgumentNullException(nameof(input));
+            DomainEnsure.IsNotNull(input, nameof(input));
 
             var start = new TimeSpan(hourStart, 0, 0);
             var end = new TimeSpan(hourStop, 0, 0);
@@ -151,8 +147,7 @@ namespace DomainCommonExtensions.DataTypeExtensions
         /// <remarks></remarks>
         public static int CalculateAge(this DateTime input)
         {
-            if (input.IsNull())
-                throw new ArgumentNullException(nameof(input));
+            DomainEnsure.IsNotNull(input, nameof(input));
 
             var dtToday = DateTime.Now;
 
@@ -255,8 +250,7 @@ namespace DomainCommonExtensions.DataTypeExtensions
         /// <returns></returns>
         public static DateTime EndOfDay(this DateTime input)
         {
-            if (input.IsNull())
-                throw new ArgumentNullException(nameof(input));
+            DomainEnsure.IsNotNull(input, nameof(input));
 
             return new DateTime(input.Year, input.Month, input.Day, 23, 59, 59, 999);
         }
@@ -268,8 +262,7 @@ namespace DomainCommonExtensions.DataTypeExtensions
         /// <returns></returns>
         public static DateTime StartOfDay(this DateTime input)
         {
-            if (input.IsNull())
-                throw new ArgumentNullException(nameof(input));
+            DomainEnsure.IsNotNull(input, nameof(input));
 
             return new DateTime(input.Year, input.Month, input.Day, 0, 0, 0, 0);
         }
@@ -281,8 +274,7 @@ namespace DomainCommonExtensions.DataTypeExtensions
         /// <returns></returns>
         public static int DayIndex(this DateTime input)
         {
-            if (input.IsNull())
-                throw new ArgumentNullException(nameof(input));
+            DomainEnsure.IsNotNull(input, nameof(input));
 
             int index;
             switch (input.DayOfWeek)
@@ -319,8 +311,7 @@ namespace DomainCommonExtensions.DataTypeExtensions
         /// <returns></returns>
         public static bool IsWeekend(this DateTime input)
         {
-            if (input.IsNull())
-                throw new ArgumentNullException(nameof(input));
+            DomainEnsure.IsNotNull(input, nameof(input));
 
             return input.DayOfWeek == DayOfWeek.Sunday || input.DayOfWeek == DayOfWeek.Saturday;
         }
@@ -332,8 +323,7 @@ namespace DomainCommonExtensions.DataTypeExtensions
         /// <returns></returns>
         public static bool IsLeapYear(this DateTime input)
         {
-            if (input.IsNull())
-                throw new ArgumentNullException(nameof(input));
+            DomainEnsure.IsNotNull(input, nameof(input));
 
             return DateTime.DaysInMonth(input.Year, 2) == 29;
         }
@@ -345,8 +335,7 @@ namespace DomainCommonExtensions.DataTypeExtensions
         /// <returns></returns>
         public static double ToTimeStamp(this DateTime input)
         {
-            if (input.IsNull())
-                throw new ArgumentNullException(nameof(input));
+            DomainEnsure.IsNotNull(input, nameof(input));
 
             return (input - new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc)).TotalSeconds;
         }
@@ -376,8 +365,7 @@ namespace DomainCommonExtensions.DataTypeExtensions
         /// <remarks></remarks>
         public static DateTime EndOfWeek(this DateTime input)
         {
-            if (input.IsNull())
-                throw new ArgumentNullException(nameof(input));
+            DomainEnsure.IsNotNull(input, nameof(input));
 
             return StartOfWeek(input).AddDays(6).Date;
         }
@@ -390,8 +378,7 @@ namespace DomainCommonExtensions.DataTypeExtensions
         /// <remarks></remarks>
         public static DateTime StartOfMonth(this DateTime input)
         {
-            if (input.IsNull())
-                throw new ArgumentNullException(nameof(input));
+            DomainEnsure.IsNotNull(input, nameof(input));
 
             return new DateTime(input.Year, input.Month, 1).Date;
         }
@@ -404,8 +391,7 @@ namespace DomainCommonExtensions.DataTypeExtensions
         /// <remarks></remarks>
         public static DateTime EndOfMonth(this DateTime input)
         {
-            if (input.IsNull())
-                throw new ArgumentNullException(nameof(input));
+            DomainEnsure.IsNotNull(input, nameof(input));
 
             return StartOfMonth(input).AddMonths(1).AddDays(-1).Date;
         }
@@ -418,8 +404,7 @@ namespace DomainCommonExtensions.DataTypeExtensions
         /// <remarks></remarks>
         public static DateTime StartOfPreviousMonth(this DateTime input)
         {
-            if (input.IsNull())
-                throw new ArgumentNullException(nameof(input));
+            DomainEnsure.IsNotNull(input, nameof(input));
 
             input = input.AddMonths(-1);
 
@@ -434,8 +419,7 @@ namespace DomainCommonExtensions.DataTypeExtensions
         /// <remarks></remarks>
         public static DateTime EndOfPreviousMonth(this DateTime input)
         {
-            if (input.IsNull())
-                throw new ArgumentNullException(nameof(input));
+            DomainEnsure.IsNotNull(input, nameof(input));
 
             input = input.AddMonths(-1);
 
@@ -450,8 +434,7 @@ namespace DomainCommonExtensions.DataTypeExtensions
         /// <remarks></remarks>
         public static DateTime StartOfYear(this DateTime input)
         {
-            if (input.IsNull())
-                throw new ArgumentNullException(nameof(input));
+            DomainEnsure.IsNotNull(input, nameof(input));
 
             return new DateTime(input.Year, 1, 1).Date;
         }
@@ -464,8 +447,7 @@ namespace DomainCommonExtensions.DataTypeExtensions
         /// <remarks></remarks>
         public static DateTime EndOfYear(this DateTime input)
         {
-            if (input.IsNull())
-                throw new ArgumentNullException(nameof(input));
+            DomainEnsure.IsNotNull(input, nameof(input));
 
             return new DateTime(input.Year, 12, 31).Date;
         }
@@ -478,8 +460,7 @@ namespace DomainCommonExtensions.DataTypeExtensions
         /// <remarks></remarks>
         public static int DaysInMonth(this DateTime input)
         {
-            if (input.IsNull())
-                throw new ArgumentNullException(nameof(input));
+            DomainEnsure.IsNotNull(input, nameof(input));
 
             return (int)(EndOfMonth(input) - StartOfMonth(input).AddDays(-1)).TotalDays;
         }
@@ -492,8 +473,7 @@ namespace DomainCommonExtensions.DataTypeExtensions
         /// <remarks></remarks>
         public static int DaysInYear(this DateTime input)
         {
-            if (input.IsNull())
-                throw new ArgumentNullException(nameof(input));
+            DomainEnsure.IsNotNull(input, nameof(input));
 
             return EndOfYear(input).DayOfYear;
         }

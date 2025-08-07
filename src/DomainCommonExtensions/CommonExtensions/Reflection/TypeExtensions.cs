@@ -23,6 +23,7 @@ using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Text;
 using DomainCommonExtensions.DataTypeExtensions;
+using DomainCommonExtensions.Utilities.Ensure;
 
 // ReSharper disable ExpressionIsAlwaysNull
 // ReSharper disable PossibleMultipleEnumeration
@@ -30,13 +31,13 @@ using DomainCommonExtensions.DataTypeExtensions;
 
 #endregion
 
-namespace DomainCommonExtensions.CommonExtensions
+namespace DomainCommonExtensions.CommonExtensions.Reflection
 {
     /// <summary>
     ///     Type extensions
     /// </summary>
     /// <remarks></remarks>
-    public static class TypeExtensions
+    public static partial class TypeExtensions
     {
         private static readonly Dictionary<Type, Type> NullableTypeDict = new Dictionary<Type, Type>
         {
@@ -85,8 +86,7 @@ namespace DomainCommonExtensions.CommonExtensions
         /// <remarks></remarks>
         public static string GetStringPropertyValue(this object obj, string name)
         {
-            if (obj.IsNull())
-                throw new ArgumentNullException(nameof(obj));
+            DomainEnsure.IsNotNull(obj, nameof(obj));
 
             return obj?.GetType()
                 .GetProperty(name.Trim().FirstCharToUpper())
@@ -101,8 +101,7 @@ namespace DomainCommonExtensions.CommonExtensions
         /// <remarks></remarks>
         public static bool IsAnonymousType(this Type type)
         {
-            if (type.IsNull())
-                throw new ArgumentNullException(nameof(type));
+            DomainEnsure.IsNotNull(type, nameof(type));
 
             return Attribute.IsDefined(type, typeof(CompilerGeneratedAttribute), false)
                    && type.IsGenericType && type.Name.Contains("AnonymousType")
@@ -118,7 +117,7 @@ namespace DomainCommonExtensions.CommonExtensions
         /// <remarks></remarks>
         public static bool IsNullablePropType(this Type type)
         {
-            if (type.IsNull()) throw new ArgumentNullException(nameof(type));
+            DomainEnsure.IsNotNull(type, nameof(type));
 
             return type.IsGenericType && type.GetGenericTypeDefinition() == typeof(Nullable<>);
         }
@@ -151,8 +150,7 @@ namespace DomainCommonExtensions.CommonExtensions
         /// <remarks></remarks>
         public static string GetSelectedFieldFromEntity(this Type type, IEnumerable<string> fields = null)
         {
-            if (type.IsNull())
-                throw new ArgumentNullException(nameof(type));
+            DomainEnsure.IsNotNull(type, nameof(type));
 
             var searchBuilder = new StringBuilder();
             var propsInfo = type.GetProperties();
@@ -185,8 +183,7 @@ namespace DomainCommonExtensions.CommonExtensions
         /// <remarks></remarks>
         public static bool IsSimpleType(this Type type)
         {
-            if (type.IsNull())
-                throw new ArgumentNullException(nameof(type));
+            DomainEnsure.IsNotNull(type, nameof(type));
 
             var underlyingType = Nullable.GetUnderlyingType(type);
             type = underlyingType ?? type;
@@ -223,8 +220,7 @@ namespace DomainCommonExtensions.CommonExtensions
         /// <remarks></remarks>
         public static bool IsTypeOfInt(this Type type)
         {
-            if (type.IsNull())
-                throw new ArgumentNullException(nameof(type));
+            DomainEnsure.IsNotNull(type, nameof(type));
 
             var underlyingType = Nullable.GetUnderlyingType(type);
             type = underlyingType ?? type;
@@ -249,8 +245,7 @@ namespace DomainCommonExtensions.CommonExtensions
         /// <remarks></remarks>
         public static bool IsTypeOfNullableInt(this Type type)
         {
-            if (type.IsNull())
-                throw new ArgumentNullException(nameof(type));
+            DomainEnsure.IsNotNull(type, nameof(type));
 
             var simpleTypes = new List<Type>
             {
@@ -273,8 +268,7 @@ namespace DomainCommonExtensions.CommonExtensions
         /// <remarks></remarks>
         public static bool IsTypeOfFloatingPoint(this Type type)
         {
-            if (type.IsNull())
-                throw new ArgumentNullException(nameof(type));
+            DomainEnsure.IsNotNull(type, nameof(type));
 
             var underlyingType = Nullable.GetUnderlyingType(type);
             type = underlyingType ?? type;
@@ -296,8 +290,7 @@ namespace DomainCommonExtensions.CommonExtensions
         /// <remarks></remarks>
         public static bool IsTypeOfNullableFloatingPoint(this Type type)
         {
-            if (type.IsNull())
-                throw new ArgumentNullException(nameof(type));
+            DomainEnsure.IsNotNull(type, nameof(type));
 
             var simpleTypes = new List<Type>
             {
@@ -317,8 +310,7 @@ namespace DomainCommonExtensions.CommonExtensions
         /// <remarks></remarks>
         public static bool IsEnumType(this Type type)
         {
-            if (type.IsNull())
-                throw new ArgumentNullException(nameof(type));
+            DomainEnsure.IsNotNull(type, nameof(type));
 
             var underlyingType = Nullable.GetUnderlyingType(type);
             type = underlyingType ?? type;
@@ -334,8 +326,7 @@ namespace DomainCommonExtensions.CommonExtensions
         /// <remarks></remarks>
         public static bool IsStringType(this Type type)
         {
-            if (type.IsNull())
-                throw new ArgumentNullException(nameof(type));
+            DomainEnsure.IsNotNull(type, nameof(type));
 
             var underlyingType = Nullable.GetUnderlyingType(type);
             type = underlyingType ?? type;
@@ -351,8 +342,7 @@ namespace DomainCommonExtensions.CommonExtensions
         /// <remarks></remarks>
         public static Type GetNonNullableType(this Type type)
         {
-            if (type.IsNull())
-                throw new ArgumentNullException(nameof(type));
+            DomainEnsure.IsNotNull(type, nameof(type));
 
             return type.IsNullablePropType()
                 ? NullableTypeDict.FirstOrDefault(x => x.Key == type).Value

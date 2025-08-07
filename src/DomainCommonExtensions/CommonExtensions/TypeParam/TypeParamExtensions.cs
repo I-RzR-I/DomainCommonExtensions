@@ -16,7 +16,6 @@
 
 #region U S A G E S
 
-using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -26,6 +25,7 @@ using System.Runtime.Serialization.Formatters.Binary;
 using System.Xml;
 using CodeSource;
 using DomainCommonExtensions.DataTypeExtensions;
+using DomainCommonExtensions.Utilities.Ensure;
 
 #pragma warning disable SCS0007
 
@@ -48,8 +48,8 @@ namespace DomainCommonExtensions.CommonExtensions.TypeParam
         /// <returns></returns>
         public static T Clone<T>(this T source)
         {
-            if (!typeof(T).IsSerializable)
-                throw new ArgumentException("The type must be serializable.", nameof(source));
+            DomainEnsure.ThrowArgumentExceptionIfFuncIsFalse(
+                () => typeof(T).IsSerializable, "The type must be serializable.", nameof(source));
 
             // Don't serialize a null object, simply return the default for that object
             if (ReferenceEquals(source, null)) return default;

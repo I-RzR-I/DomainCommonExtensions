@@ -14,10 +14,14 @@
 //  </summary>
 // ***********************************************************************
 
-using System;
-using System.Linq;
+#region U S A G E S
+
 using DomainCommonExtensions.CommonExtensions;
 using DomainCommonExtensions.DataTypeExtensions;
+using System;
+using System.Linq;
+
+#endregion
 
 namespace DomainCommonExtensions.ArraysExtensions
 {
@@ -165,7 +169,7 @@ namespace DomainCommonExtensions.ArraysExtensions
         /// =================================================================================================
         public static T[] RemoveItem<T>(this T[] source, T item)
         {
-            if (source.IsNullOrEmptyEnumerable()) return new T[] { }; 
+            if (source.IsNullOrEmptyEnumerable()) return new T[] { };
             if (item.IsNull()) return source;
 
             var idx = source.IndexOf(item);
@@ -186,7 +190,7 @@ namespace DomainCommonExtensions.ArraysExtensions
         /// =================================================================================================
         public static T[] RemoveAtIdx<T>(this T[] source, int index)
         {
-            if (source.IsNullOrEmptyEnumerable()) return new T[] { }; 
+            if (source.IsNullOrEmptyEnumerable()) return new T[] { };
             if (index.IsLessZero()) return source;
 
             T[] dest = new T[source.Length - 1];
@@ -197,6 +201,18 @@ namespace DomainCommonExtensions.ArraysExtensions
                 Array.Copy(source, index + 1, dest, index, source.Length - index - 1);
 
             return dest;
+        }
+
+        /// <summary>
+        ///     Not null array
+        /// </summary>
+        /// <param name="array">Input array</param>
+        /// <returns></returns>
+        /// <typeparam name="T">Array type</typeparam>
+        /// <remarks></remarks>
+        public static T[] NotNull<T>(this T[] array)
+        {
+            return array ?? new T[] { };
         }
     }
 }

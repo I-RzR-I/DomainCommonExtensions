@@ -17,7 +17,7 @@
 #region U S A G E S
 
 using System;
-using DomainCommonExtensions.CommonExtensions;
+using DomainCommonExtensions.Utilities.Ensure;
 
 #endregion
 
@@ -38,8 +38,7 @@ namespace DomainCommonExtensions.DataTypeExtensions
         /// </returns>
         public static int MinutesToMs(this double minutes)
         {
-            if (minutes.IsNull())
-                throw new ArgumentNullException(nameof(minutes));
+            DomainEnsure.IsNotNull(minutes, nameof(minutes));
 
             return (int)TimeSpan.FromMinutes(minutes).TotalMilliseconds;
         }
@@ -53,8 +52,7 @@ namespace DomainCommonExtensions.DataTypeExtensions
         /// </returns>
         public static double MinutesToSeconds(this double minutes)
         {
-            if (minutes.IsNull())
-                throw new ArgumentNullException(nameof(minutes));
+            DomainEnsure.IsNotNull(minutes, nameof(minutes));
 
             return TimeSpan.FromMinutes(minutes).TotalSeconds;
         }

@@ -50,21 +50,5 @@ namespace DataTypeTests.DataTests
             Assert.IsTrue(castString);
             Assert.IsFalse(castNull);
         }
-
-        [TestMethod]
-        public void ThrowIfNullTest()
-        {
-            object obj = null;
-
-            Assert.ThrowsException<Exception>(() => obj.ThrowIfNull("Obj is null"), "Obj is null");
-        }
-
-        [TestMethod]
-        public void ThrowIfArgNullTest()
-        {
-            object obj = null;
-
-            Assert.ThrowsException<ArgumentNullException>(() => obj.ThrowIfArgNull(nameof(obj)), "Value cannot be null. (Parameter 'obj')");
-        }
     }
 }

@@ -20,6 +20,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using DomainCommonExtensions.CommonExtensions;
+using DomainCommonExtensions.Utilities.Ensure;
 
 #if NET45_OR_GREATER || NET || NETSTANDARD1_0_OR_GREATER
 using System.ComponentModel;
@@ -47,7 +48,8 @@ namespace DomainCommonExtensions.DataTypeExtensions
         /// <returns></returns>
         public static Dictionary<int, string> GetEnumDefinition(this Type enumType)
         {
-            if (enumType.IsEnum.IsFalse()) throw new Exception("Non valid enum");
+            DomainEnsure.ThrowArgumentExceptionIfFuncIsFalse(
+                () => enumType.IsEnum, "Non valid enum!", nameof(enumType));
 
             return Enum.GetNames(enumType).ToDictionary(x => (int)Enum.Parse(enumType, x), x => x);
         }
@@ -104,10 +106,9 @@ namespace DomainCommonExtensions.DataTypeExtensions
         /// <remarks></remarks>
         public static int ToInt<T>(this T source) where T : Enum, IConvertible
         {
-            if (source.IsNull())
-                throw new ArgumentNullException(nameof(source));
-            if (typeof(T).IsEnum.IsFalse())
-                throw new ArgumentException("T must be an enumerated type");
+            DomainEnsure.IsNotNull(source, nameof(source));
+            DomainEnsure.ThrowArgumentExceptionIfFuncIsFalse(
+                () => typeof(T).IsEnum, "T must be an enumerated type!", typeof(T).Name);
 
             return (int)(IConvertible)source;
         }
@@ -121,10 +122,9 @@ namespace DomainCommonExtensions.DataTypeExtensions
         /// <remarks></remarks>
         public static string ToString<T>(this T source) where T : Enum, IConvertible
         {
-            if (source.IsNull())
-                throw new ArgumentNullException(nameof(source));
-            if (typeof(T).IsEnum.IsFalse())
-                throw new ArgumentException("T must be an enumerated type");
+            DomainEnsure.IsNotNull(source, nameof(source));
+            DomainEnsure.ThrowArgumentExceptionIfFuncIsFalse(
+                () => typeof(T).IsEnum, "T must be an enumerated type!", typeof(T).Name);
 
             return (string)(IConvertible)source;
         }
@@ -157,9 +157,11 @@ namespace DomainCommonExtensions.DataTypeExtensions
         /// <remarks></remarks>
         public static T GetEnumValue<T>(this string str) where T : struct, Enum, IConvertible
         {
-            if (typeof(T).IsEnum.IsFalse()) throw new Exception("T must be an Enumeration type.");
+            DomainEnsure.ThrowArgumentExceptionIfFuncIsFalse(
+                () => typeof(T).IsEnum, "T must be an enumerated type!", typeof(T).Name);
+
             var val = ((T[])Enum.GetValues(typeof(T)))[0];
-            if (!string.IsNullOrEmpty(str))
+            if (str.IsPresent())
                 foreach (var enumValue in (T[])Enum.GetValues(typeof(T)))
                     if (enumValue.ToString().ToUpper().Equals(str.ToUpper()))
                     {
@@ -179,7 +181,9 @@ namespace DomainCommonExtensions.DataTypeExtensions
         /// <remarks></remarks>
         public static T GetEnumValue<T>(this int intValue) where T : struct, Enum, IConvertible
         {
-            if (typeof(T).IsEnum.IsFalse()) throw new Exception("T must be an Enumeration type.");
+            DomainEnsure.ThrowArgumentExceptionIfFuncIsFalse(
+                () => typeof(T).IsEnum, "T must be an enumerated type!", typeof(T).Name);
+
             var val = ((T[])Enum.GetValues(typeof(T)))[0];
 
             foreach (var enumValue in (T[])Enum.GetValues(typeof(T)))

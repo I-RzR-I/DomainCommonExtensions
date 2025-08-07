@@ -1,3 +1,15 @@
+### **v3.0.0.3007** [[RzR](mailto:108324929+I-RzR-I@users.noreply.github.com)] 07-08-2025
+* [9e7a5e9] (RzR) -> Auto commit uncommited files.
+* [ddc61a0] (RzR) -> Add new reflection extension methods (available from net45 and up); `GetTypes`, `GetSetMethod`, `GetGetMethod`, `GetGenericArguments`, `GetMethod`, `GetMembers`, `GetInterfaces`, `IsGenericType`, `IsValueType`, `IsAbstract`, `IsAssignableFrom`, `ContainsGenericParameters`, `BaseType`, `IsGenericTypeDefinition`, `IsPrimitive`, `IsNestedPublic`, `IsPublic`, `IsSealed`, `GetGenericParameterConstraints`, `IsClass`, `IsInterface`, `IsGenericParameter`, `GetGenericParameterAttributes`, `GetAssembly`, `GetConstructors`, `GetConstructor`, `IsInNamespace`.
+* [379d971] (RzR) -> Add `NotNull` (safe) array extension. Add array/enumerable tests.
+* [efb7a14] (RzR) -> Small code adjustments and improvements
+* [c4ec2f8] (RzR) -> Add tests for `DomainEnsure` methods
+* [780f3f5] (RzR) -> Adjust code to use `Ensure`. Adjust namespace.
+* [716c5a4] (RzR) -> [**BreakingChanges**] Relocate extension classes `ReflectionExtensions`, `TypeBuilderExtensions` and `TypeExtensions`.
+* [ad66c6d] (RzR) -> Adjust code to use defined extensions. Adjust namespace.
+* [6e57990] (RzR) -> Add collection extension method `With` (accept array).
+* [5db737c] (RzR) -> Add `Ensure` methods and refactor code.
+
 ### **v2.3.0.7698** [[RzR](mailto:108324929+I-RzR-I@users.noreply.github.com)] 15-07-2025
 * [f300bd2] (RzR) -> Auto commit uncommited files
 * [067dd42] (RzR) -> Add alternative extension method for `WithIndex`

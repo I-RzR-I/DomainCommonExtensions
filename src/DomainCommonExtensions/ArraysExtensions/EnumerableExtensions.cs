@@ -14,7 +14,10 @@
 //  </summary>
 // ***********************************************************************
 
+#region U S A G E S
+
 using DomainCommonExtensions.CommonExtensions;
+using DomainCommonExtensions.CommonExtensions.Reflection;
 using DomainCommonExtensions.CommonExtensions.TypeParam;
 using DomainCommonExtensions.DataTypeExtensions;
 using DomainCommonExtensions.Models;
@@ -29,6 +32,8 @@ using System.Text;
 
 // ReSharper disable UnusedParameter.Local
 // ReSharper restore PossibleMultipleEnumeration
+
+#endregion
 
 namespace DomainCommonExtensions.ArraysExtensions
 {
@@ -76,7 +81,7 @@ namespace DomainCommonExtensions.ArraysExtensions
         public static bool IsLast<T>(this IEnumerable<T> items, T item)
         {
             var list = items?.ToList() ?? new List<T>();
-            if (!list.Any())
+            if (list.IsNullOrEmptyEnumerable())
                 return false;
             var last = list.ElementAt(list.Count - 1);
 
@@ -93,7 +98,7 @@ namespace DomainCommonExtensions.ArraysExtensions
         public static bool IsFirst<T>(this IEnumerable<T> items, T item)
         {
             var list = items?.ToList() ?? new List<T>();
-            if (!list.Any())
+            if (list.IsNullOrEmptyEnumerable())
                 return false;
             var first = list.FirstOrDefault();
 
@@ -135,7 +140,7 @@ namespace DomainCommonExtensions.ArraysExtensions
             var enumeratedSource = source.ToList();
             var enumeratedTarget = target.ToList();
 
-            if (!enumeratedSource.Any() || !enumeratedTarget.Any()) return false;
+            if (enumeratedSource.IsNullOrEmptyEnumerable() || enumeratedTarget.IsNullOrEmptyEnumerable()) return false;
             var common = enumeratedSource.Intersect(enumeratedTarget);
 
             return common.Any();

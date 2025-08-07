@@ -26,6 +26,7 @@ using System.Runtime.Serialization;
 using System.Xml;
 using CodeSource;
 using DomainCommonExtensions.CommonExtensions;
+using DomainCommonExtensions.Utilities.Ensure;
 
 #endregion
 
@@ -45,7 +46,7 @@ namespace DomainCommonExtensions.DataTypeExtensions
         /// <remarks></remarks>
         public static DateTime? TryGetDateTimeFromDbObj(this object value)
         {
-            if (value.IsNull() || value .IsDbNull() || string.IsNullOrEmpty(value.ToString()))
+            if (value.IsNull() || value.IsDbNull() || string.IsNullOrEmpty(value.ToString()))
                 return null;
             try
             {
@@ -86,8 +87,7 @@ namespace DomainCommonExtensions.DataTypeExtensions
         /// <param name="xmlDocument">The xml document</param>
         public static void GetXmlParams(this object obj, ref XmlDocument xmlDocument)
         {
-            if (obj.IsNull())
-                throw new ArgumentNullException(nameof(obj));
+            DomainEnsure.IsNotNull(obj, nameof(obj));
 
             foreach (var prop in obj.GetType().GetProperties())
             {
@@ -106,10 +106,8 @@ namespace DomainCommonExtensions.DataTypeExtensions
         /// <remarks></remarks>
         public static void CopyPropertiesTo(this object fromObject, object toObject)
         {
-            if (fromObject.IsNull())
-                throw new ArgumentNullException(nameof(fromObject));
-            if (toObject.IsNull())
-                throw new ArgumentNullException(nameof(toObject));
+            DomainEnsure.IsNotNull(fromObject, nameof(fromObject));
+            DomainEnsure.IsNotNull(toObject, nameof(toObject));
 
             var toObjectProperties = toObject.GetType().GetProperties();
             foreach (var propTo in toObjectProperties)
@@ -172,42 +170,6 @@ namespace DomainCommonExtensions.DataTypeExtensions
             }
 
             return result;
-        }
-
-        /// <summary>
-        ///     Throw exception if source is null
-        /// </summary>
-        /// <param name="source">Source to check</param>
-        /// <param name="msg">Error message</param>
-        /// <remarks></remarks>
-        public static void ThrowIfNull(this object source, string msg)
-        {
-            if (source.IsNull())
-                throw new Exception(msg);
-        }
-
-        /// <summary>
-        ///     Throw argument null exception if source is null
-        /// </summary>
-        /// <param name="source">Source to check</param>
-        /// <param name="objectName">Name of source object</param>
-        /// <remarks></remarks>
-        public static void ThrowIfArgNull(this object source, string objectName)
-        {
-            if (source.IsNull())
-                throw new ArgumentNullException(objectName);
-        }
-
-        /// <summary>
-        ///     Throw argument exception if source is null
-        /// </summary>
-        /// <param name="source">Source to check</param>
-        /// <param name="msg">Error message.</param>
-        /// <remarks></remarks>
-        public static void ThrowArgIfNull(this object source, string msg)
-        {
-            if (source.IsNull())
-                throw new ArgumentException(msg);
         }
 
         /// <summary>

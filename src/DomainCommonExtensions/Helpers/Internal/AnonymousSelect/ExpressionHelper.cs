@@ -23,6 +23,7 @@ using System.Linq.Expressions;
 using System.Reflection;
 using CodeSource;
 using DomainCommonExtensions.CommonExtensions;
+using DomainCommonExtensions.CommonExtensions.Reflection;
 using DomainCommonExtensions.DataTypeExtensions;
 using DomainCommonExtensions.Helpers.Internal.AnonymousSelect.Factory;
 
