@@ -314,5 +314,14 @@ namespace DataTypeTests.DataTests
             Assert.IsNotNull(newDt);
             Assert.AreEqual(newDt, customDt);
         }
+
+        [TestMethod]
+        public void Epoch_Test()
+        {
+            var epoch = DateTime.Now.Epoch();
+
+            Assert.IsNotNull(epoch);
+            Assert.AreEqual(new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc), epoch);
+        }
     }
 }

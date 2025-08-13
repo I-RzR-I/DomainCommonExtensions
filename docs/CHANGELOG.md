@@ -1,3 +1,10 @@
+### **v3.1.0.3090** [[RzR](mailto:108324929+I-RzR-I@users.noreply.github.com)] 13-08-2025
+* [bc2ef6d] (RzR) -> Auto commit uncommited files
+* [90ce1ef] (RzR) -> Add and adjust test methods.
+* [e8fafdc] (RzR) -> Add DateTime method: `Epoch`.
+* [8bb8672] (RzR) -> Add byte method: `Base32BytesToString`.
+* [896be11] (RzR) -> Add string methods `IsBase32String`, `Base32ToBytes` and adjust `TrimAndReduceSpace`, `TrimAndReplaceSpecialCharacters`.
+
 ### **v3.0.0.3007** [[RzR](mailto:108324929+I-RzR-I@users.noreply.github.com)] 07-08-2025
 * [9e7a5e9] (RzR) -> Auto commit uncommited files.
 * [ddc61a0] (RzR) -> Add new reflection extension methods (available from net45 and up); `GetTypes`, `GetSetMethod`, `GetGetMethod`, `GetGenericArguments`, `GetMethod`, `GetMembers`, `GetInterfaces`, `IsGenericType`, `IsValueType`, `IsAbstract`, `IsAssignableFrom`, `ContainsGenericParameters`, `BaseType`, `IsGenericTypeDefinition`, `IsPrimitive`, `IsNestedPublic`, `IsPublic`, `IsSealed`, `GetGenericParameterConstraints`, `IsClass`, `IsInterface`, `IsGenericParameter`, `GetGenericParameterAttributes`, `GetAssembly`, `GetConstructors`, `GetConstructor`, `IsInNamespace`.

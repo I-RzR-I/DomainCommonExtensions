@@ -62,5 +62,10 @@ namespace DomainCommonExtensions.Resources
         ///     BASE 64 regex
         /// </summary>
         public const string BASE64 = @"^[a-zA-Z0-9\+/]*={0,3}$";
+
+        /// <summary>
+        ///     BASE 32 regex
+        /// </summary>
+        public const string BASE32 = @"^[A-Z2-7]+(?:={1,6})?$";
     }
 }

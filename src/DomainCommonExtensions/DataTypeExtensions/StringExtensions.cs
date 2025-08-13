@@ -36,6 +36,7 @@ using System.Text.RegularExpressions;
 using CodeSource;
 using DomainCommonExtensions.ArraysExtensions;
 using DomainCommonExtensions.CommonExtensions;
+using DomainCommonExtensions.Helpers.Internal;
 using DomainCommonExtensions.Resources;
 using DomainCommonExtensions.Resources.Enums;
 using DomainCommonExtensions.Utilities.Ensure;
@@ -117,7 +118,7 @@ namespace DomainCommonExtensions.DataTypeExtensions
         /// <returns></returns>
         public static SecureString ToSecureString(this string str)
         {
-            DomainEnsure.ThrowExceptionIfFuncIsTrue(ExceptionType.ArgumentNullException, 
+            DomainEnsure.ThrowExceptionIfFuncIsTrue(ExceptionType.ArgumentNullException,
                 str.IsMissing, str, nameof(str));
 
             var secureString = new SecureString();
@@ -340,13 +341,17 @@ namespace DomainCommonExtensions.DataTypeExtensions
         ///     Trim and reduce space from string
         /// </summary>
         /// <param name="value">Input value</param>
+        /// <param name="reduceAllSpaces">
+        ///     Reduce/remove all spaces from source string data.
+        ///     Default value is 'false'.
+        /// </param>
         /// <returns></returns>
         /// <remarks></remarks>
-        public static string TrimAndReduceSpace(this string value)
+        public static string TrimAndReduceSpace(this string value, bool reduceAllSpaces = false)
         {
             if (value.IfNullThenEmpty().IsMissing()) return null;
 
-            return Regex.Replace(value, @"\s+", " ").TrimIfNotNull();
+            return Regex.Replace(value, @"\s+", reduceAllSpaces.IsTrue() ? "" : " ").TrimIfNotNull();
         }
 
         /// <summary>
@@ -504,11 +509,15 @@ namespace DomainCommonExtensions.DataTypeExtensions
         ///     Trim and replace special characters in string
         /// </summary>
         /// <param name="value">Input string</param>
+        /// <param name="reduceAllSpaces">
+        ///     Reduce/remove all spaces from source string data.
+        ///     Default value is 'false'.
+        /// </param>
         /// <returns></returns>
         /// <remarks></remarks>
-        public static string TrimAndReplaceSpecialCharacters(this string value)
+        public static string TrimAndReplaceSpecialCharacters(this string value, bool reduceAllSpaces = false)
         {
-            return value.TrimAndReduceSpace().RemoveSpecialChars();
+            return value.TrimAndReduceSpace(reduceAllSpaces).RemoveSpecialChars();
         }
 
         /// <summary>
@@ -1636,6 +1645,68 @@ namespace DomainCommonExtensions.DataTypeExtensions
         public static string IfNotStartsWith(this string source, string searchValue, string resultValue)
         {
             return source.StartsWith(searchValue).IsFalse() ? resultValue : source;
+        }
+
+
+        /// <summary>
+        ///     Check if string is in BASE32 format
+        /// </summary>
+        /// <param name="base32String">Encoded BASE32 string</param>
+        /// <returns></returns>
+        /// <remarks></remarks>
+        public static bool IsBase32String(this string base32String)
+        {
+            if (base32String.IsNullOrEmpty()) return false;
+
+            base32String = base32String.TrimIfNotNull();
+
+            return (base32String.Length % 8).IsZero() &&
+                   Regex.IsMatch(base32String, RegularExpressions.BASE32, RegexOptions.None);
+        }
+
+        /// <summary>
+        ///     Convert BASE32 string to byte[]
+        /// </summary>
+        /// <param name="base32String">Encoded BASE32 string.</param>
+        /// <returns>
+        ///     A byte[].
+        /// </returns>
+        public static byte[] Base32ToBytes(this string base32String)
+        {
+            DomainEnsure.IsNotNullOrEmptyArgNull(base32String, nameof(base32String));
+
+            base32String = base32String.TrimEnd('=');
+            var byteCount = base32String.Length * 5 / 8;
+            var returnArray = new byte[byteCount];
+
+            byte curByte = 0, bitsRemaining = 8;
+            var arrayIndex = 0;
+
+            foreach (var character in base32String)
+            {
+                var charValue = Base32EncodingHelper.CharToInt32(character);
+
+                int mask;
+                if (bitsRemaining > 5)
+                {
+                    mask = charValue << (bitsRemaining - 5);
+                    curByte = (byte)(curByte | mask);
+                    bitsRemaining -= 5;
+                }
+                else
+                {
+                    mask = charValue >> (5 - bitsRemaining);
+                    curByte = (byte)(curByte | mask);
+                    returnArray[arrayIndex++] = curByte;
+                    curByte = (byte)(charValue << (3 + bitsRemaining));
+                    bitsRemaining += 3;
+                }
+            }
+
+            if (arrayIndex.Equals(byteCount).IsFalse())
+                returnArray[arrayIndex] = curByte;
+
+            return returnArray;
         }
     }
 }

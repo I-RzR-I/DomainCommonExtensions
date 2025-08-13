@@ -240,6 +240,7 @@ namespace DataTypeTests.DataTests
             var inpValue = " test ".TrimIfNotNull();
 
             Assert.IsTrue(inpValue.Length == 4);
+            Assert.AreEqual("test", inpValue);
         }
 
         [TestMethod]
@@ -248,6 +249,16 @@ namespace DataTypeTests.DataTests
             var inpValue = " Input test data  ".TrimAndReduceSpace();
 
             Assert.IsTrue(inpValue.Length == 15);
+            Assert.AreEqual("Input test data", inpValue);
+        }
+
+        [TestMethod]
+        public void TrimAndReduceSpace_ReduceAllSpaces_Test()
+        {
+            var inpValue = " Input test data  ".TrimAndReduceSpace(true);
+
+            Assert.IsTrue(inpValue.Length == 13);
+            Assert.AreEqual("Inputtestdata", inpValue);
         }
 
         [TestMethod]
@@ -417,6 +428,19 @@ namespace DataTypeTests.DataTests
         }
 
         [TestMethod]
+        public void IsBase32StringTest()
+        {
+            var clear = "Clear text test 001?!";
+            var b32 = "INWGKYLSEB2GK6DUEB2GK43UEAYDAMJ7EE======";
+
+            var clearTest = clear.IsBase32String();
+            var b32Test = b32.IsBase32String();
+
+            Assert.IsTrue(b32Test);
+            Assert.IsFalse(clearTest);
+        }
+
+        [TestMethod]
         public void ReplaceSpecialCharactersTest()
         {
             var input = "Ședința de judecată";
@@ -578,6 +602,18 @@ namespace DataTypeTests.DataTests
             
             Assert.IsNotNull(res);
             Assert.AreEqual(exceptedResult, res);
+        }
+
+        [DataRow("INWGKYLSEB2GK6DUEB2GK43UEAYDAMJ7EE======")]
+        [TestMethod]
+        public void Base32StringToByteAndBack_Test(string base32String)
+        {
+            var byteArray = base32String.Base32ToBytes();
+            Assert.IsNotNull(byteArray);
+
+            var decoded = byteArray.Base32BytesToString();
+            Assert.IsNotNull(decoded);
+            Assert.AreEqual(base32String, decoded);
         }
     }
 }
