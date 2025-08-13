@@ -524,5 +524,14 @@ namespace DomainCommonExtensions.DataTypeExtensions
 
             return t.TotalDays;
         }
+
+        /// <summary>
+        ///     Return always epoch date and time. Source DateTime will be ignored.
+        /// </summary>
+        /// <param name="sourceTime">Source date time</param>
+        /// <returns>Return always epoch date.</returns>
+        /// <remarks></remarks>
+        public static DateTime Epoch(this DateTime sourceTime) 
+            => new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
     }
 }
