@@ -428,19 +428,6 @@ namespace DataTypeTests.DataTests
         }
 
         [TestMethod]
-        public void IsBase32StringTest()
-        {
-            var clear = "Clear text test 001?!";
-            var b32 = "INWGKYLSEB2GK6DUEB2GK43UEAYDAMJ7EE======";
-
-            var clearTest = clear.IsBase32String();
-            var b32Test = b32.IsBase32String();
-
-            Assert.IsTrue(b32Test);
-            Assert.IsFalse(clearTest);
-        }
-
-        [TestMethod]
         public void ReplaceSpecialCharactersTest()
         {
             var input = "Ședința de judecată";
@@ -604,6 +591,19 @@ namespace DataTypeTests.DataTests
             Assert.AreEqual(exceptedResult, res);
         }
 
+        [TestMethod]
+        public void IsBase32StringTest()
+        {
+            var clear = "Clear text test 001?!";
+            var b32 = "INWGKYLSEB2GK6DUEB2GK43UEAYDAMJ7EE======";
+
+            var clearTest = clear.IsBase32String();
+            var b32Test = b32.IsBase32String();
+
+            Assert.IsTrue(b32Test);
+            Assert.IsFalse(clearTest);
+        }
+
         [DataRow("INWGKYLSEB2GK6DUEB2GK43UEAYDAMJ7EE======")]
         [TestMethod]
         public void Base32StringToByteAndBack_Test(string base32String)
@@ -614,6 +614,56 @@ namespace DataTypeTests.DataTests
             var decoded = byteArray.Base32BytesToString();
             Assert.IsNotNull(decoded);
             Assert.AreEqual(base32String, decoded);
+        }
+
+        [DataRow("Clear text test 001?!", "INWGKYLSEB2GK6DUEB2GK43UEAYDAMJ7EE======")]
+        [DataRow("test", "ORSXG5A=")]
+        [DataRow("TEST", "KRCVGVA=")]
+        [DataRow("T3$t0`!-gg", "KQZSI5BQMAQS2Z3H")]
+        [TestMethod]
+        public void Base32Encode_Test(string clear, string encoded)
+        {
+            var encodeResult = clear.Base32Encode();
+            Assert.IsNotNull(encodeResult);
+            Assert.IsTrue(encodeResult.IsBase32String());
+            Assert.AreEqual(encoded, encodeResult);
+        }
+
+        [DataRow("Clear text test 001?!", "INWGKYLSEB2GK6DUEB2GK43UEAYDAMJ7EE")]
+        [DataRow("test", "ORSXG5A")]
+        [DataRow("TEST", "KRCVGVA")]
+        [DataRow("T3$t0`!-gg", "KQZSI5BQMAQS2Z3H")]
+        [TestMethod]
+        public void Base32Encode_WithOutPadding_Test(string clear, string encoded)
+        {
+            var encodeResult = clear.Base32Encode(false);
+            Assert.IsNotNull(encodeResult);
+            Assert.IsTrue(encodeResult.IsBase32String(false));
+            Assert.AreEqual(encoded, encodeResult);
+        }
+
+        [DataRow("INWGKYLSEB2GK6DUEB2GK43UEAYDAMJ7EE======", "Clear text test 001?!")]
+        [DataRow("ORSXG5A=", "test")]
+        [DataRow("KRCVGVA=", "TEST")]
+        [DataRow("KQZSI5BQMAQS2Z3H", "T3$t0`!-gg")]
+        [TestMethod]
+        public void Base32Decode_Test(string encoded, string clear)
+        {
+            var decodedResult = encoded.Base32Decode();
+            Assert.IsNotNull(decodedResult);
+            Assert.AreEqual(clear, decodedResult);
+        }
+
+        [DataRow("INWGKYLSEB2GK6DUEB2GK43UEAYDAMJ7EE", "Clear text test 001?!")]
+        [DataRow("ORSXG5A", "test")]
+        [DataRow("KRCVGVA", "TEST")]
+        [DataRow("KQZSI5BQMAQS2Z3H", "T3$t0`!-gg")]
+        [TestMethod]
+        public void Base32Decode_WithOutPadding_Test(string encoded, string clear)
+        {
+            var decodedResult = encoded.Base32Decode();
+            Assert.IsNotNull(decodedResult);
+            Assert.AreEqual(clear, decodedResult);
         }
     }
 }
