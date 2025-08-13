@@ -1652,16 +1652,20 @@ namespace DomainCommonExtensions.DataTypeExtensions
         ///     Check if string is in BASE32 format
         /// </summary>
         /// <param name="base32String">Encoded BASE32 string</param>
+        /// <param name="paddingCheck">Check for padding data.</param>
         /// <returns></returns>
         /// <remarks></remarks>
-        public static bool IsBase32String(this string base32String)
+        public static bool IsBase32String(this string base32String, bool paddingCheck = true)
         {
             if (base32String.IsNullOrEmpty()) return false;
 
             base32String = base32String.TrimIfNotNull();
 
-            return (base32String.Length % 8).IsZero() &&
-                   Regex.IsMatch(base32String, RegularExpressions.BASE32, RegexOptions.None);
+            if (paddingCheck.IsTrue())
+                return (base32String.Length % 8).IsZero() &&
+                    Regex.IsMatch(base32String, RegularExpressions.BASE32, RegexOptions.None);
+            else
+                return Regex.IsMatch(base32String, RegularExpressions.BASE32, RegexOptions.None);
         }
 
         /// <summary>
@@ -1707,6 +1711,93 @@ namespace DomainCommonExtensions.DataTypeExtensions
                 returnArray[arrayIndex] = curByte;
 
             return returnArray;
+        }
+
+        /// <summary>
+        ///     A string extension method that encode clear text to BASE32 text.
+        /// </summary>
+        /// <param name="sourceString">The sourceString to act on.</param>
+        /// <param name="includePadding">
+        ///     (Optional) True to include, false to exclude the padding.
+        /// </param>
+        /// <returns>
+        ///     A string encoded to BASE32.
+        /// </returns>
+        public static string Base32Encode(this string sourceString, bool includePadding = true)
+        {
+            if (sourceString.IsMissing())
+                return string.Empty;
+
+            var byteArray = Encoding.UTF8.GetBytes(sourceString);
+            var encodedResult = new StringBuilder((byteArray.Length + 4) / 5 * 8);
+
+            var bitBuffer = 0;
+            var bitsInBuffer = 0;
+
+            foreach (var currentByte in byteArray)
+            {
+                bitBuffer = (bitBuffer << 8) | currentByte;
+                bitsInBuffer += 8;
+
+                while (bitsInBuffer >= 5)
+                {
+                    bitsInBuffer -= 5;
+                    var index = (bitBuffer >> bitsInBuffer) & 0x1F;
+                    encodedResult.Append(Base32EncodingHelper.Base32Alphabet[index]);
+                }
+            }
+
+            if (bitsInBuffer > 0)
+            {
+                var index = (bitBuffer << (5 - bitsInBuffer)) & 0x1F;
+                encodedResult.Append(Base32EncodingHelper.Base32Alphabet[index]);
+            }
+
+            if (includePadding.IsTrue())
+            {
+                while (encodedResult.Length % 8 != 0)
+                    encodedResult.Append("=");
+            }
+
+            return encodedResult.ToString();
+        }
+
+        /// <summary>
+        ///     A string extension method that decode BASE32 text to clear text.
+        /// </summary>
+        /// <param name="sourceString">The base32 to act on.</param>
+        /// <returns>
+        ///     A string decoded from BASE32.
+        /// </returns>
+        public static string Base32Decode(this string sourceString)
+        {
+            if (string.IsNullOrEmpty(sourceString))
+                return string.Empty;
+
+            var cleanEncodedText = sourceString.TrimEnd('=').ToUpperInvariant();
+
+            var bitBuffer = 0;
+            var bitsInBuffer = 0;
+            var tempResult = new byte[cleanEncodedText.Length * 5 / 8];
+            var byteIndex = 0;
+
+            foreach (var currentChar in cleanEncodedText)
+            {
+                var charValue = Base32EncodingHelper.Base32Alphabet.IndexOf(currentChar);
+                DomainEnsure.ThrowExceptionIfFuncIsTrue(ExceptionType.ArgumentException,
+                    () => charValue < 0, $"Invalid BASE32 character: {currentChar}", nameof(sourceString));
+
+                bitBuffer = (bitBuffer << 5) | charValue;
+                bitsInBuffer += 5;
+
+                if (bitsInBuffer >= 8)
+                {
+                    bitsInBuffer -= 8;
+                    tempResult[byteIndex++] = (byte)((bitBuffer >> bitsInBuffer) & 0xFF);
+                }
+            }
+
+            return Encoding.UTF8.GetString(tempResult, 0, byteIndex);
         }
     }
 }

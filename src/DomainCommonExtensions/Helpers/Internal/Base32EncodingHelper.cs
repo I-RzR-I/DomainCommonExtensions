@@ -32,6 +32,13 @@ namespace DomainCommonExtensions.Helpers.Internal
     {
         /// -------------------------------------------------------------------------------------------------
         /// <summary>
+        ///     (Immutable) the base 32 alphabet.
+        /// </summary>
+        /// =================================================================================================
+        internal static readonly string Base32Alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ234567";
+
+        /// -------------------------------------------------------------------------------------------------
+        /// <summary>
         ///     A char extension method that character to int 32.
         /// </summary>
         /// <exception cref="ArgumentException">
