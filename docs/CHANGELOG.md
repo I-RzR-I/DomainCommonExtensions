@@ -1,3 +1,7 @@
+### **v3.2.0.4113** [[RzR](mailto:108324929+I-RzR-I@users.noreply.github.com)] 13-08-2025
+* [b16c919] (RzR) -> Auto commit uncommited files
+* [b9538c3] (RzR) -> Add missign BASE32 methods: `Base32Encode`, `Base32Decode`. Adjust existing `IsBase32String`.
+
 ### **v3.1.0.3090** [[RzR](mailto:108324929+I-RzR-I@users.noreply.github.com)] 13-08-2025
 * [bc2ef6d] (RzR) -> Auto commit uncommited files
 * [90ce1ef] (RzR) -> Add and adjust test methods.
