@@ -24,6 +24,8 @@ using System.IO.Compression;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
+using DomainCommonExtensions.ArraysExtensions;
+using DomainCommonExtensions.Helpers.Internal;
 using DomainCommonExtensions.Utilities.Ensure;
 
 #endregion
@@ -188,5 +190,49 @@ namespace DomainCommonExtensions.DataTypeExtensions
             return memory.ToArray();
         }
 #endif
+
+        /// <summary>
+        ///     Convert byte[] to BASE32 string
+        /// </summary>
+        /// <param name="sourceBytes">The sourceBytes to act on.</param>
+        /// <returns>
+        ///     A BASE32 string.
+        /// </returns>
+        public static string Base32BytesToString(this byte[] sourceBytes)
+        {
+            if(sourceBytes.IsNullOrEmptyEnumerable())
+                DomainEnsure.IsNotNull(sourceBytes, nameof(sourceBytes));
+
+            var charCount = (int)Math.Ceiling(sourceBytes.Length / 5D) * 8;
+            var returnArray = new char[charCount];
+
+            byte nextChar = 0, bitsRemaining = 5;
+            var arrayIndex = 0;
+
+            foreach (var byteItem in sourceBytes)
+            {
+                nextChar = (byte)(nextChar | (byteItem >> (8 - bitsRemaining)));
+                returnArray[arrayIndex++] = Base32EncodingHelper.ByteToChar(nextChar);
+
+                if (bitsRemaining < 4)
+                {
+                    nextChar = (byte)((byteItem >> (3 - bitsRemaining)) & 31);
+                    returnArray[arrayIndex++] = Base32EncodingHelper.ByteToChar(nextChar);
+                    bitsRemaining += 5;
+                }
+
+                bitsRemaining -= 3;
+                nextChar = (byte)((byteItem << bitsRemaining) & 31);
+            }
+
+            if (arrayIndex.Equals(charCount).IsFalse())
+            {
+                returnArray[arrayIndex++] = Base32EncodingHelper.ByteToChar(nextChar);
+                while (arrayIndex != charCount) 
+                    returnArray[arrayIndex++] = '=';
+            }
+
+            return new string(returnArray);
+        }
     }
 }
