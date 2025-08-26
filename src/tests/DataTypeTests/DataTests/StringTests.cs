@@ -124,6 +124,22 @@ namespace DataTypeTests.DataTests
         }
 
         [TestMethod]
+        public void TruncateFromStartTest()
+        {
+            var source = "This is my PC!";
+            var result = source.TruncateFromStart(10);
+            var result2 = source.TruncateFromStart(10, true);
+
+            Assert.IsNotNull(result);
+            Assert.IsNotNull(result2);
+            Assert.AreEqual(10, result.Length);
+            Assert.AreEqual(10, result2.Length);
+            Assert.AreEqual(" is my PC!", result);
+            Assert.AreEqual("... my PC!", result2);
+            Assert.IsTrue(result2.StartsWith("..."));
+        }
+
+        [TestMethod]
         public void TruncateExactLengthTest()
         {
             var source = "This is my PC!";
