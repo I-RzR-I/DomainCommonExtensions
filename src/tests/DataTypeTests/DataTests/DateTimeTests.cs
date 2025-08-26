@@ -323,5 +323,93 @@ namespace DataTypeTests.DataTests
             Assert.IsNotNull(epoch);
             Assert.AreEqual(new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc), epoch);
         }
+
+        [DataRow("2025-04-11 12:14:55.001", false)]
+        [DataRow("2025-04-11 00:00:00.001", false)]
+        [DataRow("2025-04-11 00:00:00.000", true)]
+        [DataRow("2025-04-11 00:00:00", true)]
+        [DataRow("2025-04-11", true)]
+        [TestMethod]
+        public void IsOnlyDate_Test(string date, bool resultExcepted)
+        {
+            var dateTime = Convert.ToDateTime(date);
+
+            var isDateOnly = dateTime.IsOnlyDate();
+
+            Assert.IsNotNull(isDateOnly);
+            Assert.AreEqual(resultExcepted, isDateOnly);
+        }
+
+        [DataRow("2025-04-11 12:14:55.001", false)]
+        [DataRow("2025-04-11 00:00:00.001", false)]
+        [DataRow("2025-04-11 00:00:00.000", true)]
+        [DataRow("2025-04-11 00:00:00", true)]
+        [DataRow("2025-04-11", true)]
+        [TestMethod]
+        public void IsOnlyDate_Nullable_Test(string date, bool resultExcepted)
+        {
+            var dateTime = (DateTime?)Convert.ToDateTime(date);
+
+            var isDateOnly = dateTime.IsOnlyDate();
+
+            Assert.IsNotNull(isDateOnly);
+            Assert.AreEqual(resultExcepted, isDateOnly);
+        }
+
+        [DataRow("2025-04-11 12:14:55.001", "2025-04-11 12:14:55.000")]
+        [DataRow("2025-04-11 00:00:00.001", "2025-04-11 00:00:00.000")]
+        [DataRow("2025-04-11 00:00:00.000", "2025-04-11 00:00:00.000")]
+        [DataRow("2025-04-11 00:00:00", "2025-04-11 00:00:00.000")]
+        [DataRow("2025-04-11", "2025-04-11 00:00:00.000")]
+        [TestMethod]
+        public void ForceMillisecondsToZero_Test(string date, string resultExcepted)
+        {
+            var dateTime = (DateTime)Convert.ToDateTime(date);
+            var exceptedDateTime = (DateTime)Convert.ToDateTime(resultExcepted);
+
+            var newDateTime = dateTime.ForceMillisecondsToZero();
+
+            Assert.IsNotNull(newDateTime);
+            Assert.AreEqual(exceptedDateTime, newDateTime);
+        }
+
+        [DataRow("2025-04-11 12:14:55.001", "2025-04-11 12:14:55.000")]
+        [DataRow("2025-04-11 00:00:00.001", "2025-04-11 00:00:00.000")]
+        [DataRow("2025-04-11 00:00:00.000", "2025-04-11 00:00:00.000")]
+        [DataRow("2025-04-11 00:00:00", "2025-04-11 00:00:00.000")]
+        [DataRow("2025-04-11", "2025-04-11 00:00:00.000")]
+        [TestMethod]
+        public void ForceMillisecondsToZero_Nullable_Test(string date, string resultExcepted)
+        {
+            var dateTime = (DateTime?)Convert.ToDateTime(date);
+            var exceptedDateTime = (DateTime?)Convert.ToDateTime(resultExcepted);
+
+            var newDateTime = dateTime.ForceMillisecondsToZero();
+
+            Assert.IsNotNull(newDateTime);
+            Assert.AreEqual(exceptedDateTime, newDateTime);
+        }
+
+        [DataRow("2025-04-11 12:14:55.001", "2025-04-11 12:14:55.000")]
+        [DataRow("2025-04-11 00:00:00.001", "2025-04-11 00:00:00.000")]
+        [DataRow("2025-04-11 00:00:00.000", "2025-04-11 00:00:00.000")]
+        [DataRow("2025-04-11 00:00:00", "2025-04-11 00:00:00.000")]
+        [DataRow("2025-04-11", "2025-04-11 00:00:00.000")]
+        [DataRow("", "")]
+        [TestMethod]
+        public void ForceMillisecondsToZero_Nullable_WithDefaultDate_Test(string date, string resultExcepted)
+        {
+            var now = DateTime.Now;
+            var dateTime = (DateTime?)Convert.ToDateTime(date.IfNullOrEmpty(now.ToString("yyyy-MM-dd HH:mm:ss")));
+            var exceptedDateTime =
+                date.IsNullOrEmpty()
+                    ? now.ForceMillisecondsToZero()
+                    : (DateTime?)Convert.ToDateTime(resultExcepted);
+
+            var newDateTime = dateTime.ForceMillisecondsToZero(now);
+
+            Assert.IsNotNull(newDateTime);
+            Assert.AreEqual(exceptedDateTime, newDateTime);
+        }
     }
 }
