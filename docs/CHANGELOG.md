@@ -1,3 +1,10 @@
+### **v3.3.0.5249** [[RzR](mailto:108324929+I-RzR-I@users.noreply.github.com)] 29-09-2025
+* [325ff42] (RzR) -> Auto commit uncommited files
+* [7385809] (RzR) -> Add new Guid extension methods: `NullIfEmpty`, `EmptyIfNull`, `IsMissing`, `HasValidValue`.
+* [a37096b] (RzR) -> Add new DateTime extension methods: `IsOnlyDate`, `ForceMillisecondsToZero`.
+* [d0f9816] (RzR) -> Commented some tests, but it's fully covered.
+* [a01da4d] (RzR) -> Add new string extension `TruncateFromStart`.
+
 ### **v3.2.0.4113** [[RzR](mailto:108324929+I-RzR-I@users.noreply.github.com)] 13-08-2025
 * [b16c919] (RzR) -> Auto commit uncommited files
 * [b9538c3] (RzR) -> Add missign BASE32 methods: `Base32Encode`, `Base32Decode`. Adjust existing `IsBase32String`.
