@@ -52,7 +52,7 @@ namespace DomainCommonExtensions.DataTypeExtensions
     public static class StringExtensions
     {
         private static readonly string[] DateFormats =
-            {"yyyy-MM-dd", "MM/dd/yyyy", "M/dd/yyyy", "M/d/yyyy", "MM/d/yyyy", "yyyyMMdd"};
+            { "yyyy-MM-dd", "MM/dd/yyyy", "M/dd/yyyy", "M/d/yyyy", "MM/d/yyyy", "yyyyMMdd" };
 
         /// <summary>
         ///     Split string
@@ -166,6 +166,34 @@ namespace DomainCommonExtensions.DataTypeExtensions
 
             if (useDots.IsTrue())
                 truncatedString += suffix;
+
+            return truncatedString;
+        }
+
+        /// <summary>
+        ///     Truncates the string to a specified length and replace the truncated to a ...
+        /// </summary>
+        /// <param name="text">String that will be truncated</param>
+        /// <param name="maxLength">Total length of characters to maintain before the truncate happens</param>
+        /// <param name="useDots">Use 3 dots(...) in the start of string</param>
+        /// <returns>Truncated string</returns>
+        public static string TruncateFromStart(this string text, int maxLength, bool useDots = false)
+        {
+            const string suffix = "...";
+            var truncatedString = text ?? string.Empty;
+
+            if (maxLength.IsLessOrEqualZero()) return truncatedString;
+            var strLength = maxLength - (useDots.Equals(true) ? suffix.Length : 0);
+
+            if (strLength.IsLessOrEqualZero()) return truncatedString;
+
+            if (text.IsNullOrEmpty() || text!.Length <= maxLength) return truncatedString;
+
+            truncatedString = text.Substring(text.Length - strLength, strLength);
+            truncatedString = truncatedString.TrimEnd();
+
+            if (useDots.IsTrue())
+                return suffix + truncatedString;
 
             return truncatedString;
         }
@@ -1646,7 +1674,6 @@ namespace DomainCommonExtensions.DataTypeExtensions
         {
             return source.StartsWith(searchValue).IsFalse() ? resultValue : source;
         }
-
 
         /// <summary>
         ///     Check if string is in BASE32 format

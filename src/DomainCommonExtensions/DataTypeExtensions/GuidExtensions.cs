@@ -86,18 +86,32 @@ namespace DomainCommonExtensions.DataTypeExtensions
 
         /// -------------------------------------------------------------------------------------------------
         /// <summary>
-        ///     A Guid? extension method that query if 'source' is empty.
+        ///     A Guid? extension method that query if 'source' Guid value is missing (empty or null).
         /// </summary>
         /// <param name="source">Source Guid value to be checked.</param>
         /// <returns>
         ///     True if empty, false if not.
         /// </returns>
         /// =================================================================================================
-        public static bool IsEmpty(this Guid? source) => source.IsNull() || source == Guid.Empty;
+        public static bool IsMissing(this Guid? source) => source.IsNull() || source == Guid.Empty;
 
         /// -------------------------------------------------------------------------------------------------
         /// <summary>
-        ///     A Guid? extension method that query if 'source' is empty.
+        ///     A Guid? extension method that query if 'source' Guid value is empty.
+        /// </summary>
+        /// <param name="source">Source Guid value to be checked.</param>
+        /// <remarks>
+        ///     Check if source Guid value is not null and is equal with Guid.Empty.
+        /// </remarks>
+        /// <returns>
+        ///     True if empty, false if not.
+        /// </returns>
+        /// =================================================================================================
+        public static bool IsEmpty(this Guid? source) => source.IsNotNull() && source == Guid.Empty;
+
+        /// -------------------------------------------------------------------------------------------------
+        /// <summary>
+        ///     A Guid extension method that query if 'source' Guid value is empty.
         /// </summary>
         /// <param name="source">Source Guid value to be checked.</param>
         /// <returns>
@@ -105,5 +119,71 @@ namespace DomainCommonExtensions.DataTypeExtensions
         /// </returns>
         /// =================================================================================================
         public static bool IsEmpty(this Guid source) => source == Guid.Empty;
+
+        /// -------------------------------------------------------------------------------------------------
+        /// <summary>
+        ///     A GUID extension method that set value to null if is empty.
+        /// </summary>
+        /// <param name="source">Source Guid value to be checked.</param>
+        /// <returns>
+        ///     A Guid?
+        /// </returns>
+        /// =================================================================================================
+        public static Guid? NullIfEmpty(this Guid source) => source.IsEmpty() ? null : source;
+
+        /// -------------------------------------------------------------------------------------------------
+        /// <summary>
+        ///      A GUID extension method that set value to null if is empty.
+        /// </summary>
+        /// <param name="source">Source Guid value to be checked.</param>
+        /// <returns>
+        ///     A Guid?
+        /// </returns>
+        /// =================================================================================================
+        public static Guid? NullIfEmpty(this Guid? source) => source.IsEmpty() ? null : source;
+
+        /// -------------------------------------------------------------------------------------------------
+        /// <summary>
+        ///     A GUID extension method that set Guid.Empty if the source value is null.
+        /// </summary>
+        /// <param name="source">Source Guid value to be checked.</param>
+        /// <returns>
+        ///     A GUID.
+        /// </returns>
+        /// =================================================================================================
+        public static Guid EmptyIfNull(this Guid source) => source.IsNull() ? Guid.Empty: source;
+
+        /// -------------------------------------------------------------------------------------------------
+        /// <summary>
+        ///     A GUID extension method that set Guid.Empty if the source value is null.
+        /// </summary>
+        /// <param name="source">Source Guid value to be checked.</param>
+        /// <returns>
+        ///     A GUID.
+        /// </returns>
+        /// =================================================================================================
+        public static Guid EmptyIfNull(this Guid? source) => source.IsNull() ? Guid.Empty : (Guid)source!;
+
+        /// -------------------------------------------------------------------------------------------------
+        /// <summary>
+        ///     A GUID extension method that query if 'source' has valid value (is not null and is not equal with Guid.Empty).
+        /// </summary>
+        /// <param name="source">Source Guid value to be checked.</param>
+        /// <returns>
+        ///     True if valid value, false if not.
+        /// </returns>
+        /// =================================================================================================
+        public static bool HasValidValue(this Guid source) => source.IsNotNull() && source != Guid.Empty;
+        
+        /// -------------------------------------------------------------------------------------------------
+        /// <summary>
+        ///     A GUID extension method that query if 'source' has valid value (is not null and is not equal with Guid.Empty).
+        /// </summary>
+        /// <param name="source">Source Guid value to be checked.</param>
+        /// <returns>
+        ///     True if valid value, false if not.
+        /// </returns>
+        /// =================================================================================================
+        public static bool HasValidValue(this Guid? source) => source.IsNotNull() && source != Guid.Empty;
     }
 }

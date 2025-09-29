@@ -103,5 +103,37 @@ namespace DataTypeTests.DataTests
             Assert.AreEqual(5631682104563650436, res);
             Assert.AreEqual(0, res1);
         }
+
+        [TestMethod]
+        public void NullIfEmpty_NullGuidValue_Test()
+        {
+            var result = ((Guid?)null).NullIfEmpty();
+
+            Assert.IsNull(result);
+        }
+
+        [TestMethod]
+        public void NullIfEmpty_EmptyGuidValue_Test()
+        {
+            var result = (Guid.Empty).NullIfEmpty();
+
+            Assert.IsNull(result);
+        }
+
+        [TestMethod]
+        public void EmptyIfNull_NullGuidValue_Test()
+        {
+            var result = ((Guid?)null).EmptyIfNull();
+
+            Assert.AreEqual(Guid.Empty, result);
+        }
+
+        [TestMethod]
+        public void EmptyIfNull_EmptyGuidValue_Test()
+        {
+            var result = (Guid.Empty).EmptyIfNull();
+
+            Assert.AreEqual(Guid.Empty, result);
+        }
     }
 }

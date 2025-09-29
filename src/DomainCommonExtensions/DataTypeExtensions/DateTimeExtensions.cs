@@ -531,7 +531,80 @@ namespace DomainCommonExtensions.DataTypeExtensions
         /// <param name="sourceTime">Source date time</param>
         /// <returns>Return always epoch date.</returns>
         /// <remarks></remarks>
-        public static DateTime Epoch(this DateTime sourceTime) 
+        public static DateTime Epoch(this DateTime sourceTime)
             => new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
+
+        /// <summary>
+        ///     A DateTime extension method that query if 'sourceDateTime' is only date.
+        /// </summary>
+        /// <param name="sourceDateTime">The sourceDateTime to act on.</param>
+        /// <returns>
+        ///     True if only date, false if not.
+        /// </returns>
+        public static bool IsOnlyDate(this DateTime sourceDateTime)
+        => sourceDateTime.IsNotNull()
+           && sourceDateTime == new DateTime(
+               sourceDateTime.Year,
+               sourceDateTime.Month,
+               sourceDateTime.Day, 0, 0, 0);
+
+        /// <summary>
+        ///     A DateTime extension method that query if 'sourceDateTime' is only date.
+        /// </summary>
+        /// <param name="sourceDateTime">The sourceDateTime to act on.</param>
+        /// <returns>
+        ///     True if only date, false if not.
+        /// </returns>
+        public static bool IsOnlyDate(this DateTime? sourceDateTime)
+        => sourceDateTime.IsNotNull()
+           && sourceDateTime == new DateTime(
+               sourceDateTime!.Value!.Year,
+               sourceDateTime!.Value!.Month,
+               sourceDateTime!.Value!.Day, 0, 0, 0);
+        
+        /// <summary>
+        ///     A DateTime extension method that force/set milliseconds from source date to zero.
+        /// </summary>
+        /// <param name="sourceDateTime">The sourceDateTime to act on.</param>
+        /// <returns>
+        ///     A DateTime.
+        /// </returns>
+        public static DateTime ForceMillisecondsToZero(this DateTime sourceDateTime)
+            => new DateTime(sourceDateTime.Year, sourceDateTime.Month, sourceDateTime.Day,
+                sourceDateTime.Hour, sourceDateTime.Minute, sourceDateTime.Second);
+        
+        /// <summary>
+        ///     A DateTime extension method that force/set milliseconds from source date to zero.
+        /// </summary>
+        /// <param name="sourceDateTime">The sourceDateTime to act on.</param>
+        /// <returns>
+        ///     A DateTime.
+        /// </returns>
+        public static DateTime? ForceMillisecondsToZero(this DateTime? sourceDateTime)
+        {
+            if (sourceDateTime.IsNull())
+                return null;
+
+            return new DateTime(sourceDateTime!.Value!.Year, sourceDateTime!.Value!.Month, sourceDateTime!.Value!.Day,
+                sourceDateTime!.Value!.Hour, sourceDateTime!.Value!.Minute, sourceDateTime!.Value!.Second);
+        }
+
+        /// <summary>
+        ///     A DateTime extension method that force/set milliseconds from source date to zero.
+        /// </summary>
+        /// <param name="sourceDateTime">The sourceDateTime to act on.</param>
+        /// <param name="defaultDateTime">
+        ///     The default DateTime value to set in case of null <para>input</para>
+        /// </param>
+        /// <returns>
+        ///     A DateTime.
+        /// </returns>
+        public static DateTime ForceMillisecondsToZero(this DateTime? sourceDateTime, DateTime defaultDateTime)
+        {
+            var notNullDate = sourceDateTime.AsNotNull(defaultDateTime);
+
+            return new DateTime(notNullDate.Year, notNullDate.Month, notNullDate.Day,
+                notNullDate.Hour, notNullDate.Minute, notNullDate.Second);
+        }
     }
 }
