@@ -16,11 +16,13 @@
 
 #region U S A G E S
 
+using DomainCommonExtensions.DataTypeExtensions;
+using DomainCommonExtensions.Utilities.Ensure;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.Linq;
-using DomainCommonExtensions.CommonExtensions;
 
 #endregion
 
@@ -41,12 +43,13 @@ namespace DomainCommonExtensions.ArraysExtensions
         public static ICollection<TTarget> AddRange<TTarget>(this ICollection<TTarget> context,
             IEnumerable<TTarget> data)
         {
-            if (context.IsNull()) return null;
-            foreach (var item in data) context.Add(item);
+            if (context.IsNullOrEmptyEnumerable()) return null;
+            foreach (var item in data) 
+                context.Add(item);
 
             return context;
         }
-        
+
         /// <summary>
         ///     Get distinct items by list propriety
         /// </summary>
@@ -58,10 +61,13 @@ namespace DomainCommonExtensions.ArraysExtensions
         public static IEnumerable<TSource> DistinctBy<TSource, TKey>
             (this IEnumerable<TSource> source, Func<TSource, TKey> keySelector)
         {
+            DomainEnsure.IsNotNull(source, nameof(source));
+
             var seenKeys = new HashSet<TKey>();
-            foreach (var element in source.Where(element => seenKeys.Add(keySelector(element)))) yield return element;
+            foreach (var element in source.Where(element => seenKeys.Add(keySelector(element)))) 
+                yield return element;
         }
-        
+
         /// <summary>
         ///     NameValueCollection to KeyValuePair
         /// </summary>
@@ -69,6 +75,8 @@ namespace DomainCommonExtensions.ArraysExtensions
         /// <returns></returns>
         public static IEnumerable<KeyValuePair<string, string>> ToKeyValuePair(this NameValueCollection collection)
         {
+            DomainEnsure.IsNotNull(collection, nameof(collection));
+
             return collection.AllKeys.Select(x => new KeyValuePair<string, string>(x, collection[x]));
         }
 
@@ -94,8 +102,9 @@ namespace DomainCommonExtensions.ArraysExtensions
         /// <remarks></remarks>
         public static ICollection<T> With<T>(this ICollection<T> source, T item)
         {
+            source ??= new Collection<T>();
             source.Add(item);
-            
+
             return source;
         }
 
@@ -109,8 +118,9 @@ namespace DomainCommonExtensions.ArraysExtensions
         /// <remarks></remarks>
         public static ICollection<T> With<T>(this ICollection<T> source, T[] items)
         {
+            source ??= new Collection<T>();
             source.AddRange(items);
-            
+
             return source;
         }
 
@@ -124,8 +134,9 @@ namespace DomainCommonExtensions.ArraysExtensions
         /// <remarks></remarks>
         public static ICollection<T> Without<T>(this ICollection<T> source, T item)
         {
+            source ??= new Collection<T>();
             source.Remove(item);
-            
+
             return source;
         }
 
@@ -139,8 +150,27 @@ namespace DomainCommonExtensions.ArraysExtensions
         /// <remarks></remarks>
         public static ICollection<T> WithMany<T>(this ICollection<T> source, IEnumerable<T> items)
         {
+            source ??= new Collection<T>();
             source.AddRange(items);
-            
+
+            return source;
+        }
+
+        /// <summary>
+        ///     An ICollection&lt;T&gt; extension method that adds if not exist 'item' to source collection.
+        /// </summary>
+        /// <typeparam name="T">Type of collection.</typeparam>
+        /// <param name="source">Source collection.</param>
+        /// <param name="item">Item to add.</param>
+        /// <returns>
+        ///     A list of.
+        /// </returns>
+        public static ICollection<T> AddToCollectionIfNotExist<T>(this ICollection<T> source, T item)
+        {
+            source ??= new Collection<T>();
+            if (source.Any(x => x.Equals(item)).IsFalse())
+                source.Add(item);
+
             return source;
         }
     }

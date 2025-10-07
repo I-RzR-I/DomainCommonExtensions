@@ -575,5 +575,23 @@ namespace DomainCommonExtensions.ArraysExtensions
 
             return chunks;
         }
+
+        /// <summary>
+        ///     Enumerates add if not exist in this collection.
+        /// </summary>
+        /// <typeparam name="T">Generic type parameter.</typeparam>
+        /// <param name="source">Source Enumerate.</param>
+        /// <param name="item">Item to add.</param>
+        /// <returns>
+        ///     An enumerator that allows foreach to be used to process add if not exist in this
+        ///     collection.
+        /// </returns>
+        public static IEnumerable<T> AddIfNotExist<T>(this IEnumerable<T> source, T item)
+        {
+            if (source.Any(x => x.Equals(item)).IsFalse())
+                source = source.Concat(new[] { item });
+
+            return source;
+        }
     }
 }

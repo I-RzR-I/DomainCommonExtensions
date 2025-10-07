@@ -192,5 +192,25 @@ namespace DataTypeTests.DataTests.Array
             Assert.AreEqual(3, array.Count);
             Assert.AreEqual(3, array2.Count());
         }
+
+        [TestMethod]
+        public void AddToEnumerableIfNotExist_Test()
+        {
+            IEnumerable<int> array = new[] { 1, 2 };
+
+            var res = array.AddIfNotExist(1);
+
+            Assert.AreEqual(2, res.Count());
+        }
+
+        [TestMethod]
+        public void AddToEnumerableIfNotExist_Test2()
+        {
+            IEnumerable<int> array = new[] { 1, 2 };
+
+            var res = array.AddIfNotExist(3);
+
+            Assert.AreEqual(3, res.Count());
+        }
     }
 }
