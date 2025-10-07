@@ -1,3 +1,10 @@
+### **v3.4.0.7452** [[RzR](mailto:108324929+I-RzR-I@users.noreply.github.com)] 07-10-2025
+* [c160a83] (RzR) -> Auto commit uncommited files
+* [b417765] (RzR) -> Add new enumeration extnesion: `AdddIfNotExist`.
+* [ab7bedc] (RzR) -> Add new dictionary extnesion: `IsNullOrEmpty`.
+* [1f20f4a] (RzR) -> Add new dictionary extnesion: `AdddIfNotExist`.
+* [0a7846f] (RzR) -> Add new array extnesion: `AppendIfNotExist`.
+
 ### **v3.3.0.5249** [[RzR](mailto:108324929+I-RzR-I@users.noreply.github.com)] 29-09-2025
 * [325ff42] (RzR) -> Auto commit uncommited files
 * [7385809] (RzR) -> Add new Guid extension methods: `NullIfEmpty`, `EmptyIfNull`, `IsMissing`, `HasValidValue`.
