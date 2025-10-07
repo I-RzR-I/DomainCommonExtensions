@@ -138,6 +138,29 @@ namespace DomainCommonExtensions.ArraysExtensions
 
         /// -------------------------------------------------------------------------------------------------
         /// <summary>
+        ///     Append an item to source array.
+        /// </summary>
+        /// <typeparam name="T">Generic type parameter. Source type.</typeparam>
+        /// <param name="source">Input source.</param>
+        /// <param name="itemToAppend">The item to append.</param>
+        /// <returns>
+        ///     Returns a new T[].
+        /// </returns>
+        /// =================================================================================================
+        public static T[] AppendIfNotExist<T>(this T[] source, T itemToAppend)
+        {
+            if (source.IsNullOrEmptyEnumerable() && itemToAppend.IsNull()) return new T[] { };
+            if (source.IsNullOrEmptyEnumerable()) return new[] { itemToAppend };
+            if (itemToAppend.IsNull()) return source;
+
+            if (source.IndexOf(itemToAppend) == -1)
+                return source;
+
+            return source.AppendItem(itemToAppend);
+        }
+
+        /// -------------------------------------------------------------------------------------------------
+        /// <summary>
         ///     Append an items to source array.
         /// </summary>
         /// <typeparam name="T">Generic type parameter. Source type.</typeparam>

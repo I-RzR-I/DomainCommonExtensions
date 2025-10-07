@@ -16,10 +16,12 @@
 
 #region U S A G E S
 
+using DomainCommonExtensions.DataTypeExtensions;
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using DomainCommonExtensions.DataTypeExtensions;
+using DomainCommonExtensions.CommonExtensions;
+using DomainCommonExtensions.Utilities.Ensure;
 
 #endregion
 
@@ -62,6 +64,8 @@ namespace DomainCommonExtensions.ArraysExtensions
         public static Dictionary<TKey, TValue> RemoveKeys<TKey, TValue>(this Dictionary<TKey, TValue> dict,
             IEnumerable<TKey> keys)
         {
+            DomainEnsure.IsNotNull(dict, nameof(dict));
+
             foreach (var key in keys)
                 if (dict.ContainsKey(key).IsTrue())
                     dict.Remove(key);
@@ -77,12 +81,22 @@ namespace DomainCommonExtensions.ArraysExtensions
         /// <returns></returns>
         public static int IndexOf(this IDictionary dictionary, object value)
         {
+            if (dictionary.IsNullOrEmpty()) return -1;
+
             for (var i = 0; i < dictionary.Count; ++i)
                 if (dictionary[i] == value)
                     return i;
 
             return -1;
         }
+
+        /// <summary>
+        ///     Check if Dictionary is null or empty (with no values)
+        /// </summary>
+        /// <param name="dictionary">source dictionary</param>
+        /// <returns></returns>
+        public static bool IsNullOrEmpty(this IDictionary dictionary)
+            => dictionary.IsNull() || dictionary.Count.IsZero();
 
         /// <summary>
         ///     Get STRING or default value
@@ -152,6 +166,43 @@ namespace DomainCommonExtensions.ArraysExtensions
                     return value;
 
             return @default;
+        }
+
+        /// -------------------------------------------------------------------------------------------------
+        /// <summary>
+        ///     An IDictionary&lt;TK,TV&gt; extension method that adds if not exist 'item' to source.
+        /// </summary>
+        /// <typeparam name="TKey">Type of the key.</typeparam>
+        /// <typeparam name="TValue">Type of the value.</typeparam>
+        /// <param name="source">The source to act on.</param>
+        /// <param name="item">The item.</param>
+        /// =================================================================================================
+        public static void AddIfNotExist<TKey, TValue>(this IDictionary<TKey, TValue> source, KeyValuePair<TKey, TValue> item)
+        {
+            DomainEnsure.IsNotNull(source, nameof(source));
+
+            if (source.ContainsKey(item.Key)) return;
+
+            source[item.Key] = item.Value;
+        }
+
+        /// -------------------------------------------------------------------------------------------------
+        /// <summary>
+        ///     An IDictionary&lt;TK,TV&gt; extension method that adds if not exist 'item' to source.
+        /// </summary>
+        /// <typeparam name="TKey">Type of the key.</typeparam>
+        /// <typeparam name="TValue">Type of the value.</typeparam>
+        /// <param name="source">The source to act on.</param>
+        /// <param name="key">Required. Search key.</param>
+        /// <param name="value">.</param>
+        /// =================================================================================================
+        public static void AddIfNotExist<TKey, TValue>(this IDictionary<TKey, TValue> source, TKey key, TValue value)
+        {
+            DomainEnsure.IsNotNull(source, nameof(source));
+
+            if (source.ContainsKey(key)) return;
+
+            source[key] = value;
         }
     }
 }

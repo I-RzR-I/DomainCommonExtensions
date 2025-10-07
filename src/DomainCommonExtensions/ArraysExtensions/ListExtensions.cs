@@ -16,10 +16,10 @@
 
 #region U S A G E S
 
+using DomainCommonExtensions.DataTypeExtensions;
 using System;
 using System.Collections.Generic;
 using System.Data;
-using DomainCommonExtensions.DataTypeExtensions;
 
 #endregion
 
@@ -111,6 +111,19 @@ namespace DomainCommonExtensions.ArraysExtensions
             {
                 action(item);
             }
+        }
+
+        /// <summary>
+        ///     A List&lt;T&gt; extension method that adds if not exist 'item' to source list.
+        /// </summary>
+        /// <typeparam name="T">Generic type parameter.</typeparam>
+        /// <param name="source">Source list.</param>
+        /// <param name="item">The item.</param>
+        public static void AddToListIfNotExist<T>(this List<T> source, T item)
+        {
+            source ??= new List<T>();
+            if (source.IndexOf(item) == -1)
+                source.Add(item);
         }
     }
 }
