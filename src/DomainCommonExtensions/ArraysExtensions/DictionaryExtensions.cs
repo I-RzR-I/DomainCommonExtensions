@@ -81,7 +81,7 @@ namespace DomainCommonExtensions.ArraysExtensions
         /// <returns></returns>
         public static int IndexOf(this IDictionary dictionary, object value)
         {
-            if (dictionary.IsNull() || dictionary.Count.IsZero()) return -1;
+            if (dictionary.IsNullOrEmpty()) return -1;
 
             for (var i = 0; i < dictionary.Count; ++i)
                 if (dictionary[i] == value)
@@ -89,6 +89,14 @@ namespace DomainCommonExtensions.ArraysExtensions
 
             return -1;
         }
+
+        /// <summary>
+        ///     Check if Dictionary is null or empty (with no values)
+        /// </summary>
+        /// <param name="dictionary">source dictionary</param>
+        /// <returns></returns>
+        public static bool IsNullOrEmpty(this IDictionary dictionary)
+            => dictionary.IsNull() || dictionary.Count.IsZero();
 
         /// <summary>
         ///     Get STRING or default value

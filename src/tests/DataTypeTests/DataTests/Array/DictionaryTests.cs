@@ -96,5 +96,27 @@ namespace DataTypeTests.DataTests.Array
             Assert.IsNotNull(kvResult);
             Assert.AreEqual("TestName", kvResult.ToString());
         }
+
+        [TestMethod]
+        public void IsNullOrEmpty_Null_Test()
+        {
+            Dictionary<string, object> dict = null;
+
+            Assert.IsNull(dict);
+            // ReSharper disable once ExpressionIsAlwaysNull
+            Assert.IsTrue(dict.IsNullOrEmpty());
+            // ReSharper disable once ExpressionIsAlwaysNull
+            Assert.IsTrue(dict.IsNullOrEmptyEnumerable());
+        }
+
+        [TestMethod]
+        public void IsNullOrEmpty_Empty_Test()
+        {
+            var dict = new Dictionary<string, object>();
+
+            Assert.IsNotNull(dict);
+            Assert.IsTrue(dict.IsNullOrEmpty());
+            Assert.IsTrue(dict.IsNullOrEmptyEnumerable());
+        }
     }
 }
