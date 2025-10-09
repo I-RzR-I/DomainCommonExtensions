@@ -503,13 +503,37 @@ namespace DomainCommonExtensions.DataTypeExtensions
         ///     Convert the given DateTime in Epoch time (Unix time).
         /// </summary>
         /// <param name="sourceTime">Source date time</param>
-        /// <returns></returns>
+        /// <returns>Returns TimeStamp.TotalSeconds.</returns>
         /// <remarks></remarks>
         public static long ToEpochTime(this DateTime sourceTime)
         {
-            var t = sourceTime.ToUniversalTime() - new DateTime(1970, 1, 1);
+            var t = sourceTime.ToUniversalTime() - DateTime.MinValue.Epoch();
 
             return (long)t.TotalSeconds;
+        }
+
+        /// <summary>
+        ///     A DateTime extension method that converts a sourceTime to an epoch.
+        /// </summary>
+        /// <param name="sourceTime">Source date time.</param>
+        /// <returns>
+        ///     SourceTime as a long. Returns TimeStamp.TotalMilliseconds.
+        /// </returns>
+        public static long ToEpoch(this DateTime sourceTime)
+        {
+            return (long)(sourceTime.ToUniversalTime() - DateTime.MinValue.Epoch()).TotalMilliseconds;
+        }
+
+        /// <summary>
+        ///     Creates a new object from the given epoch.
+        /// </summary>
+        /// <param name="milliseconds">The milliseconds.</param>
+        /// <returns>
+        ///     A DateTime.
+        /// </returns>
+        public static DateTime FromEpoch(long milliseconds)
+        {
+            return DateTime.MinValue.Epoch() + TimeSpan.FromMilliseconds(milliseconds);
         }
 
         /// <summary>
@@ -605,6 +629,32 @@ namespace DomainCommonExtensions.DataTypeExtensions
 
             return new DateTime(notNullDate.Year, notNullDate.Month, notNullDate.Day,
                 notNullDate.Hour, notNullDate.Minute, notNullDate.Second);
+        }
+
+        /// <summary>
+        ///     A DateTime extension method that query if 'date' is different day (Date).
+        /// </summary>
+        /// <param name="date">The date to act on.</param>
+        /// <param name="otherDate">The other date.</param>
+        /// <returns>
+        ///     True if different day, false if not.
+        /// </returns>
+        public static bool IsDifferentDay(this DateTime date, DateTime otherDate)
+        {
+            return date.Date != otherDate.Date;
+        }
+
+        /// <summary>
+        ///     A DateTime extension method that query if 'date' is different local day (Date).
+        /// </summary>
+        /// <param name="date">The date to act on.</param>
+        /// <param name="otherDate">The other date.</param>
+        /// <returns>
+        ///     True if different local day, false if not.
+        /// </returns>
+        public static bool IsDifferentLocalDay(this DateTime date, DateTime otherDate)
+        {
+            return date.ToLocalTime().IsDifferentDay(otherDate.ToLocalTime());
         }
     }
 }
