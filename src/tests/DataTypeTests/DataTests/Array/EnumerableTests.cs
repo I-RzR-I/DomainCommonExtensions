@@ -14,6 +14,7 @@
 //  </summary>
 // ***********************************************************************
 
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using DataTypeTests.Models;
@@ -211,6 +212,29 @@ namespace DataTypeTests.DataTests.Array
             var res = array.AddIfNotExist(3);
 
             Assert.AreEqual(3, res.Count());
+        }
+
+        [TestMethod]
+        public void Convert_Test()
+        {
+            var array = new List<string>() { "1", "2", "3", "4" };
+
+            var result = array.Convert(Convert.ToInt32);
+
+            Assert.IsNotNull(result);
+            Assert.AreEqual(4, result.Length);
+            Assert.AreEqual(3, result[2]);
+        }
+
+        [TestMethod]
+        public void ConvertToQuerystring_Test()
+        {
+            var array = new List<string>() { "test", "data", "x2", "$" };
+
+            var query = array.ConvertToQuerystring("tempParam");
+
+            Assert.IsNotNull(query);
+            Assert.AreEqual("tempParam=test&tempParam=data&tempParam=x2&tempParam=$", query);
         }
     }
 }

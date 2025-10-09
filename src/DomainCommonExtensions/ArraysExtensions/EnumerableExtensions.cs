@@ -22,13 +22,16 @@ using DomainCommonExtensions.CommonExtensions.TypeParam;
 using DomainCommonExtensions.DataTypeExtensions;
 using DomainCommonExtensions.Models;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Data;
 using System.Diagnostics.Contracts;
 using System.Linq;
 using System.Text;
+using DomainCommonExtensions.Utilities.Ensure;
 
 // ReSharper disable UnusedParameter.Local
 // ReSharper restore PossibleMultipleEnumeration
@@ -592,6 +595,56 @@ namespace DomainCommonExtensions.ArraysExtensions
                 source = source.Concat(new[] { item });
 
             return source;
+        }
+
+        /// <summary>
+        ///     An IEnumerable&lt;TSource&gt; extension method that converts from source type to destination.
+        /// </summary>
+        /// <typeparam name="TSource">Type of the source.</typeparam>
+        /// <typeparam name="TDest">Type of the destination.</typeparam>
+        /// <param name="source">Source array of data.</param>
+        /// <param name="converter">The converter (Collection converter).</param>
+        /// <returns>
+        ///     A TDest[].
+        /// </returns>
+        public static TDest[] Convert<TSource, TDest>(this IEnumerable<TSource> source, Func<TSource, TDest> converter)
+        {
+            if (source.IsNullOrEmptyEnumerable().IsFalse())
+            {
+                DomainEnsure.IsNotNull(converter, nameof(converter));
+
+                return source.Select(converter).ToArray();
+            }
+            else
+                return new TDest[0];
+        }
+
+        /// <summary>
+        ///     An IEnumerable extension method that converts this object to a querystring.
+        /// </summary>
+        /// <param name="collection">Collection of parameters value.</param>
+        /// <param name="label">The label (name of the query parameter).</param>
+        /// <returns>
+        ///     The given data converted to a querystring.
+        /// </returns>
+        public static string ConvertToQuerystring(this IEnumerable collection, string label)
+        {
+            if (collection.IsNull())
+                return null;
+
+            DomainEnsure.IsNotNull(label, nameof(label));
+
+            var nvc = new NameValueCollection();
+            foreach (var value in collection)
+            {
+                nvc.Add(label, value.ToString());
+            }
+
+            var result = string.Join("&",
+                nvc.AllKeys.Where(key => nvc[key].IsPresent())
+                    .Select(key => string.Join("&", nvc.GetValues(key).NotNull().Select(val => ($"{key}={val}")))));
+
+            return result;
         }
     }
 }
