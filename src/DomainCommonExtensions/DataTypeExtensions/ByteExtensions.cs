@@ -130,8 +130,7 @@ namespace DomainCommonExtensions.DataTypeExtensions
         ///     Convert to hexadecimal from byte array
         /// </summary>
         /// <param name="clearText">Required. </param>
-        /// <param name="withSpace">Optional. The default value is false.
-        /// If set to <see langword="true" />, then ; otherwise, .</param>
+        /// <param name="withSpace">Optional. The default value is false.</param>
         /// <returns></returns>
         /// <remarks></remarks>
         public static string ToHexByte(this byte[] clearText, bool withSpace = false)
@@ -233,6 +232,18 @@ namespace DomainCommonExtensions.DataTypeExtensions
             }
 
             return new string(returnArray);
+        }
+
+        /// <summary>
+        ///     A byte[] extension method that query if 'sourceBytes' is entirely null.
+        /// </summary>
+        /// <param name="sourceBytes">The sourceBytes to act on.</param>
+        /// <returns>
+        ///     True if entirely null, false if not.
+        /// </returns>
+        public static bool IsEntirelyNull(this byte[] sourceBytes)
+        {
+            return sourceBytes.All(b => b == 0);
         }
     }
 }
