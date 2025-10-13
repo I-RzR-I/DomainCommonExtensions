@@ -265,9 +265,9 @@ namespace DataTypeTests.DataTests.Array
         [TestMethod]
         public async Task ForEachAsync_MaxParallel_Test()
         {
-            var result = new List<int>();
+            var result = new ConcurrentStack<int>();
             var list = new List<int>() { 1, 2, 3, 4, 5 };
-            await list.ForEachAsync(i => { result.Add(i); }, 3);
+            await list.ForEachAsync(i => { result.Push(i); }, 3);
 
             Assert.IsFalse(result.Count.IsZero());
             Assert.AreEqual(5, result.Count);
