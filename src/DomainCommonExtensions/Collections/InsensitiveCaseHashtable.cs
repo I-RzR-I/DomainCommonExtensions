@@ -6,7 +6,7 @@
 //  Last Modified By : RzR
 //  Last Modified On : 2022-12-10 03:05
 // ***********************************************************************
-//  <copyright file="InsensitiveCaseHashtableHelper.cs" company="">
+//  <copyright file="InsensitiveCaseHashtable.cs" company="">
 //   Copyright (c) RzR. All rights reserved.
 //  </copyright>
 // 
@@ -21,12 +21,12 @@ using DomainCommonExtensions.CommonExtensions;
 
 #endregion
 
-namespace DomainCommonExtensions.Helpers
+namespace DomainCommonExtensions.Collections
 {
     /// <summary>
-    ///     Hashtable non sensitive keys collection helper
+    ///     Hashtable non sensitive keys collection
     /// </summary>
-    public class InsensitiveCaseHashtableHelper : Hashtable
+    public class InsensitiveCaseHashtable : Hashtable
     {
         /// <summary>
         ///     Gets or sets key.

@@ -22,13 +22,18 @@ using DomainCommonExtensions.CommonExtensions.TypeParam;
 using DomainCommonExtensions.DataTypeExtensions;
 using DomainCommonExtensions.Models;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Data;
 using System.Diagnostics.Contracts;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
+using DomainCommonExtensions.Helpers.Internal;
+using DomainCommonExtensions.Utilities.Ensure;
 
 // ReSharper disable UnusedParameter.Local
 // ReSharper restore PossibleMultipleEnumeration
@@ -519,11 +524,161 @@ namespace DomainCommonExtensions.ArraysExtensions
         /// <remarks></remarks>
         public static void ForEach<T>(this IEnumerable<T> list, Action<T> action)
         {
-            foreach (T item in list)
+            foreach (T item in list.NotNull())
             {
                 action(item);
             }
         }
+
+        /// <summary>
+        ///     Execute action for every item.
+        /// </summary>
+        /// <typeparam name="T">Generic type parameter.</typeparam>
+        /// <param name="list">Source list.</param>
+        /// <param name="action">The action that is executed for every item from the source list.</param>
+        /// <param name="maxParallel">(Optional) The maximum number of parallel executed Task.</param>
+        // ReSharper disable once MethodOverloadWithOptionalParameter
+        public static void ForEach<T>(this IEnumerable<T> list, Action<T> action, int maxParallel = 5)
+        {
+            var chunkedList = list.NotNull().Chunked(maxParallel);
+            foreach (var chunkItem in chunkedList)
+            {
+                var taskList = new List<Task>();
+                foreach (var item in chunkItem)
+                {
+                    taskList.Add(Task.Factory.StartNew(() => { action(item); }));
+                }
+
+                Task.WaitAll(taskList.ToArray());
+            }
+        }
+
+#if NET45_OR_GREATER || NET || NETSTANDARD2_0_OR_GREATER
+
+        /// <summary>
+        ///     An IEnumerable&lt;T&gt; extension method that for each asynchronous.
+        /// </summary>
+        /// <typeparam name="T">Generic type parameter.</typeparam>
+        /// <param name="list">The list to act on.</param>
+        /// <param name="action">The action that is executed for every item from the source list.</param>
+        /// <param name="maxParallel">(Optional) The maximum number of parallel executed Task.</param>
+        /// <returns>
+        ///     A Task.
+        /// </returns>
+        public static async Task ForEachAsync<T>(this IEnumerable<T> list, Action<T> action, int maxParallel = 5)
+        {
+            var chunkedList = list.NotNull().Chunked(maxParallel);
+            foreach (var chunkItem in chunkedList)
+            {
+                var taskList = new List<Task>();
+                foreach (var item in chunkItem)
+                {
+                    taskList.Add(Task.Run(() => { action(item); }));
+                }
+
+                await Task.WhenAll(taskList.ToArray());
+            }
+        }
+
+        /// <summary>
+        ///     An IEnumerable&lt;TInput&gt; extension method that for each asynchronous.
+        /// </summary>
+        /// <typeparam name="TInput">Type of the input.</typeparam>
+        /// <typeparam name="TOutput">Type of the output.</typeparam>
+        /// <param name="list">The list to act on.</param>
+        /// <param name="function">The function that is executed for every item from the source list.</param>
+        /// <param name="maxParallel">(Optional) The maximum number of parallel executed Task.</param>
+        /// <returns>
+        ///     An enumerator that allows foreach to be used to process for each asynchronous in this
+        ///     collection.
+        /// </returns>
+        public static async Task<IEnumerable<TOutput>> ForEachAsync<TInput, TOutput>(
+            this IEnumerable<TInput> list, Func<TInput, TOutput> function, int maxParallel = 5)
+        {
+            var result = new ThreadSafeList<TOutput>();
+            var chunkedList = list.NotNull().Chunked(maxParallel);
+            foreach (var chunkItem in chunkedList)
+            {
+                var taskList = new List<Task>();
+                foreach (var item in chunkItem)
+                {
+                    taskList.Add(Task.Run(() =>
+                    {
+                        var exeResult = function(item);
+                        result.AddItem(exeResult);
+                    }));
+                }
+
+                await Task.WhenAll(taskList.ToArray());
+            }
+
+            return result;
+        }
+
+        /// <summary>
+        ///     An IEnumerable&lt;TInput&gt; extension method that for each asynchronous.
+        /// </summary>
+        /// <typeparam name="TInput">Type of the input.</typeparam>
+        /// <typeparam name="TOutput">Type of the output.</typeparam>
+        /// <param name="list">The list to act on.</param>
+        /// <param name="function">The function that is executed for every item from the source list.</param>
+        /// <param name="maxParallel">(Optional) The maximum number of parallel executed Task.</param>
+        /// <returns>
+        ///     An enumerator that allows foreach to be used to process for each asynchronous in this
+        ///     collection.
+        /// </returns>
+        public static async Task<IEnumerable<TOutput>> ForEachAsync<TInput, TOutput>(
+            this IEnumerable<TInput> list, Func<TInput, Task<TOutput>> function, int maxParallel = 5)
+        {
+            var result = new ThreadSafeList<TOutput>();
+            var chunkedList = list.NotNull().Chunked(maxParallel);
+            foreach (var chunkItem in chunkedList)
+            {
+                var taskList = new List<Task>();
+                foreach (var item in chunkItem)
+                {
+                    taskList.Add(Task.Run(async () =>
+                    {
+                        var exeResult = await function(item);
+                        result.AddItem(exeResult);
+                    }));
+                }
+
+                await Task.WhenAll(taskList.ToArray());
+            }
+
+            return result;
+        }
+
+        /// <summary>
+        ///     An IEnumerable&lt;TInput&gt; extension method that for each asynchronous.
+        /// </summary>
+        /// <typeparam name="TInput">Type of the input parameter. Type of the items of the source list.</typeparam>
+        /// <param name="list">The list to act on.</param>
+        /// <param name="function">The function that is executed for every item from the source list.</param>
+        /// <param name="maxParallel">(Optional) The maximum number of parallel executed Task.</param>
+        /// <returns>
+        ///     A Task.
+        /// </returns>
+        public static async Task ForEachAsync<TInput>(this IEnumerable<TInput> list, Func<TInput, Task> function, int maxParallel = 5)
+        {
+            var chunkedList = list.NotNull().Chunked(maxParallel);
+            foreach (var chunkItem in chunkedList)
+            {
+                var taskList = new List<Task>();
+                foreach (var item in chunkItem)
+                {
+                    taskList.Add(Task.Run(async () =>
+                    {
+                        await function(item);
+                    }));
+                }
+
+                await Task.WhenAll(taskList.ToArray());
+            }
+        }
+
+#endif
 
         /// <summary>
         ///     Execute action for every item and return new data
@@ -535,7 +690,7 @@ namespace DomainCommonExtensions.ArraysExtensions
         /// <remarks></remarks>
         public static IEnumerable<T> ForEachAndReturn<T>(this IEnumerable<T> list, Action<T> action)
         {
-            foreach (T item in list)
+            foreach (T item in list.NotNull())
             {
                 action(item);
             }
@@ -592,6 +747,56 @@ namespace DomainCommonExtensions.ArraysExtensions
                 source = source.Concat(new[] { item });
 
             return source;
+        }
+
+        /// <summary>
+        ///     An IEnumerable&lt;TSource&gt; extension method that converts from source type to destination.
+        /// </summary>
+        /// <typeparam name="TSource">Type of the source.</typeparam>
+        /// <typeparam name="TDest">Type of the destination.</typeparam>
+        /// <param name="source">Source array of data.</param>
+        /// <param name="converter">The converter (Collection converter).</param>
+        /// <returns>
+        ///     A TDest[].
+        /// </returns>
+        public static TDest[] Convert<TSource, TDest>(this IEnumerable<TSource> source, Func<TSource, TDest> converter)
+        {
+            if (source.IsNullOrEmptyEnumerable().IsFalse())
+            {
+                DomainEnsure.IsNotNull(converter, nameof(converter));
+
+                return source.Select(converter).ToArray();
+            }
+            else
+                return new TDest[0];
+        }
+
+        /// <summary>
+        ///     An IEnumerable extension method that converts this object to a querystring.
+        /// </summary>
+        /// <param name="collection">Collection of parameters value.</param>
+        /// <param name="label">The label (name of the query parameter).</param>
+        /// <returns>
+        ///     The given data converted to a querystring.
+        /// </returns>
+        public static string ConvertToQuerystring(this IEnumerable collection, string label)
+        {
+            if (collection.IsNull())
+                return null;
+
+            DomainEnsure.IsNotNull(label, nameof(label));
+
+            var nvc = new NameValueCollection();
+            foreach (var value in collection)
+            {
+                nvc.Add(label, value.ToString());
+            }
+
+            var result = string.Join("&",
+                nvc.AllKeys.Where(key => nvc[key].IsPresent())
+                    .Select(key => string.Join("&", nvc.GetValues(key).NotNull().Select(val => ($"{key}={val}")))));
+
+            return result;
         }
     }
 }

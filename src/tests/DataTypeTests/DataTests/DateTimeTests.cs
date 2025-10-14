@@ -411,5 +411,38 @@ namespace DataTypeTests.DataTests
             Assert.IsNotNull(newDateTime);
             Assert.AreEqual(exceptedDateTime, newDateTime);
         }
+
+        [TestMethod]
+        public void IsDifferentDay_SameDate_Test()
+        {
+            var date1 = new DateTime(2025, 1, 1, 0, 0, 0, DateTimeKind.Utc);
+            var date2 = new DateTime(2025, 1, 1, 0, 0, 0, DateTimeKind.Utc);
+
+            var result = date1.IsDifferentDay(date2);
+
+            Assert.IsFalse(result);
+        }
+
+        [TestMethod]
+        public void IsDifferentDay_SameDayNotMonth_Test()
+        {
+            var date1 = new DateTime(2025, 1, 1, 0, 0, 0, DateTimeKind.Utc);
+            var date2 = new DateTime(2025, 2, 1, 0, 0, 0, DateTimeKind.Utc);
+
+            var result = date1.IsDifferentDay(date2);
+
+            Assert.IsTrue(result);
+        }
+
+        [TestMethod]
+        public void IsDifferentDay_Test()
+        {
+            var date1 = new DateTime(2025, 1, 1, 0, 0, 0, DateTimeKind.Utc);
+            var date2 = new DateTime(2025, 1, 3, 0, 0, 0, DateTimeKind.Utc);
+
+            var result = date1.IsDifferentDay(date2);
+
+            Assert.IsTrue(result);
+        }
     }
 }

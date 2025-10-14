@@ -22,7 +22,7 @@ using System.Text.Json.Serialization;
 
 #endregion
 
-namespace DomainCommonExtensions.Helpers
+namespace DomainCommonExtensions.Helpers.Internal
 {
     /// -------------------------------------------------------------------------------------------------
     /// <summary>

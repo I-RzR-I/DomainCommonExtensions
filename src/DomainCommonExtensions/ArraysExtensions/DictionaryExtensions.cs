@@ -16,12 +16,13 @@
 
 #region U S A G E S
 
+using DomainCommonExtensions.CommonExtensions;
 using DomainCommonExtensions.DataTypeExtensions;
+using DomainCommonExtensions.Utilities.Ensure;
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using DomainCommonExtensions.CommonExtensions;
-using DomainCommonExtensions.Utilities.Ensure;
+using System.Linq;
 
 #endregion
 
@@ -203,6 +204,78 @@ namespace DomainCommonExtensions.ArraysExtensions
             if (source.ContainsKey(key)) return;
 
             source[key] = value;
+        }
+
+        /// <summary>
+        ///     An IDictionary&lt;TKey,TValue&gt; extension method that attempts to get a value,
+        ///     returning a default value rather than throwing an exception if it fails.
+        /// </summary>
+        /// <typeparam name="TKey">Type of the key.</typeparam>
+        /// <typeparam name="TValue">Type of the value.</typeparam>
+        /// <param name="source">The source to act on.</param>
+        /// <param name="key">Required. Search key.</param>
+        /// <returns>
+        ///     A TValue.
+        /// </returns>
+        public static TValue TryGetValue<TKey, TValue>(this IDictionary<TKey, TValue> source, TKey key)
+        {
+            DomainEnsure.IsNotNull(source, nameof(source));
+
+            source.TryGetValue(key, out var value);
+
+            return value;
+        }
+
+        /// <summary>
+        ///     An IDictionary&lt;TKey,TValue&gt; extension method that gets value or default.
+        /// </summary>
+        /// <typeparam name="TKey">Type of the key.</typeparam>
+        /// <typeparam name="TValue">Type of the value.</typeparam>
+        /// <param name="source">The source to act on.</param>
+        /// <param name="key">Required. Search key.</param>
+        /// <returns>
+        ///     The value or default.
+        /// </returns>
+        public static TValue GetValueOrDefault<TKey, TValue>(this IDictionary<TKey, TValue> source, TKey key)
+        {
+            DomainEnsure.IsNotNull(source, nameof(source));
+
+            if (key.IsNull())
+                return default(TValue);
+
+            return source.TryGetValue(key, out var value) ? value : default(TValue);
+        }
+
+        /// <summary>
+        ///     An IDictionary&lt;TKey,TValue&gt; extension method that query if 'source' contains
+        ///     all keys.
+        /// </summary>
+        /// <typeparam name="TKey">Type of the key.</typeparam>
+        /// <typeparam name="TValue">Type of the value.</typeparam>
+        /// <param name="source">The source to act on.</param>
+        /// <param name="keys">.</param>
+        /// <returns>
+        ///     True if it succeeds, false if it fails.
+        /// </returns>
+        public static bool ContainsAllKeys<TKey, TValue>(this IDictionary<TKey, TValue> source, params TKey[] keys)
+        {
+            return source.IsNotNull() && keys.NotNull().All(source.ContainsKey);
+        }
+
+        /// <summary>
+        ///     An IDictionary&lt;TKey,TValue&gt; extension method that query if 'source' contains
+        ///     any keys.
+        /// </summary>
+        /// <typeparam name="TKey">Type of the key.</typeparam>
+        /// <typeparam name="TValue">Type of the value.</typeparam>
+        /// <param name="source">The source to act on.</param>
+        /// <param name="keys">.</param>
+        /// <returns>
+        ///     True if it succeeds, false if it fails.
+        /// </returns>
+        public static bool ContainsAnyKeys<TKey, TValue>(this IDictionary<TKey, TValue> source, params TKey[] keys)
+        {
+            return source.IsNotNull() && keys.NotNull().Any(source.ContainsKey);
         }
     }
 }

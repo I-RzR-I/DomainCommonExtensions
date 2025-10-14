@@ -118,5 +118,100 @@ namespace DataTypeTests.DataTests.Array
             Assert.IsTrue(dict.IsNullOrEmpty());
             Assert.IsTrue(dict.IsNullOrEmptyEnumerable());
         }
+
+        [TestMethod]
+        public void ContainsAnyKeys_Empty_Test()
+        {
+            var dict = new Dictionary<string, object>();
+
+            var result = dict.ContainsAnyKeys("Test");
+            
+            Assert.IsFalse(result);
+        }
+
+        [TestMethod]
+        public void ContainsAllKeys_Empty_Test()
+        {
+            var dict = new Dictionary<string, object>();
+
+            var result = dict.ContainsAllKeys("Test");
+            
+            Assert.IsFalse(result);
+        }
+
+        [TestMethod]
+        public void ContainsAnyKeys_NotContains_Test()
+        {
+            var dict = new Dictionary<string, object>()
+            {
+                { "Id", 1 },
+                {"Name", "TestName"},
+                {"Code", "Temp_CDC"}
+            };
+
+            var result = dict.ContainsAnyKeys("Test");
+            
+            Assert.IsFalse(result);
+        }
+
+        [TestMethod]
+        public void ContainsAllKeys_NotContains_Test()
+        {
+            var dict = new Dictionary<string, object>()
+            {
+                { "Id", 1 },
+                {"Name", "TestName"},
+                {"Code", "Temp_CDC"}
+            };
+
+            var result = dict.ContainsAllKeys("Test");
+            
+            Assert.IsFalse(result);
+        }
+
+        [TestMethod]
+        public void ContainsAnyKeys_Contains_Test()
+        {
+            var dict = new Dictionary<string, object>()
+            {
+                { "Id", 1 },
+                {"Name", "TestName"},
+                {"Code", "Temp_CDC"}
+            };
+
+            var result = dict.ContainsAnyKeys("Test", "Id");
+            
+            Assert.IsTrue(result);
+        }
+
+        [TestMethod]
+        public void ContainsAllKeys_Contains_One_Test()
+        {
+            var dict = new Dictionary<string, object>()
+            {
+                { "Id", 1 },
+                {"Name", "TestName"},
+                {"Code", "Temp_CDC"}
+            };
+
+            var result = dict.ContainsAllKeys("Test", "Id");
+            
+            Assert.IsFalse(result);
+        }
+
+        [TestMethod]
+        public void ContainsAllKeys_Contains_Test()
+        {
+            var dict = new Dictionary<string, object>()
+            {
+                { "Id", 1 },
+                {"Name", "TestName"},
+                {"Code", "Temp_CDC"}
+            };
+
+            var result = dict.ContainsAllKeys("Code", "Id");
+            
+            Assert.IsTrue(result);
+        }
     }
 }

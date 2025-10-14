@@ -14,10 +14,14 @@
 //  </summary>
 // ***********************************************************************
 
+using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using DataTypeTests.Models;
 using DomainCommonExtensions.ArraysExtensions;
+using DomainCommonExtensions.DataTypeExtensions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace DataTypeTests.DataTests.Array
@@ -211,6 +215,112 @@ namespace DataTypeTests.DataTests.Array
             var res = array.AddIfNotExist(3);
 
             Assert.AreEqual(3, res.Count());
+        }
+
+        [TestMethod]
+        public void Convert_Test()
+        {
+            var array = new List<string>() { "1", "2", "3", "4" };
+
+            var result = array.Convert(Convert.ToInt32);
+
+            Assert.IsNotNull(result);
+            Assert.AreEqual(4, result.Length);
+            Assert.AreEqual(3, result[2]);
+        }
+
+        [TestMethod]
+        public void ConvertToQuerystring_Test()
+        {
+            var array = new List<string>() { "test", "data", "x2", "$" };
+
+            var query = array.ConvertToQuerystring("tempParam");
+
+            Assert.IsNotNull(query);
+            Assert.AreEqual("tempParam=test&tempParam=data&tempParam=x2&tempParam=$", query);
+        }
+
+        [TestMethod]
+        public void ForEach_Test()
+        {
+            var result = 0;
+            var list = new List<int>() { 1, 2, 3, 4, 5 };
+            EnumerableExtensions.ForEach(list, i => { result += i; });
+
+            Assert.IsFalse(result.IsZero());
+            Assert.AreEqual(15, result);
+        }
+
+        [TestMethod]
+        public void ForEach_MaxParallel_Test()
+        {
+            var result = new ConcurrentStack<int>();
+            var list = new List<int>() { 1, 2, 3, 4, 5 };
+            list.ForEach(i => { result.Push(i); }, 3);
+
+            Assert.IsFalse(result.Count.IsZero());
+            Assert.AreEqual(5, result.Count);
+        }
+
+        [TestMethod]
+        public async Task ForEachAsync_MaxParallel_Test()
+        {
+            var result = new ConcurrentStack<int>();
+            var list = new List<int>() { 1, 2, 3, 4, 5 };
+            await list.ForEachAsync(i => { result.Push(i); }, 3);
+
+            Assert.IsFalse(result.Count.IsZero());
+            Assert.AreEqual(5, result.Count);
+        }
+
+        [TestMethod]
+        public async Task ForEachAsync_Func_WithResult_MaxParallel_Test()
+        {
+            var list = new List<int>() { 1, 2, 3, 4, 5 };
+            var result = await list.ForEachAsync(i =>
+            {
+                Task.Delay(TimeSpan.FromSeconds(5));
+
+                return $"@{i}";
+            }, 3);
+
+            Assert.IsFalse(result.Count().IsZero());
+            Assert.AreEqual(5, result.Count());
+            Assert.IsTrue(result.All(x => x.StartsWith("@")));
+        }
+
+        [TestMethod]
+        public async Task ForEachAsync_Func_WithResult_MaxParallel_Test2()
+        {
+            var list = new List<int>() { 1, 2, 3, 4, 5 };
+            var result = await list.ForEachAsync(async i =>
+            {
+                await Task.Delay(TimeSpan.FromSeconds(5));
+
+                return await Task.FromResult($"@{i}");
+            }, 3);
+
+            Assert.IsFalse(result.Count().IsZero());
+            Assert.AreEqual(5, result.Count());
+            Assert.IsTrue(result.All(x => x.StartsWith("@")));
+        }
+
+        [TestMethod]
+        public async Task ForEachAsync_Func_TaskResult_MaxParallel_Test()
+        {
+            var list = new List<int>() { 1, 2, 3, 4, 5 };
+            var result = new ConcurrentStack<string>();
+            await list.ForEachAsync(async i =>
+            {
+                await Task.Delay(TimeSpan.FromSeconds(5));
+
+                result.Push($"@{i}");
+                await Task.CompletedTask;
+            }, 3);
+
+            Assert.IsFalse(result.Count().IsZero());
+            Assert.AreEqual(5, result.Count());
+            Assert.IsTrue(result.All(x => x.StartsWith("@")));
         }
     }
 }

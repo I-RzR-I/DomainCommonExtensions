@@ -14,6 +14,8 @@
 //  </summary>
 // ***********************************************************************
 
+#region U S A G E S
+
 using System;
 using System.Globalization;
 using System.Security.Cryptography;
@@ -24,6 +26,8 @@ using DomainCommonExtensions.Utilities.Ensure;
 
 // ReSharper disable InconsistentNaming
 // ReSharper disable CheckNamespace
+
+#endregion
 
 namespace DomainCommonExtensions.CommonExtensions
 {

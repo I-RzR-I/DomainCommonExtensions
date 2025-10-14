@@ -17,7 +17,7 @@
 #region U S A G E S
 
 #if NET || NETSTANDARD2_0_OR_GREATER
-using DomainCommonExtensions.Helpers;
+using DomainCommonExtensions.Helpers.Internal;
 using DomainCommonExtensions.Helpers.Internal.AnonymousSelect.Factory;
 #endif
 
