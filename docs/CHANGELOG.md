@@ -1,3 +1,18 @@
+### **v4.0.0.5323** [[RzR](mailto:108324929+I-RzR-I@users.noreply.github.com)] 14-10-2025
+* [c464d6d] (RzR) -> Add `TEA` extensions `TEAEncrypt`, `TEADecrypt`.
+* [ea248b6] (RzR) -> Implement `TEA` helper.
+* [21b0972] (RzR) -> Rename and relocate the `DisposablesCollectionHelper` to `DisposableStackCollection`
+* [5d30576] (RzR) -> Rename and relocate the `InsensitiveCaseHashtableHelper` to `InsensitiveCaseHashtable`.
+* [af81be2] (RzR) -> Add new enumerable extnesions: `ForEach`, `ForEachAsync`.
+* [eeba6d9] (RzR) -> Adjust location of the `JsonObjectSerializer` class.
+* [5e2128f] (RzR) -> Add `DirectoryInfo` extensions: `GetMatchingFiles`, `Empty`, `GetParentOf`, `Where`, `HasDirectories`, `HasFiles`, `IsEmpty`.
+* [8eb8728] (RzR) -> Add `ConcurrentDictionary` extensions: `Remove`, `RemoveWhere`, `TryRemove`, `RemoveAll`, `GetValueOrDefault`.
+* [9e39505] (RzR) -> Add `ConcurrentQueue` extensions: `Purge`, `Prune`, `DequeueAll`, `DequeueBatch`, `EnqueueRange`, `Enqueue`, `EnqueueRange`, `DequeueAndProcessBatches`.
+* [7fbff8d] (RzR) -> Add new DateTime extnesions: `ToEpoch`, `FromEpoch`, `IsDifferentDay`, `IsDifferentLocalDay`.
+* [d95d4fe] (RzR) -> Add new dictionary extnesions: `TryGetValue`, `GetValueOrDefault`, `ContainsAllKeys`, `ContainsAnyKeys`.
+* [6e7d3f9] (RzR) -> Add new enumerable extnesions: `ConvertToQuerystring`, `Convert`.
+* [08681a4] (RzR) -> Add new byte extnesion: `IsEntirelyNull`.
+
 ### **v3.4.0.7452** [[RzR](mailto:108324929+I-RzR-I@users.noreply.github.com)] 07-10-2025
 * [c160a83] (RzR) -> Auto commit uncommited files
 * [b417765] (RzR) -> Add new enumeration extnesion: `AdddIfNotExist`.
