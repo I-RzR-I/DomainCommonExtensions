@@ -5,7 +5,7 @@
 
 This library/ repository was created as a way to simplify the development process. Here were written the usually used methods (extension methods) for some data types like `int, string, DateTime, Enum, bool, byte, Guid`, also there was added extensions for `List, Dictionary, DynamicList` and other collections(`ICollection, IEnumerable, IList, HashSet, IQueryable`).
 
-In the repository was added an extension for `cryptography`, encrypting and decrypting string by key with RSA.
+In the repository was added an extension for `cryptography`, encrypting and decrypting string by key with `RSA`, `AES`, `TEA``
 
 In case you need some get some documentation/comments from `Assembly`, here too are some extensions.
 
