@@ -20,6 +20,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using DomainCommonExtensions.CommonExtensions;
+using DomainCommonExtensions.Resources.Enums;
 using DomainCommonExtensions.Utilities.Ensure;
 
 #if NET45_OR_GREATER || NET || NETSTANDARD1_0_OR_GREATER
@@ -252,5 +253,29 @@ namespace DomainCommonExtensions.DataTypeExtensions
         /// </returns>
         public static bool AreEquals<T>(this T sourceEnumValue, T compareEnumValue) where T : Enum, IComparable, IFormattable
             => Equals(sourceEnumValue, compareEnumValue);
+
+        /// <summary>
+        ///     Is defined.
+        /// </summary>
+        /// <exception cref="ArgumentOutOfRangeException">
+        ///     Thrown when one or more arguments are outside the required range.
+        /// </exception>
+        /// <typeparam name="T">Generic type parameter.</typeparam>
+        /// <param name="value">The value.</param>
+        /// <param name="parameterName">Name of the parameter.</param>
+        /// <returns>
+        ///     A T.
+        /// </returns>
+        public static T IsDefined<T>(T value, string parameterName) where T : struct, Enum
+        {
+            if (!Enum.IsDefined(typeof(T), value))
+            {
+                parameterName.NotAllowedEmpty(nameof(parameterName));
+
+                DomainEnsure.ThrowException(nameof(parameterName), ExceptionType.ArgumentOutOfRangeException);
+            }
+
+            return value;
+        }
     }
 }
