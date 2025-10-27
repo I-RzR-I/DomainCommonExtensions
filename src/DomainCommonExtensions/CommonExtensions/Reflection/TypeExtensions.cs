@@ -22,6 +22,7 @@ using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Text;
+using DomainCommonExtensions.ArraysExtensions;
 using DomainCommonExtensions.DataTypeExtensions;
 using DomainCommonExtensions.Utilities.Ensure;
 
@@ -335,7 +336,7 @@ namespace DomainCommonExtensions.CommonExtensions.Reflection
         }
 
         /// <summary>
-        ///     Get non nullable type
+        ///     Get non-nullable type
         /// </summary>
         /// <param name="type"></param>
         /// <returns></returns>
@@ -432,6 +433,153 @@ namespace DomainCommonExtensions.CommonExtensions.Reflection
                 return properties;
             }
             catch { return null; }
+        }
+
+        /// <summary>
+        ///     A Type extension method that query if 'type' is non-abstract class.
+        /// </summary>
+        /// <param name="type">.</param>
+        /// <param name="publicOnly">True to public only.</param>
+        /// <param name="includeCompilerGenerated">
+        ///     True to include, false to exclude the compiler generated.
+        /// </param>
+        /// <returns>
+        ///     True if non-abstract class, false if not.
+        /// </returns>
+        public static bool IsNonAbstractClass(this Type type, bool publicOnly, bool includeCompilerGenerated)
+        {
+            if (type.IsSpecialName)
+            {
+                return false;
+            }
+
+            if (type.IsClass && !type.IsAbstract)
+            {
+                if (!includeCompilerGenerated && type.HasAttribute<CompilerGeneratedAttribute>())
+                {
+                    return false;
+                }
+
+                if (publicOnly)
+                {
+                    return type.IsPublic || type.IsNestedPublic;
+                }
+
+                return true;
+            }
+
+            return false;
+        }
+
+        /// <summary>
+        ///     Gets the base types in this collection.
+        /// </summary>
+        /// <param name="type">.</param>
+        /// <returns>
+        ///     An enumerator that allows foreach to be used to process the base types in this collection.
+        /// </returns>
+        public static IEnumerable<Type> GetBaseTypes(this Type type)
+        {
+            foreach (var implementedInterface in type.GetInterfaces())
+            {
+                yield return implementedInterface;
+            }
+
+            var baseType = type.BaseType;
+            while (baseType != null)
+            {
+                yield return baseType;
+                baseType = baseType.BaseType;
+            }
+        }
+
+        /// <summary>
+        ///     A Type extension method that query if 'type' is in namespace alternative.
+        /// </summary>
+        /// <param name="type">.</param>
+        /// <param name="namespace">The namespace.</param>
+        /// <returns>
+        ///     True if in namespace alternative, false if not.
+        /// </returns>
+        public static bool IsInNamespaceAlternative(this Type type, string @namespace)
+        {
+            var typeNamespace = type.Namespace ?? string.Empty;
+
+            if (@namespace.Length > typeNamespace.Length)
+            {
+                return false;
+            }
+
+            var typeSubNamespace = typeNamespace.Substring(0, @namespace.Length);
+
+            if (typeSubNamespace.Equals(@namespace, StringComparison.Ordinal))
+            {
+                if (typeNamespace.Length == @namespace.Length)
+                {
+                    //exactly the same
+                    return true;
+                }
+
+                //is a subnamespace?
+                return typeNamespace[@namespace.Length] == '.';
+            }
+
+            return false;
+        }
+
+        /// <summary>
+        ///     A Type extension method that query if 'type' is in exact namespace.
+        /// </summary>
+        /// <param name="type">.</param>
+        /// <param name="namespace">The namespace.</param>
+        /// <returns>
+        ///     True if in exact namespace, false if not.
+        /// </returns>
+        public static bool IsInExactNamespace(this Type type, string @namespace)
+        {
+            return string.Equals(type.Namespace, @namespace, StringComparison.Ordinal);
+        }
+
+        /// <summary>
+        ///     A Type extension method that query if 'type' has attribute.
+        /// </summary>
+        /// <param name="type">.</param>
+        /// <param name="attributeType">Type of the attribute.</param>
+        /// <returns>
+        ///     True if the attribute is present, false if not.
+        /// </returns>
+        public static bool HasAttribute(this Type type, Type attributeType)
+        {
+            return type.IsDefined(attributeType, inherit: true);
+        }
+
+        /// <summary>
+        ///     A Type extension method that query if 'type' has attribute.
+        /// </summary>
+        /// <typeparam name="T">Generic type parameter.</typeparam>
+        /// <param name="type">.</param>
+        /// <returns>
+        ///     True if the attribute is present, false if not.
+        /// </returns>
+        public static bool HasAttribute<T>(this Type type) where T : Attribute
+        {
+            return type.HasAttribute(typeof(T));
+        }
+
+        /// <summary>
+        ///     A Type extension method that query if 'type' has attribute.
+        /// </summary>
+        /// <typeparam name="T">Generic type parameter.</typeparam>
+        /// <param name="type">.</param>
+        /// <param name="predicate">The predicate.</param>
+        /// <returns>
+        ///     True if the attribute is present, false if not.
+        /// </returns>
+        public static bool HasAttribute<T>(this Type type, Func<T, bool> predicate) where T : Attribute
+        {
+            var attributes = type.GetCustomAttributes(typeof(T), true);
+
+            return ((IEnumerable<T>)attributes).HasAny(predicate);
         }
     }
 }
