@@ -798,5 +798,51 @@ namespace DomainCommonExtensions.ArraysExtensions
 
             return result;
         }
+
+        /// <summary>
+        ///     An IEnumerable&lt;T&gt; extension method that converts a source to a hash set.
+        /// </summary>
+        /// <typeparam name="T">Generic type parameter.</typeparam>
+        /// <param name="source">The source for this extension method.</param>
+        /// <returns>
+        ///     Source as an ISet&lt;T&gt;
+        /// </returns>
+        public static ISet<T> ToHashSet<T>(this IEnumerable<T> source)
+        {
+            if (source is ISet<T> set)
+            {
+                return set;
+            }
+
+            return new HashSet<T>(source);
+        }
+
+        /// <summary>
+        ///     An IEnumerable&lt;TSource&gt; extension method that query if 'source' has any.
+        /// </summary>
+        /// <typeparam name="TSource">Type of the source.</typeparam>
+        /// <param name="source">.</param>
+        /// <param name="predicate">The predicate.</param>
+        /// <returns>
+        ///     True if any, false if not.
+        /// </returns>
+        public static bool HasAny<TSource>(this IEnumerable<TSource> source, Func<TSource, bool> predicate)
+        {
+            if (source.IsNull())
+                DomainEnsure.IsNotNull(source, nameof(source));
+
+            if (predicate.IsNull()) 
+                DomainEnsure.IsNotNull(predicate, nameof(predicate));
+
+            foreach (TSource item in source)
+            {
+                if (predicate(item))
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
     }
 }
