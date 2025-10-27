@@ -1826,5 +1826,32 @@ namespace DomainCommonExtensions.DataTypeExtensions
 
             return Encoding.UTF8.GetString(tempResult, 0, byteIndex);
         }
+
+        /// <summary>
+        ///     A string extension method that not allowed empty.
+        /// </summary>
+        /// <param name="source">The input.</param>
+        /// <param name="parameterName">Name of the parameter.</param>
+        /// <returns>
+        ///     A string (source) value if validation is passed.
+        /// </returns>
+        public static string NotAllowedEmpty(this string source, string parameterName)
+        {
+            if (ReferenceEquals(source, null))
+            {
+                NotAllowedEmpty(parameterName, nameof(parameterName));
+
+                DomainEnsure.ThrowException($"String value cannot be null. The param: [{parameterName}]", ExceptionType.ArgumentNullException);
+            }
+
+            if (source.IsMissing())
+            {
+                NotAllowedEmpty(parameterName, nameof(parameterName));
+
+                DomainEnsure.ThrowException($"String value cannot be null. The param: [{parameterName}]", ExceptionType.ArgumentException);
+            }
+
+            return source;
+        }
     }
 }
