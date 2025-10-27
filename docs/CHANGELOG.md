@@ -1,3 +1,7 @@
+### **v4.0.1.8519** [[RzR](mailto:108324929+I-RzR-I@users.noreply.github.com)] 27-10-2025
+* [2726a87] (RzR) -> Auto commit uncommited files
+* [1282898] (RzR) -> Fix IEnumerable extension method: `Chunked`.
+
 ### **v4.0.0.5323** [[RzR](mailto:108324929+I-RzR-I@users.noreply.github.com)] 14-10-2025
 * [c464d6d] (RzR) -> Add `TEA` extensions `TEAEncrypt`, `TEADecrypt`.
 * [ea248b6] (RzR) -> Implement `TEA` helper.

@@ -58,6 +58,19 @@ namespace DataTypeTests.DataTests.Array
             Assert.AreEqual(2, chunks[3].Count());
             Assert.AreEqual(2, chunks[4].Count());
             Assert.AreEqual(2, chunks[5].Count());
+
+
+            Assert.AreEqual(1, chunks[0].ElementAt(0));
+            Assert.AreEqual(2, chunks[0].ElementAt(1));
+
+            Assert.AreEqual(3, chunks[1].ElementAt(0));
+            Assert.AreEqual(4, chunks[1].ElementAt(1));
+
+            Assert.AreEqual(5, chunks[2].ElementAt(0));
+            Assert.AreEqual(6, chunks[2].ElementAt(1));
+
+            Assert.AreEqual(7, chunks[3].ElementAt(0));
+            Assert.AreEqual(8, chunks[3].ElementAt(1));
         }
 
         [TestMethod]
@@ -70,6 +83,91 @@ namespace DataTypeTests.DataTests.Array
             Assert.IsNotNull(chunks);
             Assert.AreEqual(1, chunks.Count());
             Assert.AreEqual(12, chunks[0].Count());
+
+            Assert.IsTrue(chunks[0].ElementAt(0) == 1);
+            Assert.IsTrue(chunks[0].ElementAt(5) == 6);
+            Assert.IsTrue(chunks[0].ElementAt(10) == 11);
+            Assert.IsTrue(chunks[0].ElementAt(11) == 12);
+        }
+
+        [TestMethod]
+        public void ChunkArray_Chunked_20_To_10_Test()
+        {
+            var arrInput = new int[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20 };
+
+            var chunks = arrInput.Chunked(10).ToArray();
+
+            Assert.IsNotNull(chunks);
+            Assert.AreEqual(2, chunks.Count());
+            Assert.AreEqual(10, chunks[0].Count());
+
+            Assert.AreEqual(1, chunks[0].ElementAt(0));
+            Assert.AreEqual(10, chunks[0].ElementAt(9));
+            Assert.AreEqual(11, chunks[1].ElementAt(0));
+            Assert.AreEqual(20, chunks[1].ElementAt(9));
+        }
+
+        [TestMethod]
+        public void ChunkArray_Chunked_3_To_2_Test()
+        {
+            var arrInput = new int[] { 1, 2, 3 };
+
+            var chunks = arrInput.Chunked(2).ToArray();
+
+            Assert.IsNotNull(chunks);
+            Assert.AreEqual(2, chunks.Count());
+            Assert.AreEqual(2, chunks[0].Count());
+            Assert.AreEqual(1, chunks[1].Count());
+
+            Assert.AreEqual(1, chunks[0].ElementAt(0));
+            Assert.AreEqual(2, chunks[0].ElementAt(1));
+            Assert.AreEqual(3, chunks[1].ElementAt(0));
+        }
+
+        [TestMethod]
+        public void ChunkArray_Null_Chunked_Test()
+        {
+            int[] arrInput = null;
+
+            var chunks = arrInput.Chunked(2).ToArray();
+
+            Assert.IsNotNull(chunks);
+            Assert.AreEqual(0, chunks.Count());
+        }
+
+        [TestMethod]
+        public void ChunkArray_Empty_Chunked_Test()
+        {
+            var arrInput = new int[] { };
+
+            var chunks = arrInput.Chunked(2).ToArray();
+
+            Assert.IsNotNull(chunks);
+            Assert.AreEqual(0, chunks.Count());
+        }
+
+        [TestMethod]
+        public void ChunkArray_Chunked_0_Test()
+        {
+            var arrInput = new int[] { 1, 2, 3 };
+
+            var chunks = arrInput.Chunked(0).ToArray();
+
+            Assert.IsNotNull(chunks);
+            Assert.AreEqual(1, chunks.Count());
+            Assert.AreEqual(3, chunks[0].Count());
+        }
+
+        [TestMethod]
+        public void ChunkArray_Chunked_LessTanZero_Test()
+        {
+            var arrInput = new int[] { 1, 2, 3 };
+
+            var chunks = arrInput.Chunked(-10).ToArray();
+
+            Assert.IsNotNull(chunks);
+            Assert.AreEqual(1, chunks.Count());
+            Assert.AreEqual(3, chunks[0].Count());
         }
 
         [TestMethod]

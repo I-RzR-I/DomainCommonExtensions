@@ -710,6 +710,7 @@ namespace DomainCommonExtensions.ArraysExtensions
         {
             if (source.IsNullOrEmptyEnumerable())
                 return new List<IEnumerable<T>>();
+
             if (chunkSize.IsNull() || chunkSize.IsLessOrEqualZero())
                 return new List<IEnumerable<T>>(1) { source };
 
@@ -720,7 +721,7 @@ namespace DomainCommonExtensions.ArraysExtensions
             for (var chunkIndex = 0; chunkIndex < chunksCount; chunkIndex++)
             {
                 var newChunkSize = chunkIndex == chunksCount - 1 ? chunkArray.Length - (chunkSize * chunkIndex) : chunkSize;
-                var newChunkSourceIndex = chunkIndex.IsZero() ? chunkIndex : (chunkSize * chunkIndex) - 1;
+                var newChunkSourceIndex = chunkIndex.IsZero() ? chunkIndex : (chunkSize * chunkIndex)/* -1*/;
 
                 var chunk = new T[newChunkSize];
                 Array.Copy(chunkArray, newChunkSourceIndex, chunk, 0, newChunkSize);
