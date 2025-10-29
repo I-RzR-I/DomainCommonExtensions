@@ -453,7 +453,7 @@ namespace DomainCommonExtensions.CommonExtensions.Reflection
                 return false;
             }
 
-            if (type.IsClass && !type.IsAbstract)
+            if (type.IsClass && type.IsAbstract.IsFalse())
             {
                 if (!includeCompilerGenerated && type.HasAttribute<CompilerGeneratedAttribute>())
                 {
@@ -486,58 +486,58 @@ namespace DomainCommonExtensions.CommonExtensions.Reflection
             }
 
             var baseType = type.BaseType;
-            while (baseType != null)
+            while (baseType.IsNotNull())
             {
                 yield return baseType;
-                baseType = baseType.BaseType;
+                baseType = baseType!.BaseType;
             }
         }
 
         /// <summary>
-        ///     A Type extension method that query if 'type' is in namespace alternative.
+        ///     A Type extension method that query if 'type' is in namespaceName (alternative method).
         /// </summary>
         /// <param name="type">.</param>
-        /// <param name="namespace">The namespace.</param>
+        /// <param name="namespaceName">The namespaceName.</param>
         /// <returns>
-        ///     True if in namespace alternative, false if not.
+        ///     True if in namespaceName (alternative method), false if not.
         /// </returns>
-        public static bool IsInNamespaceAlternative(this Type type, string @namespace)
+        public static bool IsInNamespaceAlternative(this Type type, string namespaceName)
         {
             var typeNamespace = type.Namespace ?? string.Empty;
 
-            if (@namespace.Length > typeNamespace.Length)
+            if (namespaceName.Length > typeNamespace.Length)
             {
                 return false;
             }
 
-            var typeSubNamespace = typeNamespace.Substring(0, @namespace.Length);
+            var typeSubNamespace = typeNamespace.Substring(0, namespaceName.Length);
 
-            if (typeSubNamespace.Equals(@namespace, StringComparison.Ordinal))
+            if (typeSubNamespace.Equals(namespaceName, StringComparison.Ordinal))
             {
-                if (typeNamespace.Length == @namespace.Length)
+                if (typeNamespace.Length == namespaceName.Length)
                 {
                     //exactly the same
                     return true;
                 }
 
                 //is a subnamespace?
-                return typeNamespace[@namespace.Length] == '.';
+                return typeNamespace[namespaceName.Length] == '.';
             }
 
             return false;
         }
 
         /// <summary>
-        ///     A Type extension method that query if 'type' is in exact namespace.
+        ///     A Type extension method that query if 'type' is in exact namespaceName.
         /// </summary>
         /// <param name="type">.</param>
-        /// <param name="namespace">The namespace.</param>
+        /// <param name="namespaceName">The namespaceName.</param>
         /// <returns>
-        ///     True if in exact namespace, false if not.
+        ///     True if in exact namespaceName, false if not.
         /// </returns>
-        public static bool IsInExactNamespace(this Type type, string @namespace)
+        public static bool IsInExactNamespace(this Type type, string namespaceName)
         {
-            return string.Equals(type.Namespace, @namespace, StringComparison.Ordinal);
+            return string.Equals(type.Namespace, namespaceName, StringComparison.Ordinal);
         }
 
         /// <summary>

@@ -266,13 +266,13 @@ namespace DomainCommonExtensions.DataTypeExtensions
         /// <returns>
         ///     A T.
         /// </returns>
-        public static T IsDefined<T>(T value, string parameterName) where T : struct, Enum
+        public static T IsDefined<T>(this T value, string parameterName) where T : struct, Enum
         {
-            if (!Enum.IsDefined(typeof(T), value))
+            if (Enum.IsDefined(typeof(T), value).IsFalse())
             {
                 parameterName.NotAllowedEmpty(nameof(parameterName));
 
-                DomainEnsure.ThrowException(nameof(parameterName), ExceptionType.ArgumentOutOfRangeException);
+                DomainEnsure.ThrowException(nameof(value), ExceptionType.ArgumentOutOfRangeException);
             }
 
             return value;

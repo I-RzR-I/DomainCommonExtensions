@@ -15,6 +15,7 @@
 // ***********************************************************************
 
 using System;
+using DomainCommonExtensions.CommonExtensions;
 using DomainCommonExtensions.DataTypeExtensions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -591,7 +592,7 @@ namespace DataTypeTests.DataTests
         public void IfContains_Test(string source, string checkValue, string exceptedResult)
         {
             var res = source.IfContains(checkValue, exceptedResult);
-            
+
             Assert.IsNotNull(res);
             Assert.AreEqual(exceptedResult, res);
         }
@@ -602,7 +603,7 @@ namespace DataTypeTests.DataTests
         public void IfNotContains_Test(string source, string checkValue, string exceptedResult)
         {
             var res = source.IfNotContains(checkValue, exceptedResult);
-            
+
             Assert.IsNotNull(res);
             Assert.AreEqual(exceptedResult, res);
         }
@@ -680,6 +681,25 @@ namespace DataTypeTests.DataTests
             var decodedResult = encoded.Base32Decode();
             Assert.IsNotNull(decodedResult);
             Assert.AreEqual(clear, decodedResult);
+        }
+
+        [DataRow(null)]
+        [DataRow("null")]
+        [DataRow("")]
+        [TestMethod]
+        public void NotAllowedEmpty_Test(string source)
+        {
+            if (source.IsNull())
+                Assert.ThrowsException<ArgumentNullException>(() => source.NotAllowedEmpty(nameof(source)));
+            else if (source.IsEmpty())
+                Assert.ThrowsException<ArgumentException>(() => source.NotAllowedEmpty(nameof(source)));
+            else
+            {
+                var result = source.NotAllowedEmpty(nameof(source));
+
+                Assert.IsNotNull(result);
+                Assert.AreEqual(source, result);
+            }
         }
     }
 }

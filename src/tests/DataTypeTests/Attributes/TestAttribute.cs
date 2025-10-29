@@ -1,12 +1,12 @@
 ﻿// ***********************************************************************
 //  Assembly         : RzR.Shared.Extensions.DataTypeTests
 //  Author           : RzR
-//  Created On       : 2025-06-27 21:08
+//  Created On       : 2025-10-29 09:10
 // 
 //  Last Modified By : RzR
-//  Last Modified On : 2025-06-27 21:08
+//  Last Modified On : 2025-10-29 09:34
 // ***********************************************************************
-//  <copyright file="IdNameActiveModel.cs" company="RzR SOFT & TECH">
+//  <copyright file="TestAttribute.cs" company="RzR SOFT & TECH">
 //   Copyright © RzR. All rights reserved.
 //  </copyright>
 // 
@@ -14,15 +14,12 @@
 //  </summary>
 // ***********************************************************************
 
-using DataTypeTests.Attributes;
+using System;
 
-namespace DataTypeTests.Models
+namespace DataTypeTests.Attributes
 {
-    [Test]
-    public class IdNameActiveModel
+    public class TestAttribute : Attribute
     {
-        public int Id { get; set; }
-        public string Name { get; set; }
-        public bool IsActive { get; set; }
+
     }
 }

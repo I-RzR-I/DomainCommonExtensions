@@ -829,11 +829,8 @@ namespace DomainCommonExtensions.ArraysExtensions
         /// </returns>
         public static bool HasAny<TSource>(this IEnumerable<TSource> source, Func<TSource, bool> predicate)
         {
-            if (source.IsNull())
-                DomainEnsure.IsNotNull(source, nameof(source));
-
-            if (predicate.IsNull()) 
-                DomainEnsure.IsNotNull(predicate, nameof(predicate));
+            DomainEnsure.IsNotNull(source, nameof(source));
+            DomainEnsure.IsNotNull(predicate, nameof(predicate));
 
             foreach (TSource item in source)
             {
