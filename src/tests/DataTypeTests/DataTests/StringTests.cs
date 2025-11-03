@@ -753,5 +753,58 @@ namespace DataTypeTests.DataTests
             Assert.IsNotNull(result);
             Assert.AreEqual(exceptedValue, result);
         }
+
+        [DataRow("", false)]
+        [DataRow("aSw", false)]
+        [DataRow("asw", false)]
+        [DataRow("ASW", true)]
+        [TestMethod]
+        public void IsAllUpperCase_Test(string sourceValue, bool exceptedResult)
+        {
+            var result = sourceValue.IsAllUpperCase();
+
+            Assert.IsNotNull(result);
+            Assert.AreEqual(exceptedResult, result);
+        }
+
+        [DataRow("", false)]
+        [DataRow("aSw", false)]
+        [DataRow("asw", true)]
+        [DataRow("ASW", false)]
+        [TestMethod]
+        public void IsAllLowerCase_Test(string sourceValue, bool exceptedResult)
+        {
+            var result = sourceValue.IsAllLowerCase();
+
+            Assert.IsNotNull(result);
+            Assert.AreEqual(exceptedResult, result);
+        }
+
+        [DataRow("", false)]
+        [DataRow("aSw", true)]
+        [DataRow("asw", true)]
+        [DataRow("ASW", true)]
+        [DataRow("a05dw", false)]
+        [TestMethod]
+        public void IsAllLetters_Test(string sourceValue, bool exceptedResult)
+        {
+            var result = sourceValue.IsAllLetters();
+
+            Assert.IsNotNull(result);
+            Assert.AreEqual(exceptedResult, result);
+        }
+
+        [DataRow("sw13dd21d3", "sw13dd21d3")]
+        [DataRow("Test!23", "Test23")]
+        [DataRow("", "")]
+        [DataRow("T3st!23 ", "T3st23 ")]
+        [TestMethod]
+        public void CleanTextToLettersNumbersAndSpace_Test(string sourceValue, string exceptedValue)
+        {
+            var result = sourceValue.CleanTextToLettersNumbersAndSpace();
+
+            Assert.IsNotNull(result);
+            Assert.AreEqual(exceptedValue, result);
+        }
     }
 }

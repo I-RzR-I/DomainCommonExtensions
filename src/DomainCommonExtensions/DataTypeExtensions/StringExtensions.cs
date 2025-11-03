@@ -1938,5 +1938,70 @@ namespace DomainCommonExtensions.DataTypeExtensions
             }
             else return source;
         }
+
+        /// <summary>
+        ///     A string extension method that check if 'source' string value is all upper case.
+        /// </summary>
+        /// <param name="source">Source string text/value to be checked.</param>
+        /// <returns>
+        ///     True if all upper case, false if not.
+        /// </returns>
+        public static bool IsAllUpperCase(this string source)
+        {
+            if (source.IsMissing())
+                return false;
+
+            return RegularExpressions.IsUpperCaseStringRegex.IsMatch(source);
+        }
+
+        /// <summary>
+        ///     A string extension method that check if 'source' string value is all lower case.
+        /// </summary>
+        /// <param name="source">Source string text/value to be checked.</param>
+        /// <returns>
+        ///     True if lower case, false if not.
+        /// </returns>
+        public static bool IsAllLowerCase(this string source)
+        {
+            if (source.IsMissing())
+                return false;
+
+            return RegularExpressions.IsLowerCaseStringRegex.IsMatch(source);
+        }
+
+        /// <summary>
+        ///     A string extension method that check if 'source' string value is all letters.
+        /// </summary>
+        /// <param name="source">Source string text/value to be checked.</param>
+        /// <returns>
+        ///     True if lower case, false if not.
+        /// </returns>
+        public static bool IsAllLetters(this string source)
+        {
+            if (source.IsMissing())
+                return false;
+
+            return RegularExpressions.IsAllLettersStringRegex.IsMatch(source);
+        }
+
+        /// <summary>
+        ///     A string extension method that clean text to letters numbers and space.
+        /// </summary>
+        /// <param name="source">Source string text/value.</param>
+        /// <remarks>
+        ///     Allowed only letters a - z (lower/upper case), numbers 0 - 9 and space.
+        /// </remarks>
+        /// <returns>
+        ///     A new cleaned text.
+        /// </returns>
+        public static string CleanTextToLettersNumbersAndSpace(this string source)
+        {
+            if (source.IsNullOrEmpty())
+                return source;
+
+            const string pattern = "[^a-zA-Z0-9 ]";
+
+            return Regex.Replace(source, pattern, "");
+        }
     }
 }

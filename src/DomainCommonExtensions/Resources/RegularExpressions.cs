@@ -14,7 +14,13 @@
 //  </summary>
 // ***********************************************************************
 
+#region U S A G E S
+
+using System.Text.RegularExpressions;
+
 // ReSharper disable InconsistentNaming
+
+#endregion
 
 namespace DomainCommonExtensions.Resources
 {
@@ -67,5 +73,20 @@ namespace DomainCommonExtensions.Resources
         ///     BASE 32 regex
         /// </summary>
         public const string BASE32 = @"^[A-Z2-7]+(?:={1,6})?$";
+
+        /// <summary>
+        ///     (Immutable) the is all upper case string RegEx.
+        /// </summary>
+        public static readonly Regex IsUpperCaseStringRegex = new Regex("^[A-Z]*$", RegexOptions.Compiled);
+
+        /// <summary>
+        ///     (Immutable) the is all lower case string RegEx.
+        /// </summary>
+        public static readonly Regex IsLowerCaseStringRegex = new Regex("^[a-z]*$", RegexOptions.Compiled);
+
+        /// <summary>
+        ///     (Immutable) the is all letters string RegEx.
+        /// </summary>
+        public static readonly Regex IsAllLettersStringRegex = new Regex("^[a-zA-Z]*$", RegexOptions.Compiled);
     }
 }
