@@ -1853,5 +1853,90 @@ namespace DomainCommonExtensions.DataTypeExtensions
 
             return source;
         }
+
+        /// <summary>
+        ///     A string extension method that adds a period to source data.
+        /// </summary>
+        /// <param name="source">The input source string/number value.</param>
+        /// <param name="periodDelimiter">(Optional) The period delimiter. Default value is '.' (dot).</param>
+        /// <returns>
+        ///     A new string with period.
+        /// </returns>
+        public static string AddPeriod(this string source, string periodDelimiter = ".")
+        {
+            if (source.IsNullOrEmpty())
+                return source;
+
+            if (source.IsPresent() && source.Trim().EndsWith(periodDelimiter))
+            {
+                return source;
+            }
+
+            return source.Length.IsGreaterThanZero() ? source + periodDelimiter : source;
+        }
+
+        /// <summary>
+        ///     A string extension method that removes the period from source data.
+        /// </summary>
+        /// <param name="source">The input source string/number value.</param>
+        /// <param name="periodDelimiter">(Optional) The period delimiter. Default value is '.' (dot).</param>
+        /// <returns>
+        ///     A new string without period.
+        /// </returns>
+        public static string RemovePeriod(this string source, string periodDelimiter = ".")
+        {
+            if (source.IsNullOrEmpty())
+                return source;
+
+            return source?.Trim().EndsWith(periodDelimiter) == true
+                ? source.Remove(source.Length - 1)
+                : source;
+        }
+
+        /// <summary>
+        ///     A string extension method that adds a period value to source.
+        /// </summary>
+        /// <param name="source">The input source string/number value.</param>
+        /// <param name="periodDelimiter">(Optional) The period delimiter. Default value is '.' (dot).</param>
+        /// <param name="period">(Optional) The period value. Default value is "" (empty string).</param>
+        /// <returns>
+        ///     A new string value with period and its value.
+        /// </returns>
+        public static string AddPeriodValue(this string source, string periodDelimiter = ".", string period = "")
+        {
+            if (source.IsNullOrEmpty())
+                return source;
+
+            var sourceData = source.AddPeriod(periodDelimiter);
+
+            return period.IsNullOrEmpty().IsFalse()
+                ? sourceData + period
+                : sourceData + "00";
+        }
+
+        /// <summary>
+        ///     A string extension method that removes the period value.
+        /// </summary>
+        /// <param name="source">The input source string/number value.</param>
+        /// <param name="periodDelimiter">(Optional) The period delimiter. Default value is '.' (dot).</param>
+        /// <param name="period">(Optional) The period value. Default value is "" (empty string).</param>
+        /// <returns>
+        ///     A new string value without period and its value.
+        /// </returns>
+        public static string RemovePeriodValue(this string source, string periodDelimiter = ".", string period = "")
+        {
+            if (source.IsNullOrEmpty())
+                return source;
+
+            if (source.EndsWith(periodDelimiter + period).IsTrue())
+            {
+                var idx = source.IndexOf(periodDelimiter + period, StringComparison.Ordinal);
+                
+                return idx == -1 
+                    ? source 
+                    : source.Remove(idx, (periodDelimiter + period).Length);
+            }
+            else return source;
+        }
     }
 }

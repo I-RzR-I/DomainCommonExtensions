@@ -701,5 +701,57 @@ namespace DataTypeTests.DataTests
                 Assert.AreEqual(source, result);
             }
         }
+
+        [DataRow("10", ".", "10.")]
+        [DataRow("Test", ";", "Test;")]
+        [DataRow("Test.", ".", "Test.")]
+        [DataRow("Test.", ";", "Test.;")]
+        [TestMethod]
+        public void AddPeriod_Test(string sourceValue, string delimiter, string exceptedValue)
+        {
+            var result = sourceValue.AddPeriod(delimiter);
+
+            Assert.IsNotNull(result);
+            Assert.AreEqual(exceptedValue, result);
+        }
+
+        [DataRow("10.", ".", "10")]
+        [DataRow("Test;", ";", "Test")]
+        [DataRow("Test;Test2", ";", "Test;Test2")]
+        [TestMethod]
+        public void RemovePeriod_Test(string sourceValue, string delimiter, string exceptedValue)
+        {
+            var result = sourceValue.RemovePeriod(delimiter);
+
+            Assert.IsNotNull(result);
+            Assert.AreEqual(exceptedValue, result);
+        }
+
+        [DataRow("10", ".", "", "10.00")]
+        [DataRow("10.", ".", "99", "10.99")]
+        [DataRow("10", ".", "25", "10.25")]
+        [DataRow("Test", ";", "zas", "Test;zas")]
+        [DataRow("Test.", ".", " ", "Test. ")]
+        [TestMethod]
+        public void AddPeriodValue_Test(string sourceValue, string delimiter, string periodValue, string exceptedValue)
+        {
+            var result = sourceValue.AddPeriodValue(delimiter, periodValue);
+
+            Assert.IsNotNull(result);
+            Assert.AreEqual(exceptedValue, result);
+        }
+
+        [DataRow("10.00", ".", "00", "10")]
+        [DataRow("10.25", ".", "25", "10")]
+        [DataRow("Test;zas", ";", "zas", "Test")]
+        [DataRow("Test. ", ".", " ", "Test")]
+        [TestMethod]
+        public void RemovePeriodValue_Test(string sourceValue, string delimiter, string periodValue, string exceptedValue)
+        {
+            var result = sourceValue.RemovePeriodValue(delimiter, periodValue);
+
+            Assert.IsNotNull(result);
+            Assert.AreEqual(exceptedValue, result);
+        }
     }
 }
