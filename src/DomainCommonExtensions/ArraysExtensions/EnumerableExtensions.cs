@@ -341,6 +341,20 @@ namespace DomainCommonExtensions.ArraysExtensions
             return source.IsNull() || !source.Any();
         }
 
+        /// <summary>
+        ///     An IEnumerable&lt;T&gt; extension method that query if 'enumerable' is not null or empty
+        ///     enumerable.
+        /// </summary>
+        /// <typeparam name="T">Generic type parameter.</typeparam>
+        /// <param name="enumerable">.</param>
+        /// <returns>
+        ///     True if not null or empty enumerable, false if not.
+        /// </returns>
+        public static bool IsNotNullOrEmptyEnumerable<T>(this IEnumerable<T> enumerable)
+        {
+            return !enumerable.IsNullOrEmptyEnumerable();
+        }
+
 #if NET45_OR_GREATER || NET || NETSTANDARD1_0_OR_GREATER
         /// <summary>
         ///     Format list to list with item index
