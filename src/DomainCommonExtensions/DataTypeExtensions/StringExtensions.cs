@@ -2003,5 +2003,17 @@ namespace DomainCommonExtensions.DataTypeExtensions
 
             return Regex.Replace(source, pattern, "");
         }
+
+        /// <summary>
+        ///     A string extension method that query if 'source' is web URL.
+        /// </summary>
+        /// <param name="source">Source string.</param>
+        /// <returns>
+        ///     True if web url, false if not.
+        /// </returns>
+        public static bool IsWebUrl(this string source)
+        {
+            return source.IsPresent() && RegularExpressions.IsWebUrlRegex.IsMatch(source);
+        }
     }
 }
