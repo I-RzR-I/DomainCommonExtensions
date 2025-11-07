@@ -277,5 +277,67 @@ namespace DomainCommonExtensions.ArraysExtensions
         {
             return source.IsNotNull() && keys.NotNull().Any(source.ContainsKey);
         }
+
+        /// <summary>
+        ///     An IDictionary&lt;TKey,TValue&gt; extension method that adds an or update value.
+        /// </summary>
+        /// <typeparam name="TKey">Type of the key.</typeparam>
+        /// <typeparam name="TValue">Type of the value.</typeparam>
+        /// <param name="source">The source to act on.</param>
+        /// <param name="key">Required. Search key.</param>
+        /// <param name="value">Required. Value.</param>
+        public static void AddOrUpdate<TKey, TValue>(this IDictionary<TKey, TValue> source, TKey key, TValue value)
+        {
+            source[key] = value;
+        }
+
+        /// -------------------------------------------------------------------------------------------------
+        /// <summary>
+        ///     An IDictionary&lt;TKey,TValue[]&gt; extension method that adds an or update value.
+        /// </summary>
+        /// <typeparam name="TKey">Type of the key.</typeparam>
+        /// <typeparam name="TValue">Type of the value.</typeparam>
+        /// <param name="source">The source to act on.</param>
+        /// <param name="key">Required. Search key.</param>
+        /// <param name="value">.</param>
+        /// =================================================================================================
+        public static void AddOrUpdateValue<TKey, TValue>(this IDictionary<TKey, TValue[]> source, TKey key, TValue value)
+        {
+            source[key] = new TValue[1] { value };
+        }
+
+        /// <summary>
+        ///     An IDictionary&lt;TKey,TValue[]&gt; extension method that adds an or update values.
+        /// </summary>
+        /// <typeparam name="TKey">Type of the key.</typeparam>
+        /// <typeparam name="TValue">Type of the value.</typeparam>
+        /// <param name="source">The source to act on.</param>
+        /// <param name="key">Required. Search key.</param>
+        /// <param name="value">Required. Value.</param>
+        public static void AddOrUpdateValues<TKey, TValue>(this IDictionary<TKey, TValue[]> source, TKey key, TValue value)
+        {
+            if (source.TryGetValue(key, out var currentValues).IsTrue())
+                source[key] = currentValues.NotNull().AppendItem(value);
+            else
+                source[key] = new TValue[1] { value };
+        }
+
+        /// -------------------------------------------------------------------------------------------------
+        /// <summary>
+        ///     An IDictionary&lt;TKey,TValue[]&gt; extension method that adds an or update values.
+        /// </summary>
+        /// <typeparam name="TKey">Type of the key.</typeparam>
+        /// <typeparam name="TValue">Type of the value.</typeparam>
+        /// <param name="source">The source to act on.</param>
+        /// <param name="key">Required. Search key.</param>
+        /// <param name="values">A variable-length parameters list containing values.</param>
+        /// =================================================================================================
+        public static void AddOrUpdateValues<TKey, TValue>(this IDictionary<TKey, TValue[]> source, TKey key, params TValue[] values)
+        {
+            if (source.TryGetValue(key, out var currentValues).IsTrue())
+                source[key] = currentValues.NotNull().AppendItem(values);
+            else
+                source[key] = values;
+        }
     }
 }
