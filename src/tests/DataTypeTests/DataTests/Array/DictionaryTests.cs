@@ -213,5 +213,23 @@ namespace DataTypeTests.DataTests.Array
             
             Assert.IsTrue(result);
         }
+
+        [TestMethod]
+        public void AddOrUpdate_Test()
+        {
+            var dict = new Dictionary<string, object>()
+            {
+                { "Id", 1 },
+                {"Name", "TestName"},
+                {"Code", "Temp_CDC"}
+            };
+
+            dict.AddOrUpdate("Code", "Duplicate");
+
+            var result = dict["Code"];
+
+            Assert.IsNotNull(result);
+            Assert.AreEqual("Duplicate", result);
+        }
     }
 }

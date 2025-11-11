@@ -231,5 +231,24 @@ namespace DataTypeTests.DataTests
                 Assert.IsNotNull(r);
             Assert.AreEqual(exceptedResult, r);
         }
+
+        [TestMethod]
+        public void NotAllowNull_Null_Test()
+        {
+            TempModel temp = null;
+
+            Assert.ThrowsException<ArgumentNullException>(() => temp.NotAllowNull(nameof(TempModel)));
+        }
+
+        [TestMethod]
+        public void NotAllowNull_est()
+        {
+            TempModel temp = new TempModel();
+
+            var result = temp.NotAllowNull(nameof(TempModel));
+
+            Assert.IsNotNull(result);
+            Assert.AreEqual(temp, result);
+        }
     }
 }

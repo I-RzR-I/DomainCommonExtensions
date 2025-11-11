@@ -16,6 +16,7 @@
 
 #region U S A G E S
 
+using System;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Runtime.Serialization;
@@ -175,6 +176,25 @@ namespace DataTypeTests.DataTests
 
             Assert.IsNotNull(areEqualsResult);
             Assert.AreEqual(result, areEqualsResult);
+        }
+
+        [TestMethod]
+        public void IsDefined_OutOfRange_Test()
+        {
+            var source = (ResultEnum)100;
+
+            Assert.ThrowsException<ArgumentOutOfRangeException>(() => source.IsDefined<ResultEnum>(nameof(source)));
+        }
+
+        [TestMethod]
+        public void IsDefined_Test()
+        {
+            ResultEnum source = ResultEnum.Invalid;
+
+            var result = source.IsDefined<ResultEnum>(nameof(source));
+
+            Assert.IsNotNull(result);
+            Assert.AreEqual(ResultEnum.Invalid, result);
         }
     }
 }

@@ -1,3 +1,21 @@
+### **v4.1.0.8241** [[RzR](mailto:108324929+I-RzR-I@users.noreply.github.com)] 11-11-2025
+* [0c9f8d8] (RzR) -> Auto commit uncommited files
+* [75871a1] (RzR) -> Add INI file reader helper.
+* [4eb45c6] (RzR) -> Add new Dictionary extension methods: `AddOrUpdate`, `AddOrUpdateValue`, `AddOrUpdateValues`, `AddOrUpdateValues`.
+* [3bee806] (RzR) -> Add `TaskRunnerHelper` that allow to use as `Task.Run`.
+* [b723c9b] (RzR) -> Add new enumerable extension method: `IsNotNullOrEmptyEnumerable`.
+* [8971980] (RzR) -> Add new string extension methods: `IsWebUrl`.
+* [fac9dce] (RzR) -> Adjust changelog version order
+* [c2f8fa2] (RzR) -> Add new string extension methods: `IsAllUpperCase`, `IsAllLowerCase`, `IsAllLetters`, `CleanTextToLettersNumbersAndSpace`.
+* [173ded1] (RzR) -> Add new string extension methods: `AddPeriod`, `RemovePeriod`, `AddPeriodValue`, `RemovePeriodValue`.
+* [771d45a] (RzR) -> Adjust code execution and add new tests.
+* [6bf5de1] (RzR) -> Add new Type extension methods: `IsNonAbstractClass`, `GetBaseTypes`, `IsInNamespaceAlternative`, `IsInExactNamespace`, `HasAttribute`.
+* [c92aec2] (RzR) -> Add new string extension: `NotAllowedEmpty`.
+* [daad073] (RzR) -> Add new enum extension: `IsDefined`.
+* [9126c55] (RzR) -> Add new T extension methods: `NotAllowNull`.
+* [a0edaf4] (RzR) -> Add new Random method: `Bool`.
+* [2c8da5e] (RzR) -> Add new enumerable ext: `ToHashSet`, `HasAny`.
+
 ### **v4.0.1.8519** [[RzR](mailto:108324929+I-RzR-I@users.noreply.github.com)] 27-10-2025
 * [2726a87] (RzR) -> Auto commit uncommited files
 * [1282898] (RzR) -> Fix IEnumerable extension method: `Chunked`.
@@ -70,24 +88,102 @@
 * [17989a2] (RzR) -> Add new Enum extensions `AreEquals`.
 * [3e56754] (RzR) -> Add new enumerable extensions `Chunked`
 
-### **v1.0.1.0823** 
--> Was fixed tests and was added validator for input source.<br />
--> Was added `ToEnum<T>` from the string.<br />
--> Was added check methods `IsTypeOfNullableInt`, `IsTypeOfFloatingPoint`, `IsTypeOfNullableFloatingPoint` from  property type.
+### **v2.1.1.6403** 
+-> Add new string extension: `FormatWith`;<br />
+-> Add new Guid/Guid? extension: `IsEmpty`;<br />
+-> Relocate several string extensions: `IsGuid`, `ToGuid`, `FromDoubleQuotesWithBackSlashesToGuid`;<br />
 
-### **v1.0.1.1842** 
--> Was added new byte extension: `ToStringFromByteUnicode`, `ToHexByte`.<br />
--> Was added new string extension: `ToBytesUnicode`.
+### **v2.1.0.0** 
+-> Add new string extensions: `ToStringArray`, `ArrayToString`;<br />
+-> Add new array extensions: `AppendItem`, `AppendIfNotExists`, `RemoveItem`, `RemoveAtIdx`;<br />
+-> Add new enumerable extensions: `GetDuplicates`, `ForEach`, `ForEachAndReturn`;<br />
+-> Add passcode/password generation util;<br />
 
-### **v1.0.2.1107** 
--> Was added new DateTime extension: `StartOfWeek`, `EndOfWeek`, `StartOfMonth`, `EndOfMonth`, `StartOfPreviousMonth`, `EndOfPreviousMonth`, `StartOfYear`, `EndOfYear`, `DaysInMonth`, `DaysInYear`, `GetIso8601WeekOfYear`.<br />
--> Was added new string extension: `ReplaceExact`.<br />
--> Was added new Exception extension: `GetFullError`.<br />
--> Was added new ExpandoObject extension: `AddProperty`, `UpdateValue`, `GetValue`.
+### **v2.0.1.8588** 
+-> Remove unused package `Microsoft.CodeAnalysis.Common`;<br />
 
-### **v1.0.2.1457** 
--> Was added new string extension: `IfNullOrWhiteSpace`, `IfNullOrEmpty`.<br />
--> Was added new TExtensions extension: `IfNotNull`.
+### **v2.0.0.0** 
+-> Fix test for `CalculateAge`;<br />
+-> Add DateTime extension method `AsNotNull`;<br />
+-> Add new tests for `AsNotNull` methods;<br />
+-> Add `EnumerateUtils` enumerable utils some tests;<br />
+-> Adjust AES encryption(`AesEncryptString`, `AesDecryptString`) and expose iv as input;<br />
+-> Adjust dynamic property/ies select avoid `System.Linq.Dynamic.Core`;<br />
+
+### **v1.3.0.0** 
+-> Fix test for `CalculateAge`;<br />
+-> Add new string extensions: `IsValidJson`, `IsValidJsonObject`, `IsValidJsonArray`;<br />
+
+### **v1.2.0.0** 
+-> Add/adjust input validations in the `DataTypeExtensions` foler with extensions;<br />
+-> Add new string extensions: `IfNullThenEmpty`.<br />
+
+### **v1.1.2.3434** 
+-> Add new string extensions: `AsRedacted`, `TrimPrefix`, `TrimSuffix`.<br />
+
+### **v1.1.1.7310** 
+-> Adjust and clean up code execution.<br />
+-> Reorganize typeparam extensions.<br />
+-> Add new typeparam extensions: `IfIsNull`, `IfIsNotNull`, `IfIsNullOrFuncIsTrue`, `IfIsNullAndFuncIsTrue`, `IfFuncIsTrue`, `IfFuncIsFalse`, `IfFunc`, `IfNull`, `IfNotNull`.<br />
+
+### **v1.1.0.0** 
+-> Remove unused packages.<br />
+-> Downgrade some package versions to cover target frameworks.<br />
+-> Fix some warnings and disposable objects.<br />
+-> Fix tests.
+
+### **v1.0.14.6517** 
+-> Fix some enums extensions.<br />
+-> Add new methods (`AppendTo`, `GetPropertiesInfoFromSource`) in `TExtensions`.
+
+### **v1.0.13.8399** 
+-> Add excel column name generator `GetExcelColumnName`.<br />
+-> Adjust method modifier for `GetDuplicates`.<br />
+
+### **v1.0.12.1447** 
+-> Add IDataReader extensions to convert object in specific type.<br />
+
+### **v1.0.11.1319** 
+-> Fix wrong modification.<br />
+
+### **v1.0.10.2315** 
+-> Update lib version. Add option to sign the new version of the files.<br />
+-> Small code refactor.
+
+### **v1.0.9.2108** 
+-> Added object extensions `ThrowIfArgNull`, `ThrowArgIfNull`.<br />
+-> Added bool extensions `IsTrue`, `IsFalse`.<br />
+-> Added null check extensions `IsNotNull`, `IsDbNull`.<br />
+-> Added string extensions `ThrowArgIfNull`, `ThrowArgIfNullOrEmpty`, `ThrowIfArgNull`, `ThrowIfArgNullOrEmpty`.<br />
+-> Adjust validation for input params at some methods.
+-> Small code refactor.
+
+### **v1.0.8.0638** 
+-> Added string extension `GetHashSha512String`, `FromSpaceSeparatedString`, `IsMissing`, `IsNullOrEmpty`, `AddQueryString`, `AddHashFragment`, `GetOrigin`, `Obfuscate`.<br />
+-> Added Enumerable extension `ToSpaceSeparatedString`, `HasDuplicates`, `GetDuplicates`.<br />
+
+### **v1.0.7.0535** 
+-> Add in directory helper new methods: `FileCount` x3, `DirectoryFileCount`.<br />
+
+### **v1.0.6.1341** 
+-> Update vulnerable library version.<br />
+
+### **v1.0.5.2131** 
+-> Added string extension `ParseToInt`, `ParseNullableInt`, `TryParseInt`.<br />
+-> Added list extension `ActionForEach`.<br />
+
+### **v1.0.5.1849** 
+-> Added string extension `Contains`.<br />
+-> Added int/long extension `IsLessZero`.<br />
+-> Was added new Type extension: `GetStringPropertyNames`, `GetStringPropertyInfos`, `GetPropertyInfos`.<br />
+
+### **v1.0.4.1925** 
+-> Added support for net framework.<br />
+
+### **v1.0.3.1101** 
+-> Was added new object extension: `SerializeToString` .<br />
+-> Was added new string extension: `DeserializeToObject` .<br />
+-> Was added new T extension: `SerializeToXmlDoc` .<br />
 
 ### **v1.0.3.0** 
 -> Was renamed `Utils` to `GeneralUtils`.<br />
@@ -114,99 +210,21 @@
 -> Was added new `EnumerableExtensions` with methods: `Replace`, `Join`, `IsLast`, `IsFirst`, `GetDifferences`, `ContainsAny`, `AnyStartWith` (input: IEnumerable<string>, string), `ToObservableCollection`, `Randomize`, `Transpose`, `ToCollection`, `Combinations`, `ToDataTable`, `ToDataTableDynamic`, `IsNullOrEmptyEnumerable`, `WithIndex`, `ListToString`, `CloneCollection`, `NotNull`.<br />
 -> Was added new `ArrayExtensions` with methods: `IndexOf`.<br />
 
-### **v1.0.3.1101** 
--> Was added new object extension: `SerializeToString` .<br />
--> Was added new string extension: `DeserializeToObject` .<br />
--> Was added new T extension: `SerializeToXmlDoc` .<br />
+### **v1.0.2.1457** 
+-> Was added new string extension: `IfNullOrWhiteSpace`, `IfNullOrEmpty`.<br />
+-> Was added new TExtensions extension: `IfNotNull`.
 
-### **v1.0.4.1925** 
--> Added support for net framework.<br />
+### **v1.0.2.1107** 
+-> Was added new DateTime extension: `StartOfWeek`, `EndOfWeek`, `StartOfMonth`, `EndOfMonth`, `StartOfPreviousMonth`, `EndOfPreviousMonth`, `StartOfYear`, `EndOfYear`, `DaysInMonth`, `DaysInYear`, `GetIso8601WeekOfYear`.<br />
+-> Was added new string extension: `ReplaceExact`.<br />
+-> Was added new Exception extension: `GetFullError`.<br />
+-> Was added new ExpandoObject extension: `AddProperty`, `UpdateValue`, `GetValue`.
 
-### **v1.0.5.1849** 
--> Added string extension `Contains`.<br />
--> Added int/long extension `IsLessZero`.<br />
--> Was added new Type extension: `GetStringPropertyNames`, `GetStringPropertyInfos`, `GetPropertyInfos`.<br />
+### **v1.0.1.1842** 
+-> Was added new byte extension: `ToStringFromByteUnicode`, `ToHexByte`.<br />
+-> Was added new string extension: `ToBytesUnicode`.
 
-### **v1.0.5.2131** 
--> Added string extension `ParseToInt`, `ParseNullableInt`, `TryParseInt`.<br />
--> Added list extension `ActionForEach`.<br />
-
-### **v1.0.6.1341** 
--> Update vulnerable library version.<br />
-
-### **v1.0.7.0535** 
--> Add in directory helper new methods: `FileCount` x3, `DirectoryFileCount`.<br />
-
-### **v1.0.8.0638** 
--> Added string extension `GetHashSha512String`, `FromSpaceSeparatedString`, `IsMissing`, `IsNullOrEmpty`, `AddQueryString`, `AddHashFragment`, `GetOrigin`, `Obfuscate`.<br />
--> Added Enumerable extension `ToSpaceSeparatedString`, `HasDuplicates`, `GetDuplicates`.<br />
-
-### **v1.0.9.2108** 
--> Added object extensions `ThrowIfArgNull`, `ThrowArgIfNull`.<br />
--> Added bool extensions `IsTrue`, `IsFalse`.<br />
--> Added null check extensions `IsNotNull`, `IsDbNull`.<br />
--> Added string extensions `ThrowArgIfNull`, `ThrowArgIfNullOrEmpty`, `ThrowIfArgNull`, `ThrowIfArgNullOrEmpty`.<br />
--> Adjust validation for input params at some methods.
--> Small code refactor.
-
-### **v1.0.10.2315** 
--> Update lib version. Add option to sign the new version of the files.<br />
--> Small code refactor.
-
-### **v1.0.11.1319** 
--> Fix wrong modification.<br />
-
-### **v1.0.12.1447** 
--> Add IDataReader extensions to convert object in specific type.<br />
-
-### **v1.0.13.8399** 
--> Add excel column name generator `GetExcelColumnName`.<br />
--> Adjust method modifier for `GetDuplicates`.<br />
--> Fix tests.
-
-### **v1.0.14.6517** 
--> Fix some enums extensions.<br />
--> Add new methods (`AppendTo`, `GetPropertiesInfoFromSource`) in `TExtensions`.
-
-### **v1.1.0.0** 
--> Remove unused packages.<br />
--> Downgrade some package versions to cover target frameworks.<br />
--> Fix some warnings and disposable objects.<br />
-
-### **v1.1.1.7310** 
--> Adjust and clean up code execution.<br />
--> Reorganize typeparam extensions.<br />
--> Add new typeparam extensions: `IfIsNull`, `IfIsNotNull`, `IfIsNullOrFuncIsTrue`, `IfIsNullAndFuncIsTrue`, `IfFuncIsTrue`, `IfFuncIsFalse`, `IfFunc`, `IfNull`, `IfNotNull`.<br />
-
-### **v1.1.2.3434** 
--> Add new string extensions: `AsRedacted`, `TrimPrefix`, `TrimSuffix`.<br />
-
-### **v1.2.0.0** 
--> Add/adjust input validations in the `DataTypeExtensions` foler with extensions;<br />
--> Add new string extensions: `IfNullThenEmpty`.<br />
-
-### **v1.3.0.0** 
--> Fix test for `CalculateAge`;<br />
--> Add new string extensions: `IsValidJson`, `IsValidJsonObject`, `IsValidJsonArray`;<br />
-
-### **v2.0.0.0** 
--> Fix test for `CalculateAge`;<br />
--> Add DateTime extension method `AsNotNull`;<br />
--> Add new tests for `AsNotNull` methods;<br />
--> Add `EnumerateUtils` enumerable utils some tests;<br />
--> Adjust AES encryption(`AesEncryptString`, `AesDecryptString`) and expose iv as input;<br />
--> Adjust dynamic property/ies select avoid `System.Linq.Dynamic.Core`;<br />
-
-### **v2.0.1.8588** 
--> Remove unused package `Microsoft.CodeAnalysis.Common`;<br />
-
-### **v2.1.0.0** 
--> Add new string extensions: `ToStringArray`, `ArrayToString`;<br />
--> Add new array extensions: `AppendItem`, `AppendIfNotExists`, `RemoveItem`, `RemoveAtIdx`;<br />
--> Add new enumerable extensions: `GetDuplicates`, `ForEach`, `ForEachAndReturn`;<br />
--> Add passcode/password generation util;<br />
-
-### **v2.1.1.6403** 
--> Add new string extension: `FormatWith`;<br />
--> Add new Guid/Guid? extension: `IsEmpty`;<br />
--> Relocate several string extensions: `IsGuid`, `ToGuid`, `FromDoubleQuotesWithBackSlashesToGuid`;<br />
+### **v1.0.1.0823** 
+-> Was fixed tests and was added validator for input source.<br />
+-> Was added `ToEnum<T>` from the string.<br />
+-> Was added check methods `IsTypeOfNullableInt`, `IsTypeOfFloatingPoint`, `IsTypeOfNullableFloatingPoint` from  property type.

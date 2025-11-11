@@ -101,5 +101,18 @@ namespace DomainCommonExtensions.Helpers
                 return (num3 << 16) | num4;
             }
         }
+
+        /// -------------------------------------------------------------------------------------------------
+        /// <summary>
+        ///     Generate new random bool value.
+        /// </summary>
+        /// <returns>
+        ///     New bool value.
+        /// </returns>
+        /// =================================================================================================
+        public bool Bool()
+        {
+            return _localSeed.Next() > (int.MaxValue / 2);
+        }
     }
 }

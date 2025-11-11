@@ -15,6 +15,7 @@
 // ***********************************************************************
 
 using System;
+using DomainCommonExtensions.CommonExtensions;
 using DomainCommonExtensions.DataTypeExtensions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -591,7 +592,7 @@ namespace DataTypeTests.DataTests
         public void IfContains_Test(string source, string checkValue, string exceptedResult)
         {
             var res = source.IfContains(checkValue, exceptedResult);
-            
+
             Assert.IsNotNull(res);
             Assert.AreEqual(exceptedResult, res);
         }
@@ -602,7 +603,7 @@ namespace DataTypeTests.DataTests
         public void IfNotContains_Test(string source, string checkValue, string exceptedResult)
         {
             var res = source.IfNotContains(checkValue, exceptedResult);
-            
+
             Assert.IsNotNull(res);
             Assert.AreEqual(exceptedResult, res);
         }
@@ -680,6 +681,130 @@ namespace DataTypeTests.DataTests
             var decodedResult = encoded.Base32Decode();
             Assert.IsNotNull(decodedResult);
             Assert.AreEqual(clear, decodedResult);
+        }
+
+        [DataRow(null)]
+        [DataRow("null")]
+        [DataRow("")]
+        [TestMethod]
+        public void NotAllowedEmpty_Test(string source)
+        {
+            if (source.IsNull())
+                Assert.ThrowsException<ArgumentNullException>(() => source.NotAllowedEmpty(nameof(source)));
+            else if (source.IsEmpty())
+                Assert.ThrowsException<ArgumentException>(() => source.NotAllowedEmpty(nameof(source)));
+            else
+            {
+                var result = source.NotAllowedEmpty(nameof(source));
+
+                Assert.IsNotNull(result);
+                Assert.AreEqual(source, result);
+            }
+        }
+
+        [DataRow("10", ".", "10.")]
+        [DataRow("Test", ";", "Test;")]
+        [DataRow("Test.", ".", "Test.")]
+        [DataRow("Test.", ";", "Test.;")]
+        [TestMethod]
+        public void AddPeriod_Test(string sourceValue, string delimiter, string exceptedValue)
+        {
+            var result = sourceValue.AddPeriod(delimiter);
+
+            Assert.IsNotNull(result);
+            Assert.AreEqual(exceptedValue, result);
+        }
+
+        [DataRow("10.", ".", "10")]
+        [DataRow("Test;", ";", "Test")]
+        [DataRow("Test;Test2", ";", "Test;Test2")]
+        [TestMethod]
+        public void RemovePeriod_Test(string sourceValue, string delimiter, string exceptedValue)
+        {
+            var result = sourceValue.RemovePeriod(delimiter);
+
+            Assert.IsNotNull(result);
+            Assert.AreEqual(exceptedValue, result);
+        }
+
+        [DataRow("10", ".", "", "10.00")]
+        [DataRow("10.", ".", "99", "10.99")]
+        [DataRow("10", ".", "25", "10.25")]
+        [DataRow("Test", ";", "zas", "Test;zas")]
+        [DataRow("Test.", ".", " ", "Test. ")]
+        [TestMethod]
+        public void AddPeriodValue_Test(string sourceValue, string delimiter, string periodValue, string exceptedValue)
+        {
+            var result = sourceValue.AddPeriodValue(delimiter, periodValue);
+
+            Assert.IsNotNull(result);
+            Assert.AreEqual(exceptedValue, result);
+        }
+
+        [DataRow("10.00", ".", "00", "10")]
+        [DataRow("10.25", ".", "25", "10")]
+        [DataRow("Test;zas", ";", "zas", "Test")]
+        [DataRow("Test. ", ".", " ", "Test")]
+        [TestMethod]
+        public void RemovePeriodValue_Test(string sourceValue, string delimiter, string periodValue, string exceptedValue)
+        {
+            var result = sourceValue.RemovePeriodValue(delimiter, periodValue);
+
+            Assert.IsNotNull(result);
+            Assert.AreEqual(exceptedValue, result);
+        }
+
+        [DataRow("", false)]
+        [DataRow("aSw", false)]
+        [DataRow("asw", false)]
+        [DataRow("ASW", true)]
+        [TestMethod]
+        public void IsAllUpperCase_Test(string sourceValue, bool exceptedResult)
+        {
+            var result = sourceValue.IsAllUpperCase();
+
+            Assert.IsNotNull(result);
+            Assert.AreEqual(exceptedResult, result);
+        }
+
+        [DataRow("", false)]
+        [DataRow("aSw", false)]
+        [DataRow("asw", true)]
+        [DataRow("ASW", false)]
+        [TestMethod]
+        public void IsAllLowerCase_Test(string sourceValue, bool exceptedResult)
+        {
+            var result = sourceValue.IsAllLowerCase();
+
+            Assert.IsNotNull(result);
+            Assert.AreEqual(exceptedResult, result);
+        }
+
+        [DataRow("", false)]
+        [DataRow("aSw", true)]
+        [DataRow("asw", true)]
+        [DataRow("ASW", true)]
+        [DataRow("a05dw", false)]
+        [TestMethod]
+        public void IsAllLetters_Test(string sourceValue, bool exceptedResult)
+        {
+            var result = sourceValue.IsAllLetters();
+
+            Assert.IsNotNull(result);
+            Assert.AreEqual(exceptedResult, result);
+        }
+
+        [DataRow("sw13dd21d3", "sw13dd21d3")]
+        [DataRow("Test!23", "Test23")]
+        [DataRow("", "")]
+        [DataRow("T3st!23 ", "T3st23 ")]
+        [TestMethod]
+        public void CleanTextToLettersNumbersAndSpace_Test(string sourceValue, string exceptedValue)
+        {
+            var result = sourceValue.CleanTextToLettersNumbersAndSpace();
+
+            Assert.IsNotNull(result);
+            Assert.AreEqual(exceptedValue, result);
         }
     }
 }

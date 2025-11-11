@@ -218,5 +218,30 @@ namespace DomainCommonExtensions.CommonExtensions.TypeParam
 
             return EqualityComparer<T>.Default.Equals(source, searchValue).IsFalse() ? resultValue : source;
         }
+
+        /// <summary>
+        ///     A T extension method that not null.
+        /// </summary>
+        /// <typeparam name="T">Generic type parameter.</typeparam>
+        /// <param name="source">The source to act on.</param>
+        /// <param name="parameterName">Name of the parameter.</param>
+        /// <returns>
+        ///     A T.
+        /// </returns>
+        public static T NotAllowNull<T>(this T source, string parameterName)
+            where T : class
+        {
+            if (ReferenceEquals(source, null))
+            {
+                parameterName.NotAllowedEmpty(nameof(parameterName));
+
+                DomainEnsure.IsNotNullOrEmptyArgNull(parameterName, nameof(parameterName));
+
+                // ReSharper disable once ExpressionIsAlwaysNull
+                DomainEnsure.IsNotNull(source, nameof(source));
+            }
+
+            return source;
+        }
     }
 }

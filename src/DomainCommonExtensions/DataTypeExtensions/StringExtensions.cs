@@ -1826,5 +1826,194 @@ namespace DomainCommonExtensions.DataTypeExtensions
 
             return Encoding.UTF8.GetString(tempResult, 0, byteIndex);
         }
+
+        /// <summary>
+        ///     A string extension method that not allowed empty.
+        /// </summary>
+        /// <param name="source">The input.</param>
+        /// <param name="parameterName">Name of the parameter.</param>
+        /// <returns>
+        ///     A string (source) value if validation is passed.
+        /// </returns>
+        public static string NotAllowedEmpty(this string source, string parameterName)
+        {
+            if (ReferenceEquals(source, null))
+            {
+                NotAllowedEmpty(parameterName, nameof(parameterName));
+
+                DomainEnsure.ThrowException($"String value cannot be null. The param: [{parameterName}]", ExceptionType.ArgumentNullException);
+            }
+
+            if (source.IsMissing())
+            {
+                NotAllowedEmpty(parameterName, nameof(parameterName));
+
+                DomainEnsure.ThrowException($"String value cannot be null. The param: [{parameterName}]", ExceptionType.ArgumentException);
+            }
+
+            return source;
+        }
+
+        /// <summary>
+        ///     A string extension method that adds a period to source data.
+        /// </summary>
+        /// <param name="source">The input source string/number value.</param>
+        /// <param name="periodDelimiter">(Optional) The period delimiter. Default value is '.' (dot).</param>
+        /// <returns>
+        ///     A new string with period.
+        /// </returns>
+        public static string AddPeriod(this string source, string periodDelimiter = ".")
+        {
+            if (source.IsNullOrEmpty())
+                return source;
+
+            if (source.IsPresent() && source.Trim().EndsWith(periodDelimiter))
+            {
+                return source;
+            }
+
+            return source.Length.IsGreaterThanZero() ? source + periodDelimiter : source;
+        }
+
+        /// <summary>
+        ///     A string extension method that removes the period from source data.
+        /// </summary>
+        /// <param name="source">The input source string/number value.</param>
+        /// <param name="periodDelimiter">(Optional) The period delimiter. Default value is '.' (dot).</param>
+        /// <returns>
+        ///     A new string without period.
+        /// </returns>
+        public static string RemovePeriod(this string source, string periodDelimiter = ".")
+        {
+            if (source.IsNullOrEmpty())
+                return source;
+
+            return source?.Trim().EndsWith(periodDelimiter) == true
+                ? source.Remove(source.Length - 1)
+                : source;
+        }
+
+        /// <summary>
+        ///     A string extension method that adds a period value to source.
+        /// </summary>
+        /// <param name="source">The input source string/number value.</param>
+        /// <param name="periodDelimiter">(Optional) The period delimiter. Default value is '.' (dot).</param>
+        /// <param name="period">(Optional) The period value. Default value is "" (empty string).</param>
+        /// <returns>
+        ///     A new string value with period and its value.
+        /// </returns>
+        public static string AddPeriodValue(this string source, string periodDelimiter = ".", string period = "")
+        {
+            if (source.IsNullOrEmpty())
+                return source;
+
+            var sourceData = source.AddPeriod(periodDelimiter);
+
+            return period.IsNullOrEmpty().IsFalse()
+                ? sourceData + period
+                : sourceData + "00";
+        }
+
+        /// <summary>
+        ///     A string extension method that removes the period value.
+        /// </summary>
+        /// <param name="source">The input source string/number value.</param>
+        /// <param name="periodDelimiter">(Optional) The period delimiter. Default value is '.' (dot).</param>
+        /// <param name="period">(Optional) The period value. Default value is "" (empty string).</param>
+        /// <returns>
+        ///     A new string value without period and its value.
+        /// </returns>
+        public static string RemovePeriodValue(this string source, string periodDelimiter = ".", string period = "")
+        {
+            if (source.IsNullOrEmpty())
+                return source;
+
+            if (source.EndsWith(periodDelimiter + period).IsTrue())
+            {
+                var idx = source.IndexOf(periodDelimiter + period, StringComparison.Ordinal);
+                
+                return idx == -1 
+                    ? source 
+                    : source.Remove(idx, (periodDelimiter + period).Length);
+            }
+            else return source;
+        }
+
+        /// <summary>
+        ///     A string extension method that check if 'source' string value is all upper case.
+        /// </summary>
+        /// <param name="source">Source string text/value to be checked.</param>
+        /// <returns>
+        ///     True if all upper case, false if not.
+        /// </returns>
+        public static bool IsAllUpperCase(this string source)
+        {
+            if (source.IsMissing())
+                return false;
+
+            return RegularExpressions.IsUpperCaseStringRegex.IsMatch(source);
+        }
+
+        /// <summary>
+        ///     A string extension method that check if 'source' string value is all lower case.
+        /// </summary>
+        /// <param name="source">Source string text/value to be checked.</param>
+        /// <returns>
+        ///     True if lower case, false if not.
+        /// </returns>
+        public static bool IsAllLowerCase(this string source)
+        {
+            if (source.IsMissing())
+                return false;
+
+            return RegularExpressions.IsLowerCaseStringRegex.IsMatch(source);
+        }
+
+        /// <summary>
+        ///     A string extension method that check if 'source' string value is all letters.
+        /// </summary>
+        /// <param name="source">Source string text/value to be checked.</param>
+        /// <returns>
+        ///     True if lower case, false if not.
+        /// </returns>
+        public static bool IsAllLetters(this string source)
+        {
+            if (source.IsMissing())
+                return false;
+
+            return RegularExpressions.IsAllLettersStringRegex.IsMatch(source);
+        }
+
+        /// <summary>
+        ///     A string extension method that clean text to letters numbers and space.
+        /// </summary>
+        /// <param name="source">Source string text/value.</param>
+        /// <remarks>
+        ///     Allowed only letters a - z (lower/upper case), numbers 0 - 9 and space.
+        /// </remarks>
+        /// <returns>
+        ///     A new cleaned text.
+        /// </returns>
+        public static string CleanTextToLettersNumbersAndSpace(this string source)
+        {
+            if (source.IsNullOrEmpty())
+                return source;
+
+            const string pattern = "[^a-zA-Z0-9 ]";
+
+            return Regex.Replace(source, pattern, "");
+        }
+
+        /// <summary>
+        ///     A string extension method that query if 'source' is web URL.
+        /// </summary>
+        /// <param name="source">Source string.</param>
+        /// <returns>
+        ///     True if web url, false if not.
+        /// </returns>
+        public static bool IsWebUrl(this string source)
+        {
+            return source.IsPresent() && RegularExpressions.IsWebUrlRegex.IsMatch(source);
+        }
     }
 }
