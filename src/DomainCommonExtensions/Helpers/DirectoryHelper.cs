@@ -4,20 +4,24 @@
 //  Created On       : 2022-12-10 02:01
 // 
 //  Last Modified By : RzR
-//  Last Modified On : 2022-12-10 02:01
+//  Last Modified On : 2025-11-09 17:53
 // ***********************************************************************
-//  <copyright file="DirectoryHelper.cs" company="">
-//   Copyright (c) RzR. All rights reserved.
+//  <copyright file="DirectoryHelper.cs" company="RzR SOFT & TECH">
+//   Copyright © RzR. All rights reserved.
 //  </copyright>
 // 
 //  <summary>
 //  </summary>
 // ***********************************************************************
 
+#region U S A G E S
+
 using System;
 using System.IO;
 using System.Linq;
 using DomainCommonExtensions.DataTypeExtensions;
+
+#endregion
 
 namespace DomainCommonExtensions.Helpers
 {
@@ -65,7 +69,9 @@ namespace DomainCommonExtensions.Helpers
         /// <param name="targetPath">Target directory path</param>
         /// <remarks></remarks>
         public static void CopyDirectory(string sourcePath, string targetPath)
-        => CopyDirectory(new DirectoryInfo(sourcePath), new DirectoryInfo(targetPath));
+        {
+            CopyDirectory(new DirectoryInfo(sourcePath), new DirectoryInfo(targetPath));
+        }
 
         /// <summary>
         ///     Delete the directory and all files that are there
@@ -76,8 +82,10 @@ namespace DomainCommonExtensions.Helpers
         {
             if (source.Exists.IsFalse()) return;
 
-            foreach (var fileInfo in source.GetFiles()) fileInfo.Delete();
-            foreach (var childDirectory in source.GetDirectories()) DeleteDirectory(childDirectory);
+            foreach (var fileInfo in source.GetFiles()) 
+                fileInfo.Delete();
+            foreach (var childDirectory in source.GetDirectories()) 
+                DeleteDirectory(childDirectory);
 
             source.Delete();
         }
@@ -88,7 +96,9 @@ namespace DomainCommonExtensions.Helpers
         /// <param name="sourcePath">Source directory path</param>
         /// <remarks></remarks>
         public static void DeleteDirectory(string sourcePath)
-            => DeleteDirectory(new DirectoryInfo(sourcePath));
+        {
+            DeleteDirectory(new DirectoryInfo(sourcePath));
+        }
 
         /// <summary>
         ///     Count file in directory
@@ -151,12 +161,24 @@ namespace DomainCommonExtensions.Helpers
                 .GroupBy(fsi => fsi is DirectoryInfo)
                 .ToDictionary(item => item.Key, s => s.Count());
 
-            return new Tuple<int, int>(dictionary.ContainsKey(true) 
-                ? dictionary[true] 
-                : 0, 
-                dictionary.ContainsKey(false) 
-                    ? dictionary[false] 
+            return new Tuple<int, int>(dictionary.ContainsKey(true)
+                    ? dictionary[true]
+                    : 0,
+                dictionary.ContainsKey(false)
+                    ? dictionary[false]
                     : 0);
+        }
+
+        /// <summary>
+        ///     Check if exist file in directory.
+        /// </summary>
+        /// <param name="directoryWithFile">The directory with file.</param>
+        /// <returns>
+        ///     True if it succeeds, false if it fails.
+        /// </returns>
+        public static bool ExistFileInDirectory(string directoryWithFile)
+        {
+            return File.Exists(directoryWithFile);
         }
     }
 }
