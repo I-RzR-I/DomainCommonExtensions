@@ -1,3 +1,21 @@
+### **v4.1.0.8241** [[RzR](mailto:108324929+I-RzR-I@users.noreply.github.com)] 11-11-2025
+* [0c9f8d8] (RzR) -> Auto commit uncommited files
+* [75871a1] (RzR) -> Add INI file reader helper.
+* [4eb45c6] (RzR) -> Add new Dictionary extension methods: `AddOrUpdate`, `AddOrUpdateValue`, `AddOrUpdateValues`, `AddOrUpdateValues`.
+* [3bee806] (RzR) -> Add `TaskRunnerHelper` that allow to use as `Task.Run`.
+* [b723c9b] (RzR) -> Add new enumerable extension method: `IsNotNullOrEmptyEnumerable`.
+* [8971980] (RzR) -> Add new string extension methods: `IsWebUrl`.
+* [fac9dce] (RzR) -> Adjust changelog version order
+* [c2f8fa2] (RzR) -> Add new string extension methods: `IsAllUpperCase`, `IsAllLowerCase`, `IsAllLetters`, `CleanTextToLettersNumbersAndSpace`.
+* [173ded1] (RzR) -> Add new string extension methods: `AddPeriod`, `RemovePeriod`, `AddPeriodValue`, `RemovePeriodValue`.
+* [771d45a] (RzR) -> Adjust code execution and add new tests.
+* [6bf5de1] (RzR) -> Add new Type extension methods: `IsNonAbstractClass`, `GetBaseTypes`, `IsInNamespaceAlternative`, `IsInExactNamespace`, `HasAttribute`.
+* [c92aec2] (RzR) -> Add new string extension: `NotAllowedEmpty`.
+* [daad073] (RzR) -> Add new enum extension: `IsDefined`.
+* [9126c55] (RzR) -> Add new T extension methods: `NotAllowNull`.
+* [a0edaf4] (RzR) -> Add new Random method: `Bool`.
+* [2c8da5e] (RzR) -> Add new enumerable ext: `ToHashSet`, `HasAny`.
+
 ### **v4.0.1.8519** [[RzR](mailto:108324929+I-RzR-I@users.noreply.github.com)] 27-10-2025
 * [2726a87] (RzR) -> Auto commit uncommited files
 * [1282898] (RzR) -> Fix IEnumerable extension method: `Chunked`.
