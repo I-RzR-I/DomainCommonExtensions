@@ -87,5 +87,21 @@ namespace DataTypeTests.DataTests
             Assert.IsTrue(isSetFlag2);
             Assert.AreEqual(8, flag2);
         }
+
+        [DataRow(0, "0 bytes")]
+        [DataRow(1024, "1.0 KB")]
+        [DataRow(1902021, "1.8 MB")]
+        [DataRow(99999999, "95.4 MB")]
+        [DataRow(1073741824, "1.0 GB")]
+        [DataRow(1610612736, "1.5 GB")]
+        [DataRow(1099511627776, "1.0 TB")]
+        [TestMethod]
+        public void AsReadableFileSize_Test(long size, string excepted)
+        {
+            var result = size.AsReadableFileSize();
+
+            Assert.IsNotNull(result);
+            Assert.AreEqual(excepted, result);
+        }
     }
 }
