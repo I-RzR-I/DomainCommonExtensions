@@ -1,3 +1,9 @@
+### **v4.2.0.8401** [[RzR](mailto:108324929+I-RzR-I@users.noreply.github.com)] 03-12-2025
+* [e0cfbed] (RzR) -> Auto commit uncommited files
+* [17cf91a] (RzR) -> Add type extension method: `IsAssignableFromPortable`.
+* [1b4d01c] (RzR) -> Add ConcurrentDictionary extension method: `AddOrUpdate`.
+* [e9ff67e] (RzR) -> Add long extension method: `AsReadableFileSize`.
+
 ### **v4.1.0.8241** [[RzR](mailto:108324929+I-RzR-I@users.noreply.github.com)] 11-11-2025
 * [0c9f8d8] (RzR) -> Auto commit uncommited files
 * [75871a1] (RzR) -> Add INI file reader helper.
