@@ -20,6 +20,7 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
+using DomainCommonExtensions.Utilities.Ensure;
 
 #endregion
 
@@ -32,6 +33,61 @@ namespace DomainCommonExtensions.ArraysExtensions
     /// =================================================================================================
     public static class ConcurrentDictionaryExtensions
     {
+        /// -------------------------------------------------------------------------------------------------
+        /// <summary>
+        ///     A ConcurrentDictionary&lt;TKey,TValue&gt; extension method that adds an or update key and value
+        /// </summary>
+        /// <typeparam name="TKey">Type of the key.</typeparam>
+        /// <typeparam name="TValue">Type of the value.</typeparam>
+        /// <param name="source">The source to act on.</param>
+        /// <param name="key">The key.</param>
+        /// <param name="value">The value.</param>
+        /// =================================================================================================
+        public static void AddOrUpdate<TKey, TValue>(this ConcurrentDictionary<TKey, TValue> source, 
+            TKey key, TValue value)
+        {
+            DomainEnsure.IsNotNull(source, nameof(source));
+            DomainEnsure.IsNotNull(key, nameof(key));
+
+            source.AddOrUpdate(key, value, (oldKey, oldValue) => value);
+        }
+
+        /// -------------------------------------------------------------------------------------------------
+        /// <summary>
+        ///     A ConcurrentDictionary&lt;TKey,TValue&gt; extension method that adds an or update key and value
+        /// </summary>
+        /// <typeparam name="TKey">Type of the key.</typeparam>
+        /// <typeparam name="TValue">Type of the value.</typeparam>
+        /// <param name="source">The source to act on.</param>
+        /// <param name="keyValuePair">The key value pair.</param>
+        /// =================================================================================================
+        public static void AddOrUpdate<TKey, TValue>(this ConcurrentDictionary<TKey, TValue> source,
+            KeyValuePair<TKey, TValue> keyValuePair)
+        {
+            DomainEnsure.IsNotNull(source, nameof(source));
+            DomainEnsure.IsNotNull(keyValuePair, nameof(keyValuePair));
+
+            source.AddOrUpdate(keyValuePair.Key, keyValuePair.Value);
+        }
+
+        /// -------------------------------------------------------------------------------------------------
+        /// <summary>
+        ///     A ConcurrentDictionary&lt;TKey,TValue&gt; extension method that adds an or update key and value
+        /// </summary>
+        /// <typeparam name="TKey">Type of the key.</typeparam>
+        /// <typeparam name="TValue">Type of the value.</typeparam>
+        /// <param name="source">The source to act on.</param>
+        /// <param name="keyValuePairs">The key value pairs.</param>
+        /// =================================================================================================
+        public static void AddOrUpdate<TKey, TValue>(this ConcurrentDictionary<TKey, TValue> source, 
+            IEnumerable<KeyValuePair<TKey, TValue>> keyValuePairs)
+        {
+            DomainEnsure.IsNotNull(source, nameof(source));
+            DomainEnsure.IsNotNull(keyValuePairs, nameof(keyValuePairs));
+
+            keyValuePairs.ForEach(source.AddOrUpdate);
+        }
+
         /// -------------------------------------------------------------------------------------------------
         /// <summary>
         ///     A ConcurrentDictionary&lt;TKey,TValue&gt; extension method that removes this object.
