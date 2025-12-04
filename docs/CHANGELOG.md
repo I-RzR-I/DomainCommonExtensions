@@ -1,3 +1,7 @@
+### **v4.2.1.4986** [[RzR](mailto:108324929+I-RzR-I@users.noreply.github.com)] 04-12-2025
+* [51d2aa9] (RzR) -> Auto commit uncommited files
+* [9c27a62] (RzR) -> Upgrade deprecated package version.
+
 ### **v4.2.0.8401** [[RzR](mailto:108324929+I-RzR-I@users.noreply.github.com)] 03-12-2025
 * [e0cfbed] (RzR) -> Auto commit uncommited files
 * [17cf91a] (RzR) -> Add type extension method: `IsAssignableFromPortable`.
