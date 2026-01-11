@@ -1,3 +1,6 @@
+### **v4.3.0.6204** [[RzR](mailto:108324929+I-RzR-I@users.noreply.github.com)] 11-01-2026
+* [09a89f2] (RzR) -> Add a type of indexed enumerable.
+
 ### **v4.2.1.4986** [[RzR](mailto:108324929+I-RzR-I@users.noreply.github.com)] 04-12-2025
 * [51d2aa9] (RzR) -> Auto commit uncommited files
 * [9c27a62] (RzR) -> Upgrade deprecated package version.
