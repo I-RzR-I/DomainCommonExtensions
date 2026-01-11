@@ -16,6 +16,7 @@
 
 #region U S A G E S
 
+using DomainCommonExtensions.CommonExtensions;
 using DomainCommonExtensions.DataTypeExtensions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -102,6 +103,21 @@ namespace DataTypeTests.DataTests
 
             Assert.IsNotNull(result);
             Assert.AreEqual(excepted, result);
+        }
+
+        [DataRow(1, 0, 2)]
+        [DataRow(10, 5, 11)]
+        [DataRow(10, 9, 10)]
+        [DataRow(10, 10, 10)]
+        [DataRow(10, 10, 11)]
+        [DataRow(11, 10, 11)]
+        [TestMethod]
+        public void IsBetween_Test(int sourceValue, int min, int max)
+        {
+            var result = sourceValue.IsBetween(min, max);
+
+            Assert.IsNotNull(result);
+            Assert.IsTrue(result);
         }
     }
 }
