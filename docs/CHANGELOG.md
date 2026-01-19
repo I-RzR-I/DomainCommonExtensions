@@ -1,3 +1,12 @@
+### **v4.4.0.8476** [[RzR](mailto:108324929+I-RzR-I@users.noreply.github.com)] 19-01-2026
+* [0b54e4a] (RzR) -> Add `T` extension methods: `GetPropertyValue`, `GetPropertyStringValue`, `GetPropertyValue`, `ChangePropertyValue`.
+* [ee95f35] (RzR) -> Add `string` extension methods: `RemoveStartChars`, `RemoveEndChars`.
+* [e4334fe] (RzR) -> Add `Enum` extension method: `ToInt`.
+* [4bd5005] (RzR) -> Add multiple `Char` extension methods: `IsMissing`, `IsPresent`, `IsDigit`, `IsAscii`, `IsAsciiLetter`, `IsAsciiUpper`, `IsAsciiLower`, `IsNewLine`, `IsQuote`, `IsBracket`, `IsOperator`, `IsMathSign`, `IsWhiteSpaceFast`, `IsSymbolOrPunctuation`, `IsBinaryDigit`, `IsOctalDigit`, `IsHexDigit`, `ToHexValue`, `ToggleCase`, `IsPrintable`, `Next`, `Previous`, `IsEmoji`, `HasValue`, `DefaultIfNull`, `IsNullOrWhiteSpace`, `SpaceIfNull`.
+* [801e815] (RzR) -> Add multiple `TimeSpan` extension methods: `IsMissing`, `HasValidValue`, `IsZero`, `IsPositive`, `IsNegative`, `IsBetween`, `DefaultIfNull`, `ZeroIfNull`, `RoundUp`, `RoundDown`, `Clamp`, `TotalSecondsInt`, `TotalMinutesInt`, `TotalMillisecondsLong`, `ToClockFormat`, `ToHumanReadable`, `ThrowIfMissing`, `ThrowIfNegative`, `IsShorterThan`, `IsLongerThan`, `AddSafe`.
+* [d3fa3b4] (RzR) -> Add `Guid` extension method: `IsMissing`.
+* [46ae823] (RzR) -> Add multiple `RandomHelper` methods: `Long`, `Double`, `Decimal`, `Letter`, `Letters`, `LowerLetter`, `UpperLetter`, `AlphaNumeric`, `Digits`, `Guid`, `Token`, `DateTime`, `TimeSpan`, `Pick`, `Shuffle`, `Enum`.
+
 ### **v4.3.0.6204** [[RzR](mailto:108324929+I-RzR-I@users.noreply.github.com)] 11-01-2026
 * [09a89f2] (RzR) -> Add a type of indexed enumerable.
 
