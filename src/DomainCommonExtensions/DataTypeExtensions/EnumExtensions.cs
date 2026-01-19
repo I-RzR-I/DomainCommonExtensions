@@ -114,6 +114,19 @@ namespace DomainCommonExtensions.DataTypeExtensions
             return (int)(IConvertible)source;
         }
 
+        /// -------------------------------------------------------------------------------------------------
+        /// <summary>
+        ///     Get int from enum property.
+        /// </summary>
+        /// <typeparam name="T">Generic type parameter.</typeparam>
+        /// <param name="source">Enum property.</param>
+        /// <returns>
+        ///     Source as an int?
+        /// </returns>
+        /// =================================================================================================
+        public static int? ToInt<T>(this T? source) where T : struct, Enum, IComparable, IFormattable
+            => source.IsNull() ? null : Convert.ToInt32(source!.Value);
+
         /// <summary>
         ///     Convert enum property to string
         /// </summary>
