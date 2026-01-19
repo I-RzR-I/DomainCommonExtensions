@@ -135,5 +135,127 @@ namespace DataTypeTests.DataTests
 
             Assert.AreEqual(Guid.Empty, result);
         }
+
+        [TestMethod]
+        public void IsMissing_Guid_ReturnsTrue_For_Empty()
+        {
+            var value = Guid.Empty;
+
+            var result = value.IsMissing();
+
+            Assert.IsTrue(result);
+        }
+
+        [TestMethod]
+        public void IsMissing_Guid_ReturnsFalse_For_NonEmpty()
+        {
+            var value = Guid.NewGuid();
+
+            var result = value.IsMissing();
+
+            Assert.IsFalse(result);
+        }
+
+        [TestMethod]
+        public void IsMissing_NullableGuid_ReturnsTrue_For_Null()
+        {
+            Guid? value = null;
+
+            var result = value.IsMissing();
+
+            Assert.IsTrue(result);
+        }
+
+        [TestMethod]
+        public void IsMissing_NullableGuid_ReturnsTrue_For_Empty()
+        {
+            Guid? value = Guid.Empty;
+
+            var result = value.IsMissing();
+
+            Assert.IsTrue(result);
+        }
+
+        [TestMethod]
+        public void IsMissing_NullableGuid_ReturnsFalse_For_NonEmpty()
+        {
+            Guid? value = Guid.NewGuid();
+
+            var result = value.IsMissing();
+
+            Assert.IsFalse(result);
+        }
+
+        [TestMethod]
+        public void HasValidValue_Guid_ReturnsFalse_For_Empty()
+        {
+            var value = Guid.Empty;
+
+            var result = value.HasValidValue();
+
+            Assert.IsFalse(result);
+        }
+
+        [TestMethod]
+        public void HasValidValue_Guid_ReturnsTrue_For_NonEmpty()
+        {
+            var value = Guid.NewGuid();
+
+            var result = value.HasValidValue();
+
+            Assert.IsTrue(result);
+        }
+
+        [TestMethod]
+        public void HasValidValue_NullableGuid_ReturnsFalse_For_Null()
+        {
+            Guid? value = null;
+
+            var result = value.HasValidValue();
+
+            Assert.IsFalse(result);
+        }
+
+        [TestMethod]
+        public void HasValidValue_NullableGuid_ReturnsFalse_For_Empty()
+        {
+            Guid? value = Guid.Empty;
+
+            var result = value.HasValidValue();
+
+            Assert.IsFalse(result);
+        }
+
+        [TestMethod]
+        public void HasValidValue_NullableGuid_ReturnsTrue_For_NonEmpty()
+        {
+            Guid? value = Guid.NewGuid();
+
+            var result = value.HasValidValue();
+
+            Assert.IsTrue(result);
+        }
+
+        [TestMethod]
+        public void Nullable_And_NonNullable_IsMissing_Behave_Consistently()
+        {
+            Guid guid = Guid.NewGuid();
+
+            Assert.AreEqual(
+                guid.IsMissing(),
+                ((Guid?)guid).IsMissing()
+            );
+        }
+
+        [TestMethod]
+        public void Nullable_And_NonNullable_HasValidValue_Behave_Consistently()
+        {
+            Guid guid = Guid.NewGuid();
+
+            Assert.AreEqual(
+                guid.HasValidValue(),
+                ((Guid?)guid).HasValidValue()
+            );
+        }
     }
 }
