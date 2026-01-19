@@ -2015,5 +2015,54 @@ namespace DomainCommonExtensions.DataTypeExtensions
         {
             return source.IsPresent() && RegularExpressions.IsWebUrlRegex.IsMatch(source);
         }
+        ///-------------------------------------------------------------------------------------------------
+        /// <summary>
+        ///     A string extension method that removes characters from start.
+        /// </summary>
+        /// <param name="source">
+        ///     The source to act on.
+        /// </param>
+        /// <param name="length">
+        ///     The length. How many characters to be removed.
+        /// </param>
+        /// <returns>
+        ///     A string.
+        /// </returns>
+        ///=================================================================================================
+        public static string RemoveStartChars(this string source, int length)
+        {
+            if (source.IsMissing())
+                return source.IfNullThenEmpty();
+
+            if (source.Length <= length || length == 0)
+                return source;
+
+            return source.Substring(length, source.Length - length);
+        }
+
+        ///-------------------------------------------------------------------------------------------------
+        /// <summary>
+        ///     A string extension method that removes characters from end.
+        /// </summary>
+        /// <param name="source">
+        ///     The source to act on.
+        /// </param>
+        /// <param name="length">
+        ///     The length. How many characters to be removed.
+        /// </param>
+        /// <returns>
+        ///     A string.
+        /// </returns>
+        ///=================================================================================================
+        public static string RemoveEndChars(this string source, int length)
+        {
+            if (source.IsMissing())
+                return source.IfNullThenEmpty();
+
+            if (source.Length <= length || length == 0)
+                return source;
+
+            return source.Substring(0, source.Length - length);
+        }
     }
 }

@@ -17,6 +17,7 @@
 #region U S A G E S
 
 using System;
+using DataTypeTests.Models;
 using DomainCommonExtensions.DataTypeExtensions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -49,6 +50,22 @@ namespace DataTypeTests.DataTests
             Assert.IsTrue(castDate);
             Assert.IsTrue(castString);
             Assert.IsFalse(castNull);
+        }
+
+        [TestMethod]
+        public void ToDictionary_Test()
+        {
+            var data = new TempModel()
+            {
+                Code = "c0d",
+                Id = 12,
+                Price = (decimal?)100.01
+            };
+
+            var result = data.ToDictionary();
+
+            Assert.IsNotNull(result);
+            Assert.AreEqual(12, result[nameof(TempModel.Id)]);
         }
     }
 }

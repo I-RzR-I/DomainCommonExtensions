@@ -97,6 +97,17 @@ namespace DomainCommonExtensions.DataTypeExtensions
 
         /// -------------------------------------------------------------------------------------------------
         /// <summary>
+        ///     A Guid? extension method that query if 'source' Guid value is missing (empty or null).
+        /// </summary>
+        /// <param name="source">Source Guid value to be checked.</param>
+        /// <returns>
+        ///     True if empty, false if not.
+        /// </returns>
+        /// =================================================================================================
+        public static bool IsMissing(this Guid source) => source.IsNull() || source == Guid.Empty;
+
+        /// -------------------------------------------------------------------------------------------------
+        /// <summary>
         ///     A Guid? extension method that query if 'source' Guid value is empty.
         /// </summary>
         /// <param name="source">Source Guid value to be checked.</param>
