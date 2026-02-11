@@ -420,5 +420,104 @@ namespace DataTypeTests.DataTests.Array
             Assert.AreEqual(5, result.Count());
             Assert.IsTrue(result.All(x => x.StartsWith("@")));
         }
+
+        [TestMethod]
+        public void IsLast_ReturnsFalse_WhenMoreItemsExist_Test()
+        {
+            var list = new List<int> { 1, 2, 3 };
+            var enumerator = list.GetEnumerator();
+
+            enumerator.MoveNext(); // now at item 1
+
+            var result = enumerator.IsLast();
+
+            Assert.IsFalse(result);
+        }
+
+        [TestMethod]
+        public void IsLast_ReturnsTrue_WhenAtLastItem_Test()
+        {
+            var list = new List<int> { 1, 2, 3 };
+            var enumerator = list.GetEnumerator();
+
+            enumerator.MoveNext(); // 1
+            enumerator.MoveNext(); // 2
+            enumerator.MoveNext(); // 3 (last)
+
+            var result = enumerator.IsLast();
+
+            Assert.IsTrue(result);
+        }
+
+        [TestMethod]
+        public void IsLast_ReturnsTrue_WhenCollectionIsEmpty_Test()
+        {
+            var list = new List<int>();
+            var enumerator = list.GetEnumerator();
+
+            var result = enumerator.IsLast();
+
+            Assert.IsTrue(result);
+        }
+
+        [TestMethod]
+        public void Enumerator_IsLast_MultipleValue_Test()
+        {
+            IEnumerable<int> list = new List<int>() { 1, 2, 3, 4, 5 };
+
+            var isLast = list.GetEnumerator().IsLast();
+
+            Assert.IsFalse(isLast);
+        }
+
+        [TestMethod]
+        public void IsLast_ReturnsFalse_WhenMoreItemsExist_KV_Test()
+        {
+            var dict = new Dictionary<int, string>
+            {
+                { 1, "one" },
+                { 2, "two" },
+                { 3, "three" }
+            };
+
+            var enumerator = dict.GetEnumerator();
+            enumerator.MoveNext(); // first element
+
+            var result = enumerator.IsLast();
+
+            Assert.IsFalse(result);
+        }
+
+        [TestMethod]
+        public void IsLast_ReturnsTrue_WhenAtLastItem_KV_Test()
+        {
+            var dict = new Dictionary<int, string>
+            {
+                { 1, "one" },
+                { 2, "two" },
+                { 3, "three" }
+            };
+
+            var enumerator = dict.GetEnumerator();
+
+            enumerator.MoveNext(); // 1
+            enumerator.MoveNext(); // 2
+            enumerator.MoveNext(); // 3 (last)
+
+            var result = enumerator.IsLast();
+
+            Assert.IsTrue(result);
+        }
+
+        [TestMethod]
+        public void IsLast_ReturnsTrue_WhenEnumeratorIsEmpty_KV_Test()
+        {
+            var dict = new Dictionary<int, string>();
+            var enumerator = dict.GetEnumerator();
+
+            var result = enumerator.IsLast();
+
+            Assert.IsTrue(result);
+        }
     }
 }
