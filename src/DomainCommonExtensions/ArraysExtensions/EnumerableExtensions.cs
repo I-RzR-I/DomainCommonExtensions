@@ -856,5 +856,78 @@ namespace DomainCommonExtensions.ArraysExtensions
 
             return false;
         }
+
+        /// -------------------------------------------------------------------------------------------------
+        /// <summary>
+        ///     Is last.
+        /// </summary>
+        /// <typeparam name="T">Generic type parameter.</typeparam>
+        /// <param name="source">The source enumerator.</param>
+        /// <remarks>
+        ///     Using this method, the enumerator will advance.
+        /// </remarks>
+        /// <returns>
+        ///     True if last, false if not.
+        /// </returns>
+        /// =================================================================================================
+        public static bool IsLast<T>(this IEnumerator<T> source)
+        {
+            if (source.IsNull())
+                return true;
+
+            return source.MoveNext().IsFalse();
+        }
+
+        /// -------------------------------------------------------------------------------------------------
+        /// <summary>
+        ///     Is last.
+        /// </summary>
+        /// <typeparam name="TKey">Type of the key.</typeparam>
+        /// <typeparam name="TValue">Type of the value.</typeparam>
+        /// <param name="source">The source enumerator.</param>
+        /// <remarks>
+        ///     Using this method, the enumerator will advance.
+        /// </remarks>
+        /// <returns>
+        ///     True if last, false if not.
+        /// </returns>
+        /// =================================================================================================
+        public static bool IsLast<TKey, TValue>(
+            this IEnumerator<KeyValuePair<TKey, TValue>> source)
+        {
+            if (source.IsNull())
+                return true;
+
+            return source.MoveNext().IsFalse();
+        }
+
+        /// -------------------------------------------------------------------------------------------------
+        /// <summary>
+        ///     Enumerates select with is last in this collection.
+        /// </summary>
+        /// <typeparam name="T">Generic type parameter.</typeparam>
+        /// <param name="source">The source for this extension method.</param>
+        /// <returns>
+        ///     An enumerator that allows foreach to be used to process select with is last in this
+        ///     collection.
+        /// </returns>
+        /// =================================================================================================
+        public static IEnumerable<TupleResult<T, bool>> SelectWithIsLast<T>(
+            this IEnumerable<T> source)
+        {
+            using var e = source.GetEnumerator();
+            if (e.MoveNext().IsFalse())
+                yield break;
+
+            var current = e.Current;
+
+            while (e.MoveNext())
+            {
+                yield return TupleResult.Create(current, false);
+                current = e.Current;
+            }
+
+            yield return TupleResult.Create(current, true);
+        }
     }
 }

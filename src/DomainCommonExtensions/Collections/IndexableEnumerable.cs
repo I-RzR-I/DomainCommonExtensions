@@ -115,6 +115,16 @@ namespace DomainCommonExtensions.Collections
 
         /// -------------------------------------------------------------------------------------------------
         /// <summary>
+        ///     Initializes a new instance of the <see cref="IndexableEnumerable{T}"/> class.
+        /// </summary>
+        /// <param name="list">(Immutable) the list.</param>
+        /// =================================================================================================
+        public IndexableEnumerable(IEnumerable<T> list)
+            : this((IList<T>)list)
+        { }
+
+        /// -------------------------------------------------------------------------------------------------
+        /// <summary>
         ///     Initializes the index enumerable.
         /// </summary>
         /// <param name="list">(Immutable) the list.</param>
@@ -145,6 +155,17 @@ namespace DomainCommonExtensions.Collections
         /// </returns>
         /// =================================================================================================
         public static IIndexableEnumerable<T> Initialize(List<T> list) => new IndexableEnumerable<T>(list);
+
+        /// -------------------------------------------------------------------------------------------------
+        /// <summary>
+        ///     Initializes the index enumerable.
+        /// </summary>
+        /// <param name="list">(Immutable) the list.</param>
+        /// <returns>
+        ///     An IIndexableEnumerable&lt;T&gt;
+        /// </returns>
+        /// =================================================================================================
+        public static IIndexableEnumerable<T> Initialize(IEnumerable<T> list) => new IndexableEnumerable<T>(list);
         
         /// <inheritdoc />
         public T this[int index] => _list[index];
