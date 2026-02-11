@@ -1,3 +1,7 @@
+### **v4.5.0.7408** [[RzR](mailto:108324929+I-RzR-I@users.noreply.github.com)] 11-02-2026
+* [a4fd120] (RzR) -> Auto commit uncommited files
+* [bae196d] (RzR) -> Add enumerable method `SelectWithIsLast` and `WithObservable`
+
 ### **v4.4.0.8476** [[RzR](mailto:108324929+I-RzR-I@users.noreply.github.com)] 19-01-2026
 * [0b54e4a] (RzR) -> Add `T` extension methods: `GetPropertyValue`, `GetPropertyStringValue`, `GetPropertyValue`, `ChangePropertyValue`.
 * [ee95f35] (RzR) -> Add `string` extension methods: `RemoveStartChars`, `RemoveEndChars`.
