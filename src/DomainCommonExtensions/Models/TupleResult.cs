@@ -139,6 +139,17 @@ namespace DomainCommonExtensions.Models
         {
             _item1 = item1;
         }
+
+        /// -------------------------------------------------------------------------------------------------
+        /// <summary>
+        ///     Deconstructs this object into its component parts.
+        /// </summary>
+        /// <param name="item1">The first item.</param>
+        /// =================================================================================================
+        public void Deconstruct(out T1 item1)
+        {
+            item1 = _item1;
+        }
     }
 
     /// -------------------------------------------------------------------------------------------------
@@ -184,6 +195,19 @@ namespace DomainCommonExtensions.Models
         {
             _item1 = item1;
             _item2 = item2;
+        }
+
+        /// -------------------------------------------------------------------------------------------------
+        /// <summary>
+        ///     Deconstructs this object into its component parts.
+        /// </summary>
+        /// <param name="item1">The first item.</param>
+        /// <param name="item2">The second item.</param>
+        /// =================================================================================================
+        public void Deconstruct(out T1 item1, out T2 item2)
+        {
+            item1 = _item1;
+            item2 = _item2;
         }
     }
 
@@ -244,6 +268,21 @@ namespace DomainCommonExtensions.Models
             _item1 = item1;
             _item2 = item2;
             _item3 = item3;
+        }
+
+        /// -------------------------------------------------------------------------------------------------
+        /// <summary>
+        ///     Deconstructs this object into its component parts.
+        /// </summary>
+        /// <param name="item1">The first item.</param>
+        /// <param name="item2">The second item.</param>
+        /// <param name="item3">The third item.</param>
+        /// =================================================================================================
+        public void Deconstruct(out T1 item1, out T2 item2, out T3 item3)
+        {
+            item1 = _item1;
+            item2 = _item2;
+            item3 = _item3;
         }
     }
 
@@ -319,8 +358,25 @@ namespace DomainCommonExtensions.Models
             _item3 = item3;
             _item4 = item4;
         }
+
+        /// -------------------------------------------------------------------------------------------------
+        /// <summary>
+        ///     Deconstructs this object into its component parts.
+        /// </summary>
+        /// <param name="item1">The first item.</param>
+        /// <param name="item2">The second item.</param>
+        /// <param name="item3">The third item.</param>
+        /// <param name="item4">The fourth item.</param>
+        /// =================================================================================================
+        public void Deconstruct(out T1 item1, out T2 item2, out T3 item3, out T4 item4)
+        {
+            item1 = _item1;
+            item2 = _item2;
+            item3 = _item3;
+            item4 = _item4;
+        }
     }
-    
+
     /// -------------------------------------------------------------------------------------------------
     /// <summary>
     ///     Encapsulates the result of a tuple.
@@ -406,6 +462,25 @@ namespace DomainCommonExtensions.Models
             _item3 = item3;
             _item4 = item4;
             _item5 = item5;
+        }
+
+        /// -------------------------------------------------------------------------------------------------
+        /// <summary>
+        ///     Deconstructs this object into its component parts.
+        /// </summary>
+        /// <param name="item1">The first item.</param>
+        /// <param name="item2">The second item.</param>
+        /// <param name="item3">The third item.</param>
+        /// <param name="item4">The fourth item.</param>
+        /// <param name="item5">The fifth item.</param>
+        /// =================================================================================================
+        public void Deconstruct(out T1 item1, out T2 item2, out T3 item3, out T4 item4, out T5 item5)
+        {
+            item1 = _item1;
+            item2 = _item2;
+            item3 = _item3;
+            item4 = _item4;
+            item5 = _item5;
         }
     }
 }
