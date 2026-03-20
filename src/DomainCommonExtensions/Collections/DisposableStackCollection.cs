@@ -39,6 +39,11 @@ namespace DomainCommonExtensions.Collections
         private Stack<IDisposable> _disposable = new Stack<IDisposable>();
 
         /// <summary>
+        ///     Tracks whether this instance has already been disposed.
+        /// </summary>
+        private bool _disposed;
+
+        /// <summary>
         ///     Gets the stack length.
         /// </summary>
         /// <value>
@@ -49,11 +54,18 @@ namespace DomainCommonExtensions.Collections
         /// <inheritdoc />
         public void Dispose()
         {
+            if (_disposed)
+                return;
+
+            _disposed = true;
+
             if (_disposable.IsNotNull())
             {
                 while (_disposable.Count.IsGreaterThanZero())
                     _disposable.Pop().Dispose();
             }
+
+            GC.SuppressFinalize(this);
         }
 
         /// <summary>

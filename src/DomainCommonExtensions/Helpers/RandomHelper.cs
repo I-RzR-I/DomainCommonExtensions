@@ -31,7 +31,7 @@ namespace DomainCommonExtensions.Helpers
     ///     A random helper.
     /// </summary>
     /// =================================================================================================
-    public class RandomHelper
+    public sealed class RandomHelper
     {
         /// -------------------------------------------------------------------------------------------------
         /// <summary>

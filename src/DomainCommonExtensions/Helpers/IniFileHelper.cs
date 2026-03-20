@@ -112,7 +112,7 @@ namespace DomainCommonExtensions.Helpers
         ///     The class instance.
         /// </summary>
         /// =================================================================================================
-        public static IniFileHelper Instance = new IniFileHelper();
+        public static readonly IniFileHelper Instance = new IniFileHelper();
 
         /// -------------------------------------------------------------------------------------------------
         /// <summary>
