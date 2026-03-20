@@ -29,7 +29,7 @@ namespace DomainCommonExtensions.Utilities
     ///     Utils methods
     /// </summary>
     /// <remarks></remarks>
-    public class GeneralUtils
+    public static class GeneralUtils
     {
         /// <summary>
         ///     Check if is debug

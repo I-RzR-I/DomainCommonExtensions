@@ -5,9 +5,9 @@
 
 This library/ repository was created as a way to simplify the development process. Here were written the usually used methods (extension methods) for some data types like `int, string, DateTime, Enum, bool, byte, Guid`, also there was added extensions for `List, Dictionary, DynamicList` and other collections(`ICollection, IEnumerable, IList, HashSet, IQueryable`).
 
-In the repository was added an extension for `cryptography`, encrypting and decrypting string by key with `RSA`, `AES`, `TEA``
+In the repository was added an extension for `cryptography`, encrypting and decrypting string by key with `RSA`, `AES`, `TEA`.
 
-In case you need some get some documentation/comments from `Assembly`, here too are some extensions.
+In case you need some get some documentation/comments from `Assembly`, here too are some extensions. Also you can find a async lazy load `AsyncLazy<T>` and `AsyncExpiringLazy<T>`.
 
 Also here you may find extensions for `SystemData (DbDataReader, DataRecord, DataTable)` lib, `FileStream, MemoryStream, Type`, and a lot other of methods and not the last some `Linq` and `Expression` extensions that can help to make code mode clean.
 

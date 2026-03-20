@@ -1931,9 +1931,9 @@ namespace DomainCommonExtensions.DataTypeExtensions
             if (source.EndsWith(periodDelimiter + period).IsTrue())
             {
                 var idx = source.IndexOf(periodDelimiter + period, StringComparison.Ordinal);
-                
-                return idx == -1 
-                    ? source 
+
+                return idx == -1
+                    ? source
                     : source.Remove(idx, (periodDelimiter + period).Length);
             }
             else return source;
@@ -2063,6 +2063,36 @@ namespace DomainCommonExtensions.DataTypeExtensions
                 return source;
 
             return source.Substring(0, source.Length - length);
+        }
+
+        /// -------------------------------------------------------------------------------------------------
+        /// <summary>
+        ///     A string extension method that query if 'source' is missing or contains any values form params.
+        /// </summary>
+        /// <param name="source">Source string.</param>
+        /// <param name="checkValues">A variable-length parameters list containing check values.</param>
+        /// <returns>
+        ///     True if missing or any, false if not.
+        /// </returns>
+        /// =================================================================================================
+        public static bool IsMissingOrAny(this string source, params string[] checkValues)
+        {
+            return source.IsMissing() || checkValues.NotNull().Contains(source);
+        }
+
+        /// -------------------------------------------------------------------------------------------------
+        /// <summary>
+        ///     A string extension method that if 'source' is missing or contains any values form params.
+        ///     If is true, then execute action.
+        /// </summary>
+        /// <param name="source">Source string.</param>
+        /// <param name="execAction">The execute action.</param>
+        /// <param name="checkValues">A variable-length parameters list containing check values.</param>
+        /// =================================================================================================
+        public static void IfIsMissingOrAny(this string source, Action execAction, params string[] checkValues)
+        {
+            if (source.IsMissingOrAny(checkValues))
+                execAction();
         }
     }
 }

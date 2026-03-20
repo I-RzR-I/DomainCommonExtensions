@@ -806,5 +806,17 @@ namespace DataTypeTests.DataTests
             Assert.IsNotNull(result);
             Assert.AreEqual(exceptedValue, result);
         }
+
+        [DataRow("test", new string[]{"1", "2", "3"}, false)]
+        [DataRow("", new string[]{"1", "2", "3"}, true)]
+        [DataRow("3", new string[]{"1", "2", "3"}, true)]
+        [TestMethod]
+        public void IsMissingOrAny_Test(string source, string[] values, bool result)
+        {
+            var res = source.IsMissingOrAny(values);
+
+            Assert.IsNotNull(res);
+            Assert.AreEqual(result, res);
+        }
     }
 }

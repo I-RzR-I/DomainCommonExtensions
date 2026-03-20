@@ -178,7 +178,7 @@ namespace DomainCommonExtensions.DataTypeExtensions
         /// <param name="source">Input source object</param>
         /// <returns></returns>
         /// <remarks></remarks>
-        public static string ToString(this object source)
+        public static string ToSafeString(this object source)
         {
             if (source.IsDbNull() || source.IsNull())
                 return null;
