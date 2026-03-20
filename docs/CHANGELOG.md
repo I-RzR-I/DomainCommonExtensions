@@ -1,3 +1,11 @@
+### **v4.6.0.8232** [[RzR](mailto:108324929+I-RzR-I@users.noreply.github.com)] 20-03-2026
+* [5503224] (RzR) -> Auto commit uncommited files
+* [e9aa417] (RzR) -> Add small improvements
+* [3982b59] (RzR) -> Add async lazy load `AsyncLazy<T>` and `AsyncExpiringLazy<T>`.
+* [ded7012] (RzR) -> Add improvements to the documentation of `TupleResult`
+* [879e778] (RzR) -> Add new string extension methods: `IsMissingOrAny`, `IfIsMissingOrAny`.
+* [b1a924b] (RzR) -> Add `TupleResult` deconstruct data.
+
 ### **v4.5.0.7408** [[RzR](mailto:108324929+I-RzR-I@users.noreply.github.com)] 11-02-2026
 * [a4fd120] (RzR) -> Auto commit uncommited files
 * [bae196d] (RzR) -> Add enumerable method `SelectWithIsLast` and `WithObservable`
