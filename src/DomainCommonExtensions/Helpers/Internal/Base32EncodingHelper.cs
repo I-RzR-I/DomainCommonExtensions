@@ -17,11 +17,10 @@
 #region U S A G E S
 
 using System;
-using DomainCommonExtensions.DataTypeExtensions;
 
 #endregion
 
-namespace DomainCommonExtensions.Helpers.Internal
+namespace RzR.Extensions.Domain.Helpers.Internal
 {
     /// -------------------------------------------------------------------------------------------------
     /// <summary>

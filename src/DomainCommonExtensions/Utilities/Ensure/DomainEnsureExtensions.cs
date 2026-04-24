@@ -17,12 +17,12 @@
 #region U S A G E S
 
 using System;
-using DomainCommonExtensions.CommonExtensions;
-using DomainCommonExtensions.DataTypeExtensions;
+using RzR.Extensions.Domain.CommonExtensions;
+using RzR.Extensions.Domain.DataTypeExtensions;
 
 #endregion
 
-namespace DomainCommonExtensions.Utilities.Ensure
+namespace RzR.Extensions.Domain.Utilities.Ensure
 {
     /// <summary>
     ///     A domain ensures constraints extensions.

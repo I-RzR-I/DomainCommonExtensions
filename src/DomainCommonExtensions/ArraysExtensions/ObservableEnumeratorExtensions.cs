@@ -18,12 +18,12 @@
 
 using System;
 using System.Collections.Generic;
-using DomainCommonExtensions.Collections;
-using DomainCommonExtensions.Utilities.Ensure;
+using RzR.Extensions.Domain.Collections;
+using RzR.Extensions.Domain.Utilities.Ensure;
 
 #endregion
 
-namespace DomainCommonExtensions.ArraysExtensions
+namespace RzR.Extensions.Domain.ArraysExtensions
 {
     /// -------------------------------------------------------------------------------------------------
     /// <summary>

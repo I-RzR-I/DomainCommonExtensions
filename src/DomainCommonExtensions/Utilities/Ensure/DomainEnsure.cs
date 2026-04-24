@@ -16,18 +16,18 @@
 
 #region U S A G E S
 
-using DomainCommonExtensions.CommonExtensions;
-using DomainCommonExtensions.CommonExtensions.TypeParam;
-using DomainCommonExtensions.DataTypeExtensions;
-using DomainCommonExtensions.Resources.Enums;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using RzR.Extensions.Domain.CommonExtensions;
+using RzR.Extensions.Domain.CommonExtensions.TypeParam;
+using RzR.Extensions.Domain.DataTypeExtensions;
+using RzR.Extensions.Domain.Resources.Enums;
 
 #endregion
 
-namespace DomainCommonExtensions.Utilities.Ensure
+namespace RzR.Extensions.Domain.Utilities.Ensure
 {
     /// <summary>
     ///     A domain ensures constraints.

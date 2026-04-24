@@ -16,23 +16,23 @@
 
 #region U S A G E S
 
-using DomainCommonExtensions.ArraysExtensions;
-using DomainCommonExtensions.CommonExtensions.TypeParam;
-using DomainCommonExtensions.DataTypeExtensions;
-using DomainCommonExtensions.Models;
-using DomainCommonExtensions.Resources.Enums;
-using DomainCommonExtensions.Utilities.Ensure;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using System.Text.RegularExpressions;
+using RzR.Extensions.Domain.ArraysExtensions;
+using RzR.Extensions.Domain.CommonExtensions.TypeParam;
+using RzR.Extensions.Domain.DataTypeExtensions;
+using RzR.Extensions.Domain.Models;
+using RzR.Extensions.Domain.Resources.Enums;
+using RzR.Extensions.Domain.Utilities.Ensure;
 
 // ReSharper disable MethodOverloadWithOptionalParameter
 
 #endregion
 
-namespace DomainCommonExtensions.Helpers
+namespace RzR.Extensions.Domain.Helpers
 {
     /// -------------------------------------------------------------------------------------------------
     /// <summary>

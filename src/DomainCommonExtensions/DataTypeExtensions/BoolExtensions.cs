@@ -14,9 +14,9 @@
 //  </summary>
 // ***********************************************************************
 
-using DomainCommonExtensions.CommonExtensions;
+using RzR.Extensions.Domain.CommonExtensions;
 
-namespace DomainCommonExtensions.DataTypeExtensions
+namespace RzR.Extensions.Domain.DataTypeExtensions
 {
     /// <summary>
     ///     Bool extensions

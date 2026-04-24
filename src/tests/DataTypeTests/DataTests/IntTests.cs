@@ -17,8 +17,9 @@
 #region U S A G E S
 
 using DomainCommonExtensions.CommonExtensions;
-using DomainCommonExtensions.DataTypeExtensions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using RzR.Extensions.Domain.CommonExtensions;
+using RzR.Extensions.Domain.DataTypeExtensions;
 
 #endregion
 

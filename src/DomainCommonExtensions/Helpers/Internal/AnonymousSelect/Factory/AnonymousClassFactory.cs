@@ -27,11 +27,10 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading;
 using CodeSource;
-using DomainCommonExtensions.CommonExtensions;
-using DomainCommonExtensions.CommonExtensions.Reflection;
-using DomainCommonExtensions.DataTypeExtensions;
-using DomainCommonExtensions.Helpers.Internal.AnonymousSelect.Base;
-using DomainCommonExtensions.Models;
+using RzR.Extensions.Domain.CommonExtensions.Reflection;
+using RzR.Extensions.Domain.DataTypeExtensions;
+using RzR.Extensions.Domain.Helpers.Internal.AnonymousSelect.Base;
+using RzR.Extensions.Domain.Models;
 
 // ReSharper disable RedundantExplicitArrayCreation
 // ReSharper disable UseArrayEmptyMethod
@@ -40,7 +39,7 @@ using DomainCommonExtensions.Models;
 
 #endregion
 
-namespace DomainCommonExtensions.Helpers.Internal.AnonymousSelect.Factory
+namespace RzR.Extensions.Domain.Helpers.Internal.AnonymousSelect.Factory
 {
     /// -------------------------------------------------------------------------------------------------
     /// <summary>

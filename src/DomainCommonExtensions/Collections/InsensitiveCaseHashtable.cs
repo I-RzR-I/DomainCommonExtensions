@@ -17,11 +17,11 @@
 #region U S A G E S
 
 using System.Collections;
-using DomainCommonExtensions.CommonExtensions;
+using RzR.Extensions.Domain.CommonExtensions;
 
 #endregion
 
-namespace DomainCommonExtensions.Collections
+namespace RzR.Extensions.Domain.Collections
 {
     /// <summary>
     ///     Hashtable non sensitive keys collection

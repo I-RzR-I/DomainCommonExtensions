@@ -21,8 +21,9 @@ using System.Globalization;
 using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
-using DomainCommonExtensions.DataTypeExtensions;
-using DomainCommonExtensions.Utilities.Ensure;
+using RzR.Extensions.Domain.CommonExtensions;
+using RzR.Extensions.Domain.DataTypeExtensions;
+using RzR.Extensions.Domain.Utilities.Ensure;
 
 // ReSharper disable InconsistentNaming
 // ReSharper disable CheckNamespace

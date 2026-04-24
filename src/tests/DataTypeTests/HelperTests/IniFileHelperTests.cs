@@ -14,10 +14,10 @@
 //  </summary>
 // ***********************************************************************
 
-using DomainCommonExtensions.ArraysExtensions;
-using DomainCommonExtensions.DataTypeExtensions;
-using DomainCommonExtensions.Helpers;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using RzR.Extensions.Domain.ArraysExtensions;
+using RzR.Extensions.Domain.DataTypeExtensions;
+using RzR.Extensions.Domain.Helpers;
 
 namespace DataTypeTests.HelperTests
 {

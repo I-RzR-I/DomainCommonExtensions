@@ -23,7 +23,7 @@ using Microsoft.Extensions.Hosting;
 
 #endregion
 
-namespace DomainCommonExtensions.Utilities
+namespace RzR.Extensions.Domain.Utilities
 {
     /// <summary>
     ///     Utils methods

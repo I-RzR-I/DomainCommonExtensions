@@ -16,9 +16,9 @@
 
 using System;
 using System.Globalization;
-using DomainCommonExtensions.CommonExtensions;
+using RzR.Extensions.Domain.CommonExtensions;
 
-namespace DomainCommonExtensions.DataTypeExtensions
+namespace RzR.Extensions.Domain.DataTypeExtensions
 {
     /// <summary>
     ///     Int - Int32 extensions

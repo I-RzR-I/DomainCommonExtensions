@@ -17,11 +17,11 @@
 #region U S A G E S
 
 using System.Collections.Generic;
-using DomainCommonExtensions.DataTypeExtensions;
+using RzR.Extensions.Domain.DataTypeExtensions;
 
 #endregion
 
-namespace DomainCommonExtensions.ArraysExtensions
+namespace RzR.Extensions.Domain.ArraysExtensions
 {
     /// <summary>
     ///     Queue extensions

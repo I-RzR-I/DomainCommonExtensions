@@ -18,11 +18,11 @@
 #region U S A G E S
 
 using System.Reflection;
-using DomainCommonExtensions.DataTypeExtensions;
+using RzR.Extensions.Domain.DataTypeExtensions;
 
 #endregion
 
-namespace DomainCommonExtensions.CommonExtensions.Reflection
+namespace RzR.Extensions.Domain.CommonExtensions.Reflection
 {
     /// -------------------------------------------------------------------------------------------------
     /// <summary>

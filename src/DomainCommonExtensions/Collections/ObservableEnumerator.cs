@@ -19,13 +19,13 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using DomainCommonExtensions.CommonExtensions;
+using RzR.Extensions.Domain.CommonExtensions;
 
 // ReSharper disable PossibleMultipleEnumeration
 
 #endregion
 
-namespace DomainCommonExtensions.Collections
+namespace RzR.Extensions.Domain.Collections
 {
     /// -------------------------------------------------------------------------------------------------
     /// <summary>

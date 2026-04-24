@@ -19,13 +19,13 @@
 using System;
 using System.Data;
 using System.Globalization;
-using DomainCommonExtensions.CommonExtensions.SystemData;
+using RzR.Extensions.Domain.CommonExtensions.SystemData;
 
 // ReSharper disable RedundantCast
 
 #endregion
 
-namespace DomainCommonExtensions.ConvertExtensions.DataReader
+namespace RzR.Extensions.Domain.ConvertExtensions.DataReader
 {
     /// <summary>
     ///     DataReader to DateTime extensions

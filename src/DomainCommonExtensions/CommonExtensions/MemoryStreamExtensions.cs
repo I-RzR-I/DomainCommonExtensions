@@ -20,7 +20,7 @@ using System.IO;
 
 #endregion
 
-namespace DomainCommonExtensions.CommonExtensions
+namespace RzR.Extensions.Domain.CommonExtensions
 {
     /// <summary>
     ///     MemoryStream extensions

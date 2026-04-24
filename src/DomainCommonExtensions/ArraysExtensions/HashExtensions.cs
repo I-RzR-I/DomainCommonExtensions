@@ -20,7 +20,7 @@ using System.Collections.Generic;
 
 #endregion
 
-namespace DomainCommonExtensions.ArraysExtensions
+namespace RzR.Extensions.Domain.ArraysExtensions
 {
     /// <summary>
     ///     Hash extensions

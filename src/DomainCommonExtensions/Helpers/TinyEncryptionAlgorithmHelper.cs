@@ -18,11 +18,11 @@
 
 using System.Text;
 using CodeSource;
-using DomainCommonExtensions.ArraysExtensions;
-using DomainCommonExtensions.CommonExtensions;
-using DomainCommonExtensions.CommonExtensions.TypeParam;
-using DomainCommonExtensions.DataTypeExtensions;
-using DomainCommonExtensions.Utilities;
+using RzR.Extensions.Domain.ArraysExtensions;
+using RzR.Extensions.Domain.CommonExtensions;
+using RzR.Extensions.Domain.CommonExtensions.TypeParam;
+using RzR.Extensions.Domain.DataTypeExtensions;
+using RzR.Extensions.Domain.Utilities;
 
 // ReSharper disable IntVariableOverflowInUncheckedContext
 // ReSharper disable ArrangeRedundantParentheses
@@ -31,7 +31,7 @@ using DomainCommonExtensions.Utilities;
 
 #endregion
 
-namespace DomainCommonExtensions.Helpers
+namespace RzR.Extensions.Domain.Helpers
 {
     /// -------------------------------------------------------------------------------------------------
     /// <summary>

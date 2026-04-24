@@ -19,12 +19,12 @@
 using System;
 using System.IO;
 using System.Linq;
-using DomainCommonExtensions.ArraysExtensions;
-using DomainCommonExtensions.DataTypeExtensions;
+using RzR.Extensions.Domain.ArraysExtensions;
+using RzR.Extensions.Domain.DataTypeExtensions;
 
 #endregion
 
-namespace DomainCommonExtensions.CommonExtensions
+namespace RzR.Extensions.Domain.CommonExtensions
 {
     /// -------------------------------------------------------------------------------------------------
     /// <summary>

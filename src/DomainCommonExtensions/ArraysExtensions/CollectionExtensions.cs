@@ -16,17 +16,17 @@
 
 #region U S A G E S
 
-using DomainCommonExtensions.DataTypeExtensions;
-using DomainCommonExtensions.Utilities.Ensure;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.Linq;
+using RzR.Extensions.Domain.DataTypeExtensions;
+using RzR.Extensions.Domain.Utilities.Ensure;
 
 #endregion
 
-namespace DomainCommonExtensions.ArraysExtensions
+namespace RzR.Extensions.Domain.ArraysExtensions
 {
     /// <summary>
     ///     Collection extensions

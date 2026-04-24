@@ -14,7 +14,7 @@
 //  </summary>
 // ***********************************************************************
 
-namespace DomainCommonExtensions.Resources.Enums
+namespace RzR.Extensions.Domain.Resources.Enums
 {
     /// -------------------------------------------------------------------------------------------------
     /// <summary>

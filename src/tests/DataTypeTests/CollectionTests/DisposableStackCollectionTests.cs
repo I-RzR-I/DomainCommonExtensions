@@ -17,8 +17,8 @@
 #region U S A G E S
 
 using System;
-using DomainCommonExtensions.Collections;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using RzR.Extensions.Domain.Collections;
 
 #endregion
 

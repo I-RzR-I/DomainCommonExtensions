@@ -16,9 +16,9 @@
 
 using System;
 using System.Text;
-using DomainCommonExtensions.DataTypeExtensions;
+using RzR.Extensions.Domain.DataTypeExtensions;
 
-namespace DomainCommonExtensions.CommonExtensions
+namespace RzR.Extensions.Domain.CommonExtensions
 {
     /// <summary>
     ///     Exception extensions

@@ -18,16 +18,16 @@
 
 using System.Collections.Generic;
 using System.Linq;
-using DomainCommonExtensions.ArraysExtensions;
-using DomainCommonExtensions.CommonExtensions.TypeParam;
-using DomainCommonExtensions.DataTypeExtensions;
-using DomainCommonExtensions.Helpers;
+using RzR.Extensions.Domain.ArraysExtensions;
+using RzR.Extensions.Domain.CommonExtensions.TypeParam;
+using RzR.Extensions.Domain.DataTypeExtensions;
+using RzR.Extensions.Domain.Helpers;
 
 // ReSharper disable AccessToModifiedClosure
 
 #endregion
 
-namespace DomainCommonExtensions.Utilities
+namespace RzR.Extensions.Domain.Utilities
 {
     /// -------------------------------------------------------------------------------------------------
     /// <summary>

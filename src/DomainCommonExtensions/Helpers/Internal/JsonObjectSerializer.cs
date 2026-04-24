@@ -18,11 +18,10 @@
 #region U S A G E S
 
 using System.Text.Json;
-using System.Text.Json.Serialization;
 
 #endregion
 
-namespace DomainCommonExtensions.Helpers.Internal
+namespace RzR.Extensions.Domain.Helpers.Internal
 {
     /// -------------------------------------------------------------------------------------------------
     /// <summary>

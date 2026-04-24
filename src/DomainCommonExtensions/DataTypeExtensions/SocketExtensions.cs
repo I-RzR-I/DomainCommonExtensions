@@ -19,11 +19,11 @@
 using System;
 using System.Net.Sockets;
 using System.Runtime.InteropServices;
-using DomainCommonExtensions.Utilities.Ensure;
+using RzR.Extensions.Domain.Utilities.Ensure;
 
 #endregion
 
-namespace DomainCommonExtensions.DataTypeExtensions
+namespace RzR.Extensions.Domain.DataTypeExtensions
 {
     /// <summary>
     ///     Socket (TCP) extensions

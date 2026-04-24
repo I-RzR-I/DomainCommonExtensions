@@ -18,8 +18,8 @@
 
 using System;
 using System.Linq;
-using DomainCommonExtensions.Helpers;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using RzR.Extensions.Domain.Helpers;
 
 #endregion
 

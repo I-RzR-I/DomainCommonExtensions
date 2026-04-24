@@ -17,7 +17,7 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Collections.Generic;
-using DomainCommonExtensions.ArraysExtensions;
+using RzR.Extensions.Domain.ArraysExtensions;
 
 namespace DataTypeTests.DataTests.Array
 {

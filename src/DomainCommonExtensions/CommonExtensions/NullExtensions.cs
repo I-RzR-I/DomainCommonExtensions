@@ -21,7 +21,7 @@ using System.Collections.Generic;
 
 #endregion
 
-namespace DomainCommonExtensions.CommonExtensions
+namespace RzR.Extensions.Domain.CommonExtensions
 {
     /// <summary>
     ///     Null extensions

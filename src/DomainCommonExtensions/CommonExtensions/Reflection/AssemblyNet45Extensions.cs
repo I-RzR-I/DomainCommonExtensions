@@ -24,7 +24,7 @@ using System.Reflection;
 
 #endregion
 
-namespace DomainCommonExtensions.CommonExtensions.Reflection
+namespace RzR.Extensions.Domain.CommonExtensions.Reflection
 {
     /// -------------------------------------------------------------------------------------------------
     /// <summary>

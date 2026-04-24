@@ -20,9 +20,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using DataTypeTests.Models;
-using DomainCommonExtensions.ArraysExtensions;
-using DomainCommonExtensions.DataTypeExtensions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using RzR.Extensions.Domain.ArraysExtensions;
+using RzR.Extensions.Domain.DataTypeExtensions;
 
 namespace DataTypeTests.DataTests.Array
 {

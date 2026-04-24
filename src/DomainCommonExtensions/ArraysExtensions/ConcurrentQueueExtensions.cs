@@ -20,11 +20,11 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
-using DomainCommonExtensions.DataTypeExtensions;
+using RzR.Extensions.Domain.DataTypeExtensions;
 
 #endregion
 
-namespace DomainCommonExtensions.ArraysExtensions
+namespace RzR.Extensions.Domain.ArraysExtensions
 {
     /// -------------------------------------------------------------------------------------------------
     /// <summary>

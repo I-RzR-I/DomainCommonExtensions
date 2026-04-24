@@ -19,11 +19,11 @@
 using System;
 using System.Linq;
 using System.Linq.Expressions;
-using DomainCommonExtensions.Resources.Enums;
+using RzR.Extensions.Domain.Resources.Enums;
 
 #endregion
 
-namespace DomainCommonExtensions.ArraysExtensions
+namespace RzR.Extensions.Domain.ArraysExtensions
 {
     /// <summary>
     ///     Linq extensions

@@ -22,14 +22,14 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
 using CodeSource;
-using DomainCommonExtensions.CommonExtensions;
-using DomainCommonExtensions.CommonExtensions.Reflection;
-using DomainCommonExtensions.DataTypeExtensions;
-using DomainCommonExtensions.Helpers.Internal.AnonymousSelect.Factory;
+using RzR.Extensions.Domain.CommonExtensions;
+using RzR.Extensions.Domain.CommonExtensions.Reflection;
+using RzR.Extensions.Domain.DataTypeExtensions;
+using RzR.Extensions.Domain.Helpers.Internal.AnonymousSelect.Factory;
 
 #endregion
 
-namespace DomainCommonExtensions.Helpers.Internal.AnonymousSelect
+namespace RzR.Extensions.Domain.Helpers.Internal.AnonymousSelect
 {
     /// -------------------------------------------------------------------------------------------------
     /// <summary>

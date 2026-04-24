@@ -19,11 +19,11 @@
 using System;
 using System.IO;
 using System.Linq;
-using DomainCommonExtensions.DataTypeExtensions;
+using RzR.Extensions.Domain.DataTypeExtensions;
 
 #endregion
 
-namespace DomainCommonExtensions.Helpers
+namespace RzR.Extensions.Domain.Helpers
 {
     /// <summary>
     ///     Directory helper

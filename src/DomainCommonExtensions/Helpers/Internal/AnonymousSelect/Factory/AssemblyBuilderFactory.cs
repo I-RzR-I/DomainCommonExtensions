@@ -18,16 +18,13 @@
 
 #region U S A G E S
 
-#if NET40
 using System;
-#endif
-
 using System.Reflection;
 using System.Reflection.Emit;
 
 #endregion
 
-namespace DomainCommonExtensions.Helpers.Internal.AnonymousSelect.Factory
+namespace RzR.Extensions.Domain.Helpers.Internal.AnonymousSelect.Factory
 {
     /// -------------------------------------------------------------------------------------------------
     /// <summary>

@@ -20,7 +20,7 @@ using System.Collections.Generic;
 
 #endregion
 
-namespace DomainCommonExtensions.Helpers.Internal
+namespace RzR.Extensions.Domain.Helpers.Internal
 {
     /// -------------------------------------------------------------------------------------------------
     /// <summary>

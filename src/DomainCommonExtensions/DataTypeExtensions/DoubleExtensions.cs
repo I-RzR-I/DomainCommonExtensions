@@ -17,11 +17,11 @@
 #region U S A G E S
 
 using System;
-using DomainCommonExtensions.Utilities.Ensure;
+using RzR.Extensions.Domain.Utilities.Ensure;
 
 #endregion
 
-namespace DomainCommonExtensions.DataTypeExtensions
+namespace RzR.Extensions.Domain.DataTypeExtensions
 {
     /// <summary>
     ///     Double extensions

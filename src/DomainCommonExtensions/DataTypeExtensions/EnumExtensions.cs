@@ -19,10 +19,9 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using DomainCommonExtensions.CommonExtensions;
-using DomainCommonExtensions.Resources.Enums;
-using DomainCommonExtensions.Utilities.Ensure;
-
+using RzR.Extensions.Domain.CommonExtensions;
+using RzR.Extensions.Domain.Resources.Enums;
+using RzR.Extensions.Domain.Utilities.Ensure;
 #if NET45_OR_GREATER || NET || NETSTANDARD1_0_OR_GREATER
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
@@ -34,7 +33,7 @@ using System.Runtime.Serialization;
 
 #endregion
 
-namespace DomainCommonExtensions.DataTypeExtensions
+namespace RzR.Extensions.Domain.DataTypeExtensions
 {
     /// <summary>
     ///     Enum extensions

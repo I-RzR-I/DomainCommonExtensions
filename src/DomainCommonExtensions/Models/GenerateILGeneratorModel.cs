@@ -23,7 +23,7 @@ using System.Reflection.Emit;
 
 #endregion
 
-namespace DomainCommonExtensions.Models
+namespace RzR.Extensions.Domain.Models
 {
     /// -------------------------------------------------------------------------------------------------
     /// <summary>

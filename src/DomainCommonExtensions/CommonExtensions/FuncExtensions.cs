@@ -18,12 +18,12 @@
 
 using System;
 using System.Threading.Tasks;
-using DomainCommonExtensions.DataTypeExtensions;
-using DomainCommonExtensions.Utilities.Ensure;
+using RzR.Extensions.Domain.DataTypeExtensions;
+using RzR.Extensions.Domain.Utilities.Ensure;
 
 #endregion
 
-namespace DomainCommonExtensions.CommonExtensions
+namespace RzR.Extensions.Domain.CommonExtensions
 {
     /// <summary>
     ///     A function extensions.

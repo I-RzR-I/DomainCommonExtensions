@@ -25,12 +25,12 @@ using System.Linq;
 using System.Runtime.Serialization;
 using System.Xml;
 using CodeSource;
-using DomainCommonExtensions.CommonExtensions;
-using DomainCommonExtensions.Utilities.Ensure;
+using RzR.Extensions.Domain.CommonExtensions;
+using RzR.Extensions.Domain.Utilities.Ensure;
 
 #endregion
 
-namespace DomainCommonExtensions.DataTypeExtensions
+namespace RzR.Extensions.Domain.DataTypeExtensions
 {
     /// <summary>
     ///     Object extensions

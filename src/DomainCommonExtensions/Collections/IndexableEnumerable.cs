@@ -19,11 +19,11 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using DomainCommonExtensions.Utilities.Ensure;
+using RzR.Extensions.Domain.Utilities.Ensure;
 
 #endregion
 
-namespace DomainCommonExtensions.Collections
+namespace RzR.Extensions.Domain.Collections
 {
     /// -------------------------------------------------------------------------------------------------
     /// <summary>

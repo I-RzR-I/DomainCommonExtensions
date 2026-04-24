@@ -16,9 +16,9 @@
 
 #region U S A G E S
 
-using DomainCommonExtensions.Helpers;
-using DomainCommonExtensions.Resources.Enums;
-using DomainCommonExtensions.Utilities.Ensure;
+using RzR.Extensions.Domain.Helpers;
+using RzR.Extensions.Domain.Resources.Enums;
+using RzR.Extensions.Domain.Utilities.Ensure;
 
 // ReSharper disable InconsistentNaming
 // ReSharper disable CheckNamespace

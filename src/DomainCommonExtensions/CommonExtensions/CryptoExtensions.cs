@@ -14,7 +14,7 @@
 //  </summary>
 // ***********************************************************************
 
-namespace DomainCommonExtensions.CommonExtensions
+namespace RzR.Extensions.Domain.CommonExtensions
 {
     /// <summary>
     ///     String crypto extensions

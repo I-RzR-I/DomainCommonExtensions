@@ -17,17 +17,16 @@
 #region U S A G E S
 
 using System;
-
+using System.Globalization;
+using RzR.Extensions.Domain.CommonExtensions;
+using RzR.Extensions.Domain.Utilities.Ensure;
 #if NET45_OR_GREATER || NET || NETSTANDARD1_0_OR_GREATER
 using System.ComponentModel.DataAnnotations;
 #endif
-using System.Globalization;
-using DomainCommonExtensions.CommonExtensions;
-using DomainCommonExtensions.Utilities.Ensure;
 
 #endregion
 
-namespace DomainCommonExtensions.DataTypeExtensions
+namespace RzR.Extensions.Domain.DataTypeExtensions
 {
     /// <summary>
     ///     DateTime extensions

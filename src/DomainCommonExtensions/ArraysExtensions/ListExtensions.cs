@@ -16,14 +16,14 @@
 
 #region U S A G E S
 
-using DomainCommonExtensions.DataTypeExtensions;
 using System;
 using System.Collections.Generic;
 using System.Data;
+using RzR.Extensions.Domain.DataTypeExtensions;
 
 #endregion
 
-namespace DomainCommonExtensions.ArraysExtensions
+namespace RzR.Extensions.Domain.ArraysExtensions
 {
     /// <summary>
     ///     List extensions

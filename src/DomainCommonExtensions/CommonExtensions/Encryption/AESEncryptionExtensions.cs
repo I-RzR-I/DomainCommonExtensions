@@ -22,8 +22,8 @@ using System;
 using System.IO;
 using System.Security.Cryptography;
 using System.Text;
-using DomainCommonExtensions.DataTypeExtensions;
-using DomainCommonExtensions.Utilities.Ensure;
+using RzR.Extensions.Domain.DataTypeExtensions;
+using RzR.Extensions.Domain.Utilities.Ensure;
 
 #endregion
 

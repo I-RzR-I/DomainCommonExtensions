@@ -16,12 +16,12 @@
 
 #region U S A G E S
 
-using DomainCommonExtensions.Collections;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using DomainCommonExtensions.ArraysExtensions;
+using RzR.Extensions.Domain.ArraysExtensions;
+using RzR.Extensions.Domain.Collections;
 
 #endregion
 

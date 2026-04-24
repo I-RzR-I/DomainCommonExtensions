@@ -16,7 +16,7 @@
 
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
-using DomainCommonExtensions.DataTypeExtensions;
+using RzR.Extensions.Domain.DataTypeExtensions;
 
 namespace DataTypeTests.DataTests
 {

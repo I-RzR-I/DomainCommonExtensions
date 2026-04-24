@@ -21,13 +21,12 @@ using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
 using System.Text;
-using DomainCommonExtensions.CommonExtensions;
-using DomainCommonExtensions.CommonExtensions.Reflection;
-using DomainCommonExtensions.Models;
+using RzR.Extensions.Domain.CommonExtensions.Reflection;
+using RzR.Extensions.Domain.Models;
 
 #endregion
 
-namespace DomainCommonExtensions.Helpers.Internal.AnonymousSelect.Factory
+namespace RzR.Extensions.Domain.Helpers.Internal.AnonymousSelect.Factory
 {
     /// -------------------------------------------------------------------------------------------------
     /// <content>

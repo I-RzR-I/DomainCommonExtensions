@@ -19,14 +19,14 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using DomainCommonExtensions.CommonExtensions;
-using DomainCommonExtensions.DataTypeExtensions;
+using RzR.Extensions.Domain.CommonExtensions;
+using RzR.Extensions.Domain.DataTypeExtensions;
 
 // ReSharper disable FieldCanBeMadeReadOnly.Local
 
 #endregion
 
-namespace DomainCommonExtensions.Collections
+namespace RzR.Extensions.Domain.Collections
 {
     /// <summary>
     ///     Disposable stack collection

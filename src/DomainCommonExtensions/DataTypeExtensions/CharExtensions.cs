@@ -24,7 +24,7 @@ using System.Globalization;
 
 #endregion
 
-namespace DomainCommonExtensions.DataTypeExtensions
+namespace RzR.Extensions.Domain.DataTypeExtensions
 {
     /// -------------------------------------------------------------------------------------------------
     /// <summary>

@@ -19,8 +19,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
-using DomainCommonExtensions.CommonExtensions.Reflection;
-using DomainCommonExtensions.Helpers.Internal.AnonymousSelect;
+using RzR.Extensions.Domain.CommonExtensions.Reflection;
+using RzR.Extensions.Domain.Helpers.Internal.AnonymousSelect;
 
 #region OLD Using System.Linq.Dynamic.Core
 //using System.Linq.Dynamic.Core;
@@ -29,7 +29,7 @@ using DomainCommonExtensions.Helpers.Internal.AnonymousSelect;
 
 #endregion
 
-namespace DomainCommonExtensions.ArraysExtensions
+namespace RzR.Extensions.Domain.ArraysExtensions
 {
     /// <summary>
     ///     DynamicList extensions

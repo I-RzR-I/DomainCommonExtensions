@@ -17,11 +17,11 @@
 #region U S A G E S
 
 using System.Reflection;
-using DomainCommonExtensions.Utilities.Ensure;
+using RzR.Extensions.Domain.Utilities.Ensure;
 
 #endregion
 
-namespace DomainCommonExtensions.CommonExtensions.Reflection
+namespace RzR.Extensions.Domain.CommonExtensions.Reflection
 {
     /// <summary>
     ///     Reflection extensions

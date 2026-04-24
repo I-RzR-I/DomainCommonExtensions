@@ -21,7 +21,7 @@ using System.Data;
 
 #endregion
 
-namespace DomainCommonExtensions.CommonExtensions.SystemData
+namespace RzR.Extensions.Domain.CommonExtensions.SystemData
 {
     /// <summary>
     ///     DataRecord extensions

@@ -18,8 +18,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using DataTypeTests.Models;
-using DomainCommonExtensions.ArraysExtensions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using RzR.Extensions.Domain.ArraysExtensions;
+
 // ReSharper disable ArrangeObjectCreationWhenTypeEvident
 
 namespace DataTypeTests.DataTests

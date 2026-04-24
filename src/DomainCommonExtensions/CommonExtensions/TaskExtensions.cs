@@ -20,7 +20,7 @@ using System.Threading.Tasks;
 
 #endregion
 
-namespace DomainCommonExtensions.CommonExtensions
+namespace RzR.Extensions.Domain.CommonExtensions
 {
     /// <summary>
     ///     Task extensions

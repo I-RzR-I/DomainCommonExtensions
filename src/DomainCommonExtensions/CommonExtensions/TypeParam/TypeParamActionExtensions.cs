@@ -17,11 +17,11 @@
 #region U S A G E S
 
 using System;
-using DomainCommonExtensions.Utilities.Ensure;
+using RzR.Extensions.Domain.Utilities.Ensure;
 
 #endregion
 
-namespace DomainCommonExtensions.CommonExtensions.TypeParam
+namespace RzR.Extensions.Domain.CommonExtensions.TypeParam
 {
     /// -------------------------------------------------------------------------------------------------
     /// <content>

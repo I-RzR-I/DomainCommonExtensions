@@ -22,7 +22,7 @@ using System.Text.RegularExpressions;
 
 #endregion
 
-namespace DomainCommonExtensions.Resources
+namespace RzR.Extensions.Domain.Resources
 {
     /// <summary>
     ///     Regular expressions REGEX

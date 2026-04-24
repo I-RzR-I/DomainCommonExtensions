@@ -19,12 +19,13 @@
 using System.Collections;
 using System.Globalization;
 using System.Text.RegularExpressions;
-using DomainCommonExtensions.CommonExtensions;
+using RzR.Extensions.Domain.CommonExtensions;
+
 // ReSharper disable RedundantAssignment
 
 #endregion
 
-namespace DomainCommonExtensions.DataTypeExtensions
+namespace RzR.Extensions.Domain.DataTypeExtensions
 {
     /// <summary>
     ///     String inject extensions

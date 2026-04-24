@@ -18,8 +18,8 @@
 
 using System;
 using DataTypeTests.Models;
-using DomainCommonExtensions.DataTypeExtensions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using RzR.Extensions.Domain.DataTypeExtensions;
 
 #endregion
 

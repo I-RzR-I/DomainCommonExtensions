@@ -24,14 +24,14 @@ using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Xml;
 using CodeSource;
-using DomainCommonExtensions.DataTypeExtensions;
-using DomainCommonExtensions.Utilities.Ensure;
+using RzR.Extensions.Domain.DataTypeExtensions;
+using RzR.Extensions.Domain.Utilities.Ensure;
 
 #pragma warning disable SCS0007
 
 #endregion
 
-namespace DomainCommonExtensions.CommonExtensions.TypeParam
+namespace RzR.Extensions.Domain.CommonExtensions.TypeParam
 {
     // ReSharper disable once InconsistentNaming
     /// <summary>

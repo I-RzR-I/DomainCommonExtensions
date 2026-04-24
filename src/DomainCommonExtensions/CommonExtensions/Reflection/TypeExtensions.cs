@@ -16,15 +16,15 @@
 
 #region U S A G E S
 
-using DomainCommonExtensions.ArraysExtensions;
-using DomainCommonExtensions.DataTypeExtensions;
-using DomainCommonExtensions.Utilities.Ensure;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Text;
+using RzR.Extensions.Domain.ArraysExtensions;
+using RzR.Extensions.Domain.DataTypeExtensions;
+using RzR.Extensions.Domain.Utilities.Ensure;
 
 // ReSharper disable ExpressionIsAlwaysNull
 // ReSharper disable PossibleMultipleEnumeration
@@ -32,7 +32,7 @@ using System.Text;
 
 #endregion
 
-namespace DomainCommonExtensions.CommonExtensions.Reflection
+namespace RzR.Extensions.Domain.CommonExtensions.Reflection
 {
     /// <summary>
     ///     Type extensions

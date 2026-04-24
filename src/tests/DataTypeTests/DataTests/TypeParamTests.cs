@@ -18,10 +18,11 @@
 
 using System;
 using DataTypeTests.Models;
-using DomainCommonExtensions.CommonExtensions.TypeParam;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using DomainCommonExtensions.CommonExtensions;
-using DomainCommonExtensions.DataTypeExtensions;
+using RzR.Extensions.Domain.CommonExtensions;
+using RzR.Extensions.Domain.CommonExtensions.TypeParam;
+using RzR.Extensions.Domain.DataTypeExtensions;
 
 #endregion
 

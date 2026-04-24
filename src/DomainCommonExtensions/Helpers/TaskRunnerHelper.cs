@@ -22,7 +22,7 @@ using System.Threading.Tasks;
 
 #endregion
 
-namespace DomainCommonExtensions.Helpers
+namespace RzR.Extensions.Domain.Helpers
 {
     /// -------------------------------------------------------------------------------------------------
     /// <summary>

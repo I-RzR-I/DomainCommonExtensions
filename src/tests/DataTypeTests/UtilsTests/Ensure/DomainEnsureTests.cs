@@ -17,12 +17,12 @@
 #region U S A G E S
 
 using DataTypeTests.DataTests;
-using DomainCommonExtensions.Resources.Enums;
-using DomainCommonExtensions.Utilities.Ensure;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using RzR.Extensions.Domain.Resources.Enums;
+using RzR.Extensions.Domain.Utilities.Ensure;
 
 // ReSharper disable EntityNameCapturedOnly.Local
 // ReSharper disable RedundantTypeArgumentsOfMethod

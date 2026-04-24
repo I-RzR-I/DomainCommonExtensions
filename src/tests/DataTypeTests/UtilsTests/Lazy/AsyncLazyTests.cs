@@ -21,8 +21,8 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using DataTypeTests.Models.Lazy;
-using DomainCommonExtensions.Utilities.LazyLoad;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using RzR.Extensions.Domain.Utilities.LazyLoad;
 
 #endregion
 

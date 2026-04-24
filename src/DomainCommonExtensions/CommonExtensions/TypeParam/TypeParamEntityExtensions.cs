@@ -18,12 +18,12 @@
 
 using System.Collections.Generic;
 using System.Linq;
-using DomainCommonExtensions.ArraysExtensions;
-using DomainCommonExtensions.Utilities.Ensure;
+using RzR.Extensions.Domain.ArraysExtensions;
+using RzR.Extensions.Domain.Utilities.Ensure;
 
 #endregion
 
-namespace DomainCommonExtensions.CommonExtensions.TypeParam
+namespace RzR.Extensions.Domain.CommonExtensions.TypeParam
 {
     /// -------------------------------------------------------------------------------------------------
     /// <content>

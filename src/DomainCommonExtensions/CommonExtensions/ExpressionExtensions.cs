@@ -23,7 +23,7 @@ using System.Linq.Expressions;
 
 #endregion
 
-namespace DomainCommonExtensions.CommonExtensions
+namespace RzR.Extensions.Domain.CommonExtensions
 {
     /// <summary>
     ///     Expression extensions

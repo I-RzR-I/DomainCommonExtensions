@@ -16,16 +16,16 @@
 
 #region U S A G E S
 
-using DomainCommonExtensions.Resources.Enums;
-using DomainCommonExtensions.Utilities.Ensure;
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using DomainCommonExtensions.DataTypeExtensions;
+using RzR.Extensions.Domain.DataTypeExtensions;
+using RzR.Extensions.Domain.Resources.Enums;
+using RzR.Extensions.Domain.Utilities.Ensure;
 
 #endregion
 
-namespace DomainCommonExtensions.Collections
+namespace RzR.Extensions.Domain.Collections
 {
     /// -------------------------------------------------------------------------------------------------
     /// <summary>

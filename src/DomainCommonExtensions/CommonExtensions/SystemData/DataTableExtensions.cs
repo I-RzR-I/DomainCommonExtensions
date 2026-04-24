@@ -17,20 +17,20 @@
 #region U S A G E S
 
 #if NET || NETSTANDARD2_0_OR_GREATER
-using DomainCommonExtensions.Helpers.Internal;
-using DomainCommonExtensions.Helpers.Internal.AnonymousSelect.Factory;
+using RzR.Extensions.Domain.Helpers.Internal.AnonymousSelect.Factory;
 #endif
 
 using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
+using RzR.Extensions.Domain.Helpers.Internal;
 
 // ReSharper disable RedundantArgumentDefaultValue
 
 #endregion
 
-namespace DomainCommonExtensions.CommonExtensions.SystemData
+namespace RzR.Extensions.Domain.CommonExtensions.SystemData
 {
     /// <summary>
     ///     DataTable extensions

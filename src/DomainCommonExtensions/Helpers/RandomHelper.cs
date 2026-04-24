@@ -18,13 +18,13 @@
 
 using System;
 using System.Threading;
-using DomainCommonExtensions.ArraysExtensions;
-using DomainCommonExtensions.Resources.Enums;
-using DomainCommonExtensions.Utilities.Ensure;
+using RzR.Extensions.Domain.ArraysExtensions;
+using RzR.Extensions.Domain.Resources.Enums;
+using RzR.Extensions.Domain.Utilities.Ensure;
 
 #endregion
 
-namespace DomainCommonExtensions.Helpers
+namespace RzR.Extensions.Domain.Helpers
 {
     /// -------------------------------------------------------------------------------------------------
     /// <summary>

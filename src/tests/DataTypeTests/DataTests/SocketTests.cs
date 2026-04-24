@@ -17,8 +17,8 @@
 #region U S A G E S
 
 using System.Net.Sockets;
-using DomainCommonExtensions.DataTypeExtensions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using RzR.Extensions.Domain.DataTypeExtensions;
 
 #endregion
 

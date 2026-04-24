@@ -16,17 +16,16 @@
 
 #region U S A G E S
 
-using DomainCommonExtensions.Collections;
-using DomainCommonExtensions.Utilities.Ensure;
 using System;
-
+using RzR.Extensions.Domain.Collections;
+using RzR.Extensions.Domain.Utilities.Ensure;
 #if NETSTANDARD1_5_OR_GREATER
 using System.Threading.Tasks;
 #endif
 
 #endregion
 
-namespace DomainCommonExtensions.ArraysExtensions
+namespace RzR.Extensions.Domain.ArraysExtensions
 {
     /// -------------------------------------------------------------------------------------------------
     /// <summary>

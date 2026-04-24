@@ -19,11 +19,11 @@
 using System;
 using System.Data;
 using System.Data.Common;
-using DomainCommonExtensions.DataTypeExtensions;
+using RzR.Extensions.Domain.DataTypeExtensions;
 
 #endregion
 
-namespace DomainCommonExtensions.CommonExtensions.SystemData
+namespace RzR.Extensions.Domain.CommonExtensions.SystemData
 {
     /// <summary>
     ///     DataReader extensions

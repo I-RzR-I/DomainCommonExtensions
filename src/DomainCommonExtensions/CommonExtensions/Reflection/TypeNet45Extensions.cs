@@ -22,12 +22,12 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using DomainCommonExtensions.ArraysExtensions;
-using DomainCommonExtensions.DataTypeExtensions;
+using RzR.Extensions.Domain.ArraysExtensions;
+using RzR.Extensions.Domain.DataTypeExtensions;
 
 #endregion
 
-namespace DomainCommonExtensions.CommonExtensions.Reflection
+namespace RzR.Extensions.Domain.CommonExtensions.Reflection
 {
     /// -------------------------------------------------------------------------------------------------
     /// <content>

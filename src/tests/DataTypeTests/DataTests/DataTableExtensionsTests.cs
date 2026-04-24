@@ -17,8 +17,8 @@
 using System;
 using System.Data;
 using DataTypeTests.Models;
-using DomainCommonExtensions.CommonExtensions.SystemData;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using RzR.Extensions.Domain.CommonExtensions.SystemData;
 
 namespace DataTypeTests.DataTests
 {

@@ -16,11 +16,6 @@
 
 #region U S A G E S
 
-using DomainCommonExtensions.CommonExtensions;
-using DomainCommonExtensions.CommonExtensions.Reflection;
-using DomainCommonExtensions.CommonExtensions.TypeParam;
-using DomainCommonExtensions.DataTypeExtensions;
-using DomainCommonExtensions.Models;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -32,15 +27,20 @@ using System.Diagnostics.Contracts;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using DomainCommonExtensions.Helpers.Internal;
-using DomainCommonExtensions.Utilities.Ensure;
+using RzR.Extensions.Domain.CommonExtensions;
+using RzR.Extensions.Domain.CommonExtensions.Reflection;
+using RzR.Extensions.Domain.CommonExtensions.TypeParam;
+using RzR.Extensions.Domain.DataTypeExtensions;
+using RzR.Extensions.Domain.Helpers.Internal;
+using RzR.Extensions.Domain.Models;
+using RzR.Extensions.Domain.Utilities.Ensure;
 
 // ReSharper disable UnusedParameter.Local
 // ReSharper restore PossibleMultipleEnumeration
 
 #endregion
 
-namespace DomainCommonExtensions.ArraysExtensions
+namespace RzR.Extensions.Domain.ArraysExtensions
 {
     /// <summary>
     ///     Enumerable extensions

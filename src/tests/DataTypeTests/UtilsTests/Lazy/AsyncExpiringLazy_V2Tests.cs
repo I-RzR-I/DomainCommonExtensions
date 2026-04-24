@@ -20,8 +20,8 @@ using System;
 using System.Collections.Concurrent;
 using System.Threading.Tasks;
 using DataTypeTests.Models.Lazy;
-using DomainCommonExtensions.Utilities.LazyLoad;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using RzR.Extensions.Domain.Utilities.LazyLoad;
 
 // ReSharper disable InconsistentNaming
 

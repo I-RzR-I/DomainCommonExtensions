@@ -17,9 +17,9 @@
 using System.Collections.Generic;
 using System.Dynamic;
 using System.Linq;
-using DomainCommonExtensions.DataTypeExtensions;
+using RzR.Extensions.Domain.DataTypeExtensions;
 
-namespace DomainCommonExtensions.CommonExtensions
+namespace RzR.Extensions.Domain.CommonExtensions
 {
     /// <summary>
     ///     Expando object extensions

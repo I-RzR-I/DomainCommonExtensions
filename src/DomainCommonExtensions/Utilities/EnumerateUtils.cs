@@ -21,7 +21,7 @@ using System.Collections.Generic;
 
 #endregion
 
-namespace DomainCommonExtensions.Utilities
+namespace RzR.Extensions.Domain.Utilities
 {
     /// <summary>
     ///     Enumerate utils

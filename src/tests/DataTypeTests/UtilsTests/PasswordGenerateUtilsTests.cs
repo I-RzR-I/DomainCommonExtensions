@@ -16,9 +16,9 @@
 
 using System.Diagnostics;
 using System.Linq;
-using DomainCommonExtensions.DataTypeExtensions;
-using DomainCommonExtensions.Utilities;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using RzR.Extensions.Domain.DataTypeExtensions;
+using RzR.Extensions.Domain.Utilities;
 
 namespace DataTypeTests.UtilsTests
 {

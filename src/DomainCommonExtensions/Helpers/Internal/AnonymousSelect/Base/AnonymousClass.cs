@@ -20,11 +20,11 @@ using System.Collections.Generic;
 using System.Dynamic;
 using System.Reflection;
 using CodeSource;
-using DomainCommonExtensions.CommonExtensions;
+using RzR.Extensions.Domain.CommonExtensions;
 
 #endregion
 
-namespace DomainCommonExtensions.Helpers.Internal.AnonymousSelect.Base
+namespace RzR.Extensions.Domain.Helpers.Internal.AnonymousSelect.Base
 {
     /// -------------------------------------------------------------------------------------------------
     /// <summary>

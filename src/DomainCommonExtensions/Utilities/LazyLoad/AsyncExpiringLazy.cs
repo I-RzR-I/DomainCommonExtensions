@@ -22,11 +22,11 @@ using System;
 using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
-using DomainCommonExtensions.CommonExtensions;
+using RzR.Extensions.Domain.CommonExtensions;
 
 #endregion
 
-namespace DomainCommonExtensions.Utilities.LazyLoad
+namespace RzR.Extensions.Domain.Utilities.LazyLoad
 {
     /// -------------------------------------------------------------------------------------------------
     /// <summary>

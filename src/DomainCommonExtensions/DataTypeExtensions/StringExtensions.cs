@@ -26,24 +26,22 @@ using System.Runtime.Serialization;
 using System.Security;
 using System.Security.Cryptography;
 using System.Text;
-
+using System.Text.RegularExpressions;
+using CodeSource;
+using RzR.Extensions.Domain.ArraysExtensions;
+using RzR.Extensions.Domain.CommonExtensions;
+using RzR.Extensions.Domain.Helpers.Internal;
+using RzR.Extensions.Domain.Resources;
+using RzR.Extensions.Domain.Resources.Enums;
+using RzR.Extensions.Domain.Utilities.Ensure;
 #if NET || NETSTANDARD2_0_OR_GREATER
 using System.Text.Encodings.Web;
 using System.Text.Json;
 #endif
 
-using System.Text.RegularExpressions;
-using CodeSource;
-using DomainCommonExtensions.ArraysExtensions;
-using DomainCommonExtensions.CommonExtensions;
-using DomainCommonExtensions.Helpers.Internal;
-using DomainCommonExtensions.Resources;
-using DomainCommonExtensions.Resources.Enums;
-using DomainCommonExtensions.Utilities.Ensure;
-
 #endregion
 
-namespace DomainCommonExtensions.DataTypeExtensions
+namespace RzR.Extensions.Domain.DataTypeExtensions
 {
     /// <summary>
     ///     String extensions
