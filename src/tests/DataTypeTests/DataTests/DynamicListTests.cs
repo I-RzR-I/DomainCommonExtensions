@@ -1,4 +1,4 @@
-﻿// ***********************************************************************
+// ***********************************************************************
 //  Assembly         : RzR.Shared.Extensions.DataTypeTests
 //  Author           : RzR
 //  Created On       : 2025-01-03 19:33
@@ -18,8 +18,10 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using DataTypeTests.Models;
-using DomainCommonExtensions.ArraysExtensions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using RzR.Extensions.Domain.Collections;
+using RzR.Extensions.Domain.Collections.Types;
+using RzR.Extensions.Domain.Linq;
 // ReSharper disable ArrangeObjectCreationWhenTypeEvident
 
 namespace DataTypeTests.DataTests

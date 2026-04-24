@@ -17,13 +17,12 @@
 #region U S A G E S
 
 using System;
+using RzR.Extensions.Domain.Async.LazyLoad;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using DataTypeTests.Models.Lazy;
-using DomainCommonExtensions.Utilities.LazyLoad;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-
 #endregion
 
 namespace DataTypeTests.UtilsTests.Lazy

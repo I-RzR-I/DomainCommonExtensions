@@ -20,10 +20,11 @@
 		<Summary>The purpose of this repository/library is to provide the most relevant and used extension methods in the life cycle of application development that allow us to improve our code, and writing speed, and use more efficiently dev team time during this period for more complex functionality.</Summary>
 		<PackageTitle>RzR.Shared.DomainCommonExtensions (DomainCommonExtensions)</PackageTitle>
 		<Title>RzR.Shared.DomainCommonExtensions (DomainCommonExtensions)</Title>
-		<LangVersion>9.0</LangVersion>
+		<LangVersion>latest</LangVersion>
 		<Language>en-US</Language>
 		<PackageIconUrl />
 		<RepositoryType>GIT</RepositoryType>
+		<RootNamespace>RzR.Extensions.Domain</RootNamespace>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
@@ -50,7 +51,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="CodeSource" Version="4.0.2.4672" />
+		<PackageReference Include="CodeSource" Version="5.0.0.7373" />
 		<!--<PackageReference Include="System.Linq.Dynamic.Core" Version="1.3.3" />-->
 	</ItemGroup>
 

@@ -1,4 +1,4 @@
-﻿// ***********************************************************************
+// ***********************************************************************
 //  Assembly         : RzR.Shared.Extensions.DataTypeTests
 //  Author           : RzR
 //  Created On       : 2026-01-18 22:01
@@ -16,8 +16,9 @@
 
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
-using DomainCommonExtensions.DataTypeExtensions;
-
+using RzR.Extensions.Domain.Diagnostics;
+using RzR.Extensions.Domain.Primitives;
+using RzR.Extensions.Domain.Text;
 namespace DataTypeTests.DataTests
 {
     [TestClass]

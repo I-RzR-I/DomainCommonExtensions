@@ -1,3 +1,10 @@
+### **v5.0.0.7637** [[RzR](mailto:108324929+I-RzR-I@users.noreply.github.com)] 24-04-2026
+* **BREAKING:** Repository reorganized into 11 stable namespace buckets (`Async`, `Collections`, `Cryptography`, `Data`, `Diagnostics`, `Internal`, `IO`, `Linq`, `Models`, `Primitives`, `Reflection`, `Text`, `Validation`). Class names and method signatures are unchanged; only the namespaces moved. See [namespace-migration-v5.md](namespace-migration-v5.md) for the full mapping.
+* **Backward-compat shim layer** (`_Legacy/` folder): `[Obsolete]` static methods preserve the v4 namespaces so existing user code still compiles. Each call site lights up with the new v5 location.
+* New file extensions in `IO`: `SafeWriteAllText`, `SafeWriteAllBytes` (atomic write via temp + replace), `Sha256HexFromFile`.
+* New byte / string checksum helpers in `Primitives` / `Text`: `byte[].ToHexString`, `byte[].Sha256Hex`, `string.Sha256Hex`.
+* New `string` extensions in `Text`: `ToBase64Url`, `FromBase64Url`, `ToSlug`, `Mask`.
+
 ### **v4.6.0.8232** [[RzR](mailto:108324929+I-RzR-I@users.noreply.github.com)] 20-03-2026
 * [5503224] (RzR) -> Auto commit uncommited files
 * [e9aa417] (RzR) -> Add small improvements

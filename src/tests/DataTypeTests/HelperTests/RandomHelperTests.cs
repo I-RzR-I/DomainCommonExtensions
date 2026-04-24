@@ -1,4 +1,4 @@
-﻿// ***********************************************************************
+// ***********************************************************************
 //  Assembly         : RzR.Shared.Extensions.DataTypeTests
 //  Author           : RzR
 //  Created On       : 2026-01-18 23:01
@@ -18,9 +18,12 @@
 
 using System;
 using System.Linq;
-using DomainCommonExtensions.Helpers;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-
+using RzR.Extensions.Domain.Async;
+using RzR.Extensions.Domain.Cryptography.Tea;
+using RzR.Extensions.Domain.IO;
+using RzR.Extensions.Domain.IO.Ini;
+using RzR.Extensions.Domain.Primitives;
 #endregion
 
 namespace DataTypeTests.HelperTests

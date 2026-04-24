@@ -1,4 +1,4 @@
-﻿// ***********************************************************************
+// ***********************************************************************
 //  Assembly         : RzR.Shared.Extensions.DataTypeTests
 //  Author           : RzR
 //  Created On       : 2025-10-14 14:10
@@ -16,9 +16,15 @@
 
 #region U S A G E S
 
-using DomainCommonExtensions.CommonExtensions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-
+using RzR.Extensions.Domain.Async;
+using RzR.Extensions.Domain.Cryptography;
+using RzR.Extensions.Domain.Cryptography.Tea;
+using RzR.Extensions.Domain.Data;
+using RzR.Extensions.Domain.Diagnostics;
+using RzR.Extensions.Domain.IO;
+using RzR.Extensions.Domain.Linq;
+using RzR.Extensions.Domain.Primitives;
 #endregion
 
 // ReSharper disable InconsistentNaming

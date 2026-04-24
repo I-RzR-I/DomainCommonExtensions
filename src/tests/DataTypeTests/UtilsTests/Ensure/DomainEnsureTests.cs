@@ -1,4 +1,4 @@
-﻿// ***********************************************************************
+// ***********************************************************************
 //  Assembly         : RzR.Shared.Extensions.DataTypeTests
 //  Author           : RzR
 //  Created On       : 2025-08-05 19:27
@@ -17,13 +17,13 @@
 #region U S A G E S
 
 using DataTypeTests.DataTests;
-using DomainCommonExtensions.Resources.Enums;
-using DomainCommonExtensions.Utilities.Ensure;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Collections.Generic;
 using System.IO;
-
+using RzR.Extensions.Domain.Collections;
+using RzR.Extensions.Domain.Validation;
+using RzR.Extensions.Domain.Validation;
 // ReSharper disable EntityNameCapturedOnly.Local
 // ReSharper disable RedundantTypeArgumentsOfMethod
 // ReSharper disable ExpressionIsAlwaysNull

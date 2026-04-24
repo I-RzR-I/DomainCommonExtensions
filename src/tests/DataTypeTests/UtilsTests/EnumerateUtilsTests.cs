@@ -1,4 +1,4 @@
-﻿// ***********************************************************************
+// ***********************************************************************
 //  Assembly         : RzR.Shared.Extensions.DataTypeTests
 //  Author           : RzR
 //  Created On       : 2025-01-09 20:50
@@ -15,9 +15,9 @@
 // ***********************************************************************
 
 using System.Linq;
-using DomainCommonExtensions.Utilities;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-
+using RzR.Extensions.Domain.Collections;
+using RzR.Extensions.Domain.Cryptography.Passwords;
 namespace DataTypeTests.UtilsTests
 {
     [TestClass]

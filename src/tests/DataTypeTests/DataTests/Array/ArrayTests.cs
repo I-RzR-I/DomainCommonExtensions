@@ -1,4 +1,4 @@
-﻿// ***********************************************************************
+// ***********************************************************************
 //  Assembly         : RzR.Shared.Extensions.DataTypeTests
 //  Author           : RzR
 //  Created On       : 2022-12-08 09:25
@@ -16,9 +16,10 @@
 
 #region U S A G E S
 
-using DomainCommonExtensions.ArraysExtensions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-
+using RzR.Extensions.Domain.Collections;
+using RzR.Extensions.Domain.Collections.Types;
+using RzR.Extensions.Domain.Linq;
 #endregion
 
 namespace DataTypeTests.DataTests.Array

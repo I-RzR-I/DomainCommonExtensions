@@ -1,4 +1,4 @@
-﻿// ***********************************************************************
+// ***********************************************************************
 //  Assembly         : RzR.Shared.Extensions.DataTypeTests
 //  Author           : RzR
 //  Created On       : 2025-08-05 19:28
@@ -18,8 +18,7 @@
 
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
-using DomainCommonExtensions.Utilities.Ensure;
-
+using RzR.Extensions.Domain.Validation;
 // ReSharper disable ExpressionIsAlwaysNull
 
 #endregion

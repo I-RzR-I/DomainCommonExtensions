@@ -1,4 +1,4 @@
-﻿// ***********************************************************************
+// ***********************************************************************
 //  Assembly         : RzR.Shared.Extensions.DataTypeTests
 //  Author           : RzR
 //  Created On       : 2025-02-16 20:50
@@ -16,10 +16,12 @@
 
 using System.Diagnostics;
 using System.Linq;
-using DomainCommonExtensions.DataTypeExtensions;
-using DomainCommonExtensions.Utilities;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-
+using RzR.Extensions.Domain.Diagnostics;
+using RzR.Extensions.Domain.Primitives;
+using RzR.Extensions.Domain.Text;
+using RzR.Extensions.Domain.Collections;
+using RzR.Extensions.Domain.Cryptography.Passwords;
 namespace DataTypeTests.UtilsTests
 {
     [TestClass]

@@ -17,11 +17,10 @@
 #region U S A G E S
 
 using System;
+using RzR.Extensions.Domain.Async.LazyLoad;
 using System.Threading;
 using System.Threading.Tasks;
-using DomainCommonExtensions.Utilities.LazyLoad;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-
 #endregion
 
 namespace DataTypeTests.UtilsTests.Lazy
