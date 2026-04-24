@@ -1,4 +1,4 @@
-﻿// ***********************************************************************
+// ***********************************************************************
 //  Assembly         : RzR.Shared.Extensions.DataTypeTests
 //  Author           : RzR
 //  Created On       : 2025-11-06 15:11
@@ -15,10 +15,16 @@
 // ***********************************************************************
 
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using RzR.Extensions.Domain.ArraysExtensions;
-using RzR.Extensions.Domain.DataTypeExtensions;
-using RzR.Extensions.Domain.Helpers;
-
+using RzR.Extensions.Domain.Collections;
+using RzR.Extensions.Domain.Collections.Types;
+using RzR.Extensions.Domain.Linq;
+using RzR.Extensions.Domain.Diagnostics;
+using RzR.Extensions.Domain.Primitives;
+using RzR.Extensions.Domain.Text;
+using RzR.Extensions.Domain.Async;
+using RzR.Extensions.Domain.Cryptography.Tea;
+using RzR.Extensions.Domain.IO;
+using RzR.Extensions.Domain.IO.Ini;
 namespace DataTypeTests.HelperTests
 {
     [TestClass]

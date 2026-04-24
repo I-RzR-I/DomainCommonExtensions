@@ -1,4 +1,4 @@
-﻿// ***********************************************************************
+// ***********************************************************************
 //  Assembly         : RzR.Shared.Extensions.DataTypeTests
 //  Author           : RzR
 //  Created On       : 2026-01-06 23:01
@@ -20,9 +20,11 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using RzR.Extensions.Domain.ArraysExtensions;
 using RzR.Extensions.Domain.Collections;
-
+using RzR.Extensions.Domain.Collections.Types;
+using RzR.Extensions.Domain.Linq;
+using RzR.Extensions.Domain.Collections;
+using RzR.Extensions.Domain.Collections.Types;
 #endregion
 
 namespace DataTypeTests.CollectionTests

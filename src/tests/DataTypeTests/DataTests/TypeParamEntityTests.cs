@@ -1,4 +1,4 @@
-﻿// ***********************************************************************
+// ***********************************************************************
 //  Assembly         : RzR.Shared.Extensions.DataTypeTests
 //  Author           : RzR
 //  Created On       : 2026-01-19 23:01
@@ -21,8 +21,7 @@ using System.Collections.Generic;
 using System.Linq;
 using DataTypeTests.Models;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using RzR.Extensions.Domain.CommonExtensions.TypeParam;
-
+using RzR.Extensions.Domain.Reflection.TypeParam;
 #endregion
 
 namespace DataTypeTests.DataTests

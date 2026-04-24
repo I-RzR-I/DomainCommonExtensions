@@ -1,4 +1,4 @@
-﻿// ***********************************************************************
+// ***********************************************************************
 //  Assembly         : RzR.Shared.Extensions.DataTypeTests
 //  Author           : RzR
 //  Created On       : 2022-08-16 19:05
@@ -16,9 +16,16 @@
 
 using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using RzR.Extensions.Domain.CommonExtensions;
-using RzR.Extensions.Domain.DataTypeExtensions;
-
+using RzR.Extensions.Domain.Async;
+using RzR.Extensions.Domain.Cryptography;
+using RzR.Extensions.Domain.Data;
+using RzR.Extensions.Domain.Diagnostics;
+using RzR.Extensions.Domain.IO;
+using RzR.Extensions.Domain.Linq;
+using RzR.Extensions.Domain.Primitives;
+using RzR.Extensions.Domain.Diagnostics;
+using RzR.Extensions.Domain.Primitives;
+using RzR.Extensions.Domain.Text;
 namespace DataTypeTests.DataTests
 {
     [TestClass]

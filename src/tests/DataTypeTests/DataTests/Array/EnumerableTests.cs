@@ -1,4 +1,4 @@
-﻿// ***********************************************************************
+// ***********************************************************************
 //  Assembly         : RzR.Shared.Extensions.DataTypeTests
 //  Author           : RzR
 //  Created On       : 2025-06-27 08:10
@@ -21,9 +21,12 @@ using System.Linq;
 using System.Threading.Tasks;
 using DataTypeTests.Models;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using RzR.Extensions.Domain.ArraysExtensions;
-using RzR.Extensions.Domain.DataTypeExtensions;
-
+using RzR.Extensions.Domain.Collections;
+using RzR.Extensions.Domain.Collections.Types;
+using RzR.Extensions.Domain.Linq;
+using RzR.Extensions.Domain.Diagnostics;
+using RzR.Extensions.Domain.Primitives;
+using RzR.Extensions.Domain.Text;
 namespace DataTypeTests.DataTests.Array
 {
     [TestClass]

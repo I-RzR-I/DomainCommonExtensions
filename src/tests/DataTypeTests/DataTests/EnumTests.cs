@@ -1,4 +1,4 @@
-﻿// ***********************************************************************
+// ***********************************************************************
 //  Assembly         : RzR.Shared.Extensions.DataTypeTests
 //  Author           : RzR
 //  Created On       : 2022-08-16 03:15
@@ -21,8 +21,9 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Runtime.Serialization;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using RzR.Extensions.Domain.DataTypeExtensions;
-
+using RzR.Extensions.Domain.Diagnostics;
+using RzR.Extensions.Domain.Primitives;
+using RzR.Extensions.Domain.Text;
 #endregion
 
 namespace DataTypeTests.DataTests

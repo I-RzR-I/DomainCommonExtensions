@@ -1,4 +1,4 @@
-﻿// ***********************************************************************
+// ***********************************************************************
 //  Assembly         : RzR.Shared.Extensions.DataTypeTests
 //  Author           : RzR
 //  Created On       : 2022-08-15 18:00
@@ -18,8 +18,9 @@
 
 using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using RzR.Extensions.Domain.DataTypeExtensions;
-
+using RzR.Extensions.Domain.Diagnostics;
+using RzR.Extensions.Domain.Primitives;
+using RzR.Extensions.Domain.Text;
 // ReSharper disable ArrangeObjectCreationWhenTypeEvident
 
 #endregion

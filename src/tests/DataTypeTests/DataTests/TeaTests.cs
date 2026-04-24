@@ -1,4 +1,4 @@
-﻿// ***********************************************************************
+// ***********************************************************************
 //  Assembly         : RzR.Shared.Extensions.DataTypeTests
 //  Author           : RzR
 //  Created On       : 2025-10-14 08:10
@@ -17,9 +17,13 @@
 #region U S A G E S
 
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using RzR.Extensions.Domain.DataTypeExtensions;
-using RzR.Extensions.Domain.Helpers;
-
+using RzR.Extensions.Domain.Diagnostics;
+using RzR.Extensions.Domain.Primitives;
+using RzR.Extensions.Domain.Text;
+using RzR.Extensions.Domain.Async;
+using RzR.Extensions.Domain.Cryptography.Tea;
+using RzR.Extensions.Domain.IO;
+using RzR.Extensions.Domain.IO.Ini;
 #endregion
 
 namespace DataTypeTests.DataTests

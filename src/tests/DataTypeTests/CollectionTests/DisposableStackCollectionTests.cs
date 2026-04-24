@@ -1,4 +1,4 @@
-﻿// ***********************************************************************
+// ***********************************************************************
 //  Assembly         : RzR.Shared.Extensions.DataTypeTests
 //  Author           : RzR
 //  Created On       : 2025-10-13 18:10
@@ -19,7 +19,7 @@
 using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using RzR.Extensions.Domain.Collections;
-
+using RzR.Extensions.Domain.Collections.Types;
 #endregion
 
 namespace DataTypeTests.CollectionTests

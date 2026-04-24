@@ -17,12 +17,11 @@
 #region U S A G E S
 
 using System;
+using RzR.Extensions.Domain.Async.LazyLoad;
 using System.Collections.Concurrent;
 using System.Threading.Tasks;
 using DataTypeTests.Models.Lazy;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using RzR.Extensions.Domain.Utilities.LazyLoad;
-
 // ReSharper disable InconsistentNaming
 
 #endregion
