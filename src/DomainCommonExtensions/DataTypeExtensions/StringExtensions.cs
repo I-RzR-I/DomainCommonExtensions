@@ -290,7 +290,7 @@ namespace RzR.Extensions.Domain.DataTypeExtensions
         ///     Convert from Hexadecimal to string
         /// </summary>
         /// <param name="hexString">Required. Hexadecimal value</param>
-        /// <param name="withSpace">Optional. The default value is false.If set to <see langword="true" />, then ; otherwise, .</param>
+        /// <param name="withSpace">Optional. The default value is false. If set to <see langword="true" />, then " "; otherwise, "".</param>
         /// <returns></returns>
         /// <remarks></remarks>
         public static string ToStringHex(this string hexString, bool withSpace = false)
@@ -325,7 +325,7 @@ namespace RzR.Extensions.Domain.DataTypeExtensions
         ///     Convert to byte array from hexadecimal
         /// </summary>
         /// <param name="hexString">Required. </param>
-        /// <param name="withSpace">Optional. The default value is false.If set to <see langword="true" />, then ; otherwise, .</param>
+        /// <param name="withSpace">Optional. The default value is false. If set to <see langword="true" />, then " "; otherwise, "".</param>
         /// <returns></returns>
         /// <remarks></remarks>
         public static byte[] ToByteHex(this string hexString, bool withSpace = false)
@@ -677,6 +677,163 @@ namespace RzR.Extensions.Domain.DataTypeExtensions
             DomainEnsure.IsNotNull(encoded, nameof(encoded));
 
             return Convert.FromBase64String(encoded);
+        }
+
+        /// <summary>
+        ///     Encode the UTF-8 representation of <paramref name="input"/> as a Base64Url string
+        ///     (RFC 4648 §5): standard Base64 with <c>+</c> replaced by <c>-</c>, <c>/</c> replaced
+        ///     by <c>_</c>, and trailing <c>=</c> padding stripped. Safe to use unescaped in URLs,
+        ///     filenames, JWTs and HTTP headers.
+        /// </summary>
+        /// <param name="input">String to encode. <see langword="null"/> is treated as empty.</param>
+        /// <returns>URL-safe Base64 representation of the UTF-8 bytes of <paramref name="input"/>.</returns>
+        public static string ToBase64Url(this string input)
+        {
+            var bytes = Encoding.UTF8.GetBytes(input ?? string.Empty);
+
+            return Convert.ToBase64String(bytes)
+                .TrimEnd('=')
+                .Replace('+', '-')
+                .Replace('/', '_');
+        }
+
+        /// <summary>
+        ///     Decode a Base64Url string (RFC 4648 §5) back to its UTF-8 string form. Accepts input
+        ///     with or without trailing <c>=</c> padding.
+        /// </summary>
+        /// <param name="base64Url">Base64Url-encoded text.</param>
+        /// <returns>The decoded string.</returns>
+        /// <exception cref="ArgumentNullException">Thrown when <paramref name="base64Url"/> is <see langword="null"/>.</exception>
+        /// <exception cref="FormatException">Thrown when the input is not valid Base64Url.</exception>
+        public static string FromBase64Url(this string base64Url)
+        {
+            DomainEnsure.IsNotNull(base64Url, nameof(base64Url));
+
+            var s = base64Url.Replace('-', '+').Replace('_', '/');
+            switch (s.Length % 4)
+            {
+                case 2: s += "=="; break;
+                case 3: s += "="; break;
+                case 1: throw new FormatException("Invalid Base64Url length.");
+            }
+
+            return Encoding.UTF8.GetString(Convert.FromBase64String(s));
+        }
+
+        /// <summary>
+        ///     Convert a string into a URL-friendly slug: lower-case, ASCII-only, words separated by
+        ///     a single hyphen. Diacritics are stripped via Unicode normalization, non-alphanumeric 
+        ///     characters become separators, and consecutive separators are collapsed.
+        /// </summary>
+        /// <param name="input">Source text. <see langword="null"/> or whitespace returns an empty string.</param>
+        /// <param name="culture">
+        ///     Culture used for the lower-case conversion. When <see langword="null"/>,
+        ///     <see cref="CultureInfo.InvariantCulture"/> is used (recommended for URLs and identifiers).
+        /// </param>
+        /// <param name="maxLength">
+        ///     Optional maximum length of the resulting slug. <c>0</c> (default) means unlimited.
+        ///     The result is trimmed at a separator boundary when possible.
+        /// </param>
+        /// <returns>A URL-safe slug.</returns>
+        public static string ToSlug(this string input, CultureInfo culture = null, int maxLength = 0)
+        {
+            if (input.IsNullOrEmpty()) return string.Empty;
+
+            var c = culture ?? CultureInfo.InvariantCulture;
+
+            var normalized = input.Normalize(NormalizationForm.FormD);
+            var sb = new StringBuilder(normalized.Length);
+            foreach (var ch in normalized)
+            {
+                var category = CharUnicodeInfo.GetUnicodeCategory(ch);
+                if (category != UnicodeCategory.NonSpacingMark)
+                    sb.Append(ch);
+            }
+
+            var ascii = sb.ToString().Normalize(NormalizationForm.FormC).ToLower(c);
+
+            var slug = new StringBuilder(ascii.Length);
+            var lastWasSeparator = true;
+            foreach (var ch in ascii)
+            {
+                var isAlphaNum = (ch >= 'a' && ch <= 'z') || (ch >= '0' && ch <= '9');
+                if (isAlphaNum)
+                {
+                    slug.Append(ch);
+                    lastWasSeparator = false;
+                }
+                else if (!lastWasSeparator)
+                {
+                    slug.Append('-');
+                    lastWasSeparator = true;
+                }
+            }
+
+            var result = slug.ToString().Trim('-');
+
+            if (maxLength > 0 && result.Length > maxLength)
+            {
+                var charAtCut = result[maxLength];
+                var truncated = result.Substring(0, maxLength);
+                if (charAtCut != '-')
+                {
+                    var lastDash = truncated.LastIndexOf('-');
+                    if (lastDash > 0)
+                        truncated = truncated.Substring(0, lastDash);
+                }
+
+                result = truncated.TrimEnd('-');
+            }
+
+            return result;
+        }
+
+        /// <summary>
+        ///     Apply a character mask to <paramref name="input"/>. Each character of
+        ///     <paramref name="pattern"/> is interpreted as follows:
+        ///     <list type="bullet">
+        ///         <item><description><c>#</c> — keep the next character of <paramref name="input"/> in place.</description></item>
+        ///         <item><description><c>*</c> — replace the next character of <paramref name="input"/> with <paramref name="maskChar"/>.</description></item>
+        ///         <item><description>Any other character — copied to the output as a literal separator (consumes no input character).</description></item>
+        ///     </list>
+        ///     If the pattern requests more characters than <paramref name="input"/> provides, the
+        ///     placeholder is dropped (no exception). Useful for masking credit-card numbers, phones,
+        ///     account numbers, etc.
+        /// </summary>
+        /// <param name="input">String to mask. <see langword="null"/> is treated as empty.</param>
+        /// <param name="pattern">Mask pattern, e.g. <c>"****-####"</c> or <c>"###-##-####"</c>.</param>
+        /// <param name="maskChar">Character used to mask. Defaults to <c>'*'</c>.</param>
+        /// <returns>The masked string.</returns>
+        /// <exception cref="ArgumentException">Thrown when <paramref name="pattern"/> is null or empty.</exception>
+        public static string Mask(this string input, string pattern, char maskChar = '*')
+        {
+            DomainEnsure.IsNotNullOrEmpty(pattern, nameof(pattern));
+
+            var src = input ?? string.Empty;
+            var result = new StringBuilder(pattern.Length);
+            var i = 0;
+
+            foreach (var p in pattern)
+            {
+                if (p == '#')
+                {
+                    if (i < src.Length) result.Append(src[i++]);
+                }
+                else if (p == '*')
+                {
+                    if (i < src.Length)
+                    {
+                        result.Append(maskChar);
+                        i++;
+                    }
+                }
+                else
+                {
+                    result.Append(p);
+                }
+            }
+
+            return result.ToString();
         }
 
         /// <summary>
