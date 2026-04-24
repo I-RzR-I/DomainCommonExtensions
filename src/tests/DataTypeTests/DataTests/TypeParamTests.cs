@@ -19,7 +19,6 @@
 using System;
 using DataTypeTests.Models;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using DomainCommonExtensions.CommonExtensions;
 using RzR.Extensions.Domain.CommonExtensions;
 using RzR.Extensions.Domain.CommonExtensions.TypeParam;
 using RzR.Extensions.Domain.DataTypeExtensions;
