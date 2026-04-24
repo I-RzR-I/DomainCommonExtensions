@@ -1,15 +1,27 @@
-> **Note** This repository is developed for net40, net45 .netstandard2.0, .netstandard2.1
+> **Note** This repository is developed for net40, net45, .netstandard2.0 and .netstandard2.1.
 
 [![NuGet Version](https://img.shields.io/nuget/v/DomainCommonExtensions.svg?style=flat&logo=nuget)](https://www.nuget.org/packages/DomainCommonExtensions/)
 [![Nuget Downloads](https://img.shields.io/nuget/dt/DomainCommonExtensions.svg?style=flat&logo=nuget)](https://www.nuget.org/packages/DomainCommonExtensions)
 
-This library/ repository was created as a way to simplify the development process. Here were written the usually used methods (extension methods) for some data types like `int, string, DateTime, Enum, bool, byte, Guid`, also there was added extensions for `List, Dictionary, DynamicList` and other collections(`ICollection, IEnumerable, IList, HashSet, IQueryable`).
+> **v5 — Namespace reorganisation (BREAKING)**
+>
+> Starting with **v5**, the library was reorganised  with a new namespace (from `DomainCommonExtensions` to `RzR.Extensions.Domain`) and focused into namespace buckets under the new root `RzR.Extensions.Domain.*`
+> (`Async`, `Collections`, `Cryptography`, `Data`, `Diagnostics`, `Internal`, `IO`, `Linq`, `Models`, `Primitives`, `Reflection`, `Text`, `Validation`).
+> Class names and method signatures are unchanged — only the namespaces moved.
+>
+> To soften the upgrade, every old (v4) namespace is preserved as `[Obsolete]` forwarder static classes under
+> [`src/DomainCommonExtensions/_Legacy/`](src/DomainCommonExtensions/_Legacy/), so existing v4 code keeps compiling
+> while the IDE highlights every call-site with the new location.
+>
+> See the full mapping in [docs/namespace-migration-v5.md](docs/namespace-migration-v5.md).
 
-In the repository was added an extension for `cryptography`, encrypting and decrypting string by key with `RSA`, `AES`, `TEA`.
+This library/repository was created as a way to simplify the development process. It collects the most used extension methods for primitive data types (`int`, `string`, `DateTime`, `Enum`, `bool`, `byte`, `char`, `Guid`, `TimeSpan`, …) and for the common collection interfaces (`ICollection`, `IEnumerable`, `IList`, `HashSet`, `IQueryable`, `IDictionary`, `ConcurrentDictionary`, `Queue`, `DynamicList`, …).
 
-In case you need some get some documentation/comments from `Assembly`, here too are some extensions. Also you can find a async lazy load `AsyncLazy<T>` and `AsyncExpiringLazy<T>`.
+It also bundles `cryptography` helpers for encrypting/decrypting strings by key with `RSA`, `AES`, `TEA`, plus a `Base32` encoder and a password generator.
 
-Also here you may find extensions for `SystemData (DbDataReader, DataRecord, DataTable)` lib, `FileStream, MemoryStream, Type`, and a lot other of methods and not the last some `Linq` and `Expression` extensions that can help to make code mode clean.
+If you need to extract documentation/comments from an `Assembly`, those extensions are here too. You will also find async lazy-load primitives `AsyncLazy<T>` and `AsyncExpiringLazy<T>`.
+
+Additionally, there are extensions for `System.Data` (`DbDataReader`, `IDataRecord`, `DataTable`), `FileStream`, `MemoryStream`, `Type`, plus `Linq` / `Expression` extensions and a `PredicateBuilder` to keep call-sites clean.
 
 As previously, I said here are collected the most relevant and used extension methods in the life cycle of application development that allow us to improve our code, and writing speed, and use more efficiently dev team time during this period for more complex functionality.
 The list of helpful methods and extensions list isn't finished, I think in a short period I'll complete it with more fun things.
@@ -25,5 +37,6 @@ I hope I'm on the right way to providing all these things to all who saw or sear
 
 ## Content
 1. [USING](docs/usage.md)
-1. [CHANGELOG](docs/CHANGELOG.md)
-1. [BRANCH-GUIDE](docs/branch-guide.md)
+2. [CHANGELOG](docs/CHANGELOG.md)
+3. [BRANCH-GUIDE](docs/branch-guide.md)
+4. [V5 NAMESPACE MIGRATION](docs/namespace-migration-v5.md)

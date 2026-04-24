@@ -19,23 +19,23 @@ Update old `using` directives as follows:
 
 | Old namespace | New namespace(s) | Notes |
 |---|---|---|
-| `RzR.Extensions.Domain.ArraysExtensions` | `RzR.Extensions.Domain.Collections`, `RzR.Extensions.Domain.Linq` | LinqExtensions split out to `Linq`; everything else → `Collections` |
-| `RzR.Extensions.Domain.Collections` (supporting types: `IndexableEnumerable`, `MutableIndexableEnumerable`, `ObservableEnumerator`, `DisposableStackCollection`, `InsensitiveCaseHashtable`) | `RzR.Extensions.Domain.Collections.Types` | Containers separated from extension methods |
-| `RzR.Extensions.Domain.CommonExtensions` | `RzR.Extensions.Domain.Async`, `RzR.Extensions.Domain.Cryptography`, `RzR.Extensions.Domain.Data`, `RzR.Extensions.Domain.Diagnostics`, `RzR.Extensions.Domain.IO`, `RzR.Extensions.Domain.Linq`, `RzR.Extensions.Domain.Primitives` | This was the catch-all; split per concern. `FilesExtensions`, `DirectoryInfoExtensions`, `MemoryStreamExtensions` → `IO`; `CryptoExtensions`, `AESEncryptionExtensions` → `Cryptography`; `ExpressionExtensions`, `PredicateBuilderExtensions` → `Linq`; `TaskExtensions`, `FuncExtensions` → `Async`; `ExceptionExtensions`, `DocumentationExtensions` → `Diagnostics`; `ExpandoObjectExtensions` → `Data`; `NumbersExtensions`, `NullExtensions`, `RandomExtensions` → `Primitives` |
-| `RzR.Extensions.Domain.CommonExtensions.Encryption` | `RzR.Extensions.Domain.Cryptography.Rsa`, `RzR.Extensions.Domain.Cryptography.Tea` | AES extensions moved up to `Cryptography` (no `.Aes` sub-namespace because it shadows `System.Security.Cryptography.Aes`) |
-| `RzR.Extensions.Domain.CommonExtensions.Reflection` | `RzR.Extensions.Domain.Reflection` | |
-| `RzR.Extensions.Domain.CommonExtensions.SystemData` | `RzR.Extensions.Domain.Data` | |
-| `RzR.Extensions.Domain.CommonExtensions.TypeParam` | `RzR.Extensions.Domain.Reflection.TypeParam` | |
-| `RzR.Extensions.Domain.ConvertExtensions.DataReader` | `RzR.Extensions.Domain.Data.DataReader` | |
-| `RzR.Extensions.Domain.DataTypeExtensions` | `RzR.Extensions.Domain.Primitives`, `RzR.Extensions.Domain.Text`, `RzR.Extensions.Domain.Diagnostics` | `StringExtensions`, `StringInjectExtension` → `Text`; `SocketExtensions` → `Diagnostics`; everything else → `Primitives` |
-| `RzR.Extensions.Domain.Helpers` | `RzR.Extensions.Domain.IO`, `RzR.Extensions.Domain.IO.Ini`, `RzR.Extensions.Domain.Async`, `RzR.Extensions.Domain.Cryptography`, `RzR.Extensions.Domain.Primitives` | `DirectoryHelper` → `IO`; `IniFileHelper` → `IO.Ini`; `TaskRunnerHelper` → `Async`; `TinyEncryptionAlgorithmHelper` → `Cryptography.Tea`; `RandomHelper` → `Primitives` |
-| `RzR.Extensions.Domain.Helpers.Internal` | `RzR.Extensions.Domain.Internal`, `RzR.Extensions.Domain.Cryptography` | `Base32EncodingHelper` → `Cryptography` (no `.Encoding` sub-namespace because it shadows `System.Text.Encoding`) |
-| `RzR.Extensions.Domain.Helpers.Internal.AnonymousSelect[.Base|.Factory]` | `RzR.Extensions.Domain.Internal.AnonymousSelect[.Base|.Factory]` | |
-| `RzR.Extensions.Domain.Resources` (`RegularExpressions`) | `RzR.Extensions.Domain.Text` | |
-| `RzR.Extensions.Domain.Resources.Enums` | `RzR.Extensions.Domain.Collections` (`OrderType`), `RzR.Extensions.Domain.Validation` (`ExceptionType`) | |
-| `RzR.Extensions.Domain.Utilities` | `RzR.Extensions.Domain.Collections`, `RzR.Extensions.Domain.Cryptography` | `EnumerateUtils`, `GeneralUtils` → `Collections`; `PasswordGenerateUtils` → `Cryptography` |
-| `RzR.Extensions.Domain.Utilities.Ensure` | `RzR.Extensions.Domain.Validation` | `DomainEnsure`, `DomainEnsureExtensions` |
-| `RzR.Extensions.Domain.Utilities.LazyLoad` | `RzR.Extensions.Domain.Async.LazyLoad` | `AsyncLazy<T>`, `AsyncExpiringLazy<T>` |
+| `DomainCommonExtensions.ArraysExtensions` | `RzR.Extensions.Domain.Collections`, `RzR.Extensions.Domain.Linq` | LinqExtensions split out to `Linq`; everything else → `Collections` |
+| `DomainCommonExtensions.Collections` (supporting types: `IndexableEnumerable`, `MutableIndexableEnumerable`, `ObservableEnumerator`, `DisposableStackCollection`, `InsensitiveCaseHashtable`) | `RzR.Extensions.Domain.Collections.Types` | Containers separated from extension methods |
+| `DomainCommonExtensions.CommonExtensions` | `RzR.Extensions.Domain.Async`, `RzR.Extensions.Domain.Cryptography`, `RzR.Extensions.Domain.Data`, `RzR.Extensions.Domain.Diagnostics`, `RzR.Extensions.Domain.IO`, `RzR.Extensions.Domain.Linq`, `RzR.Extensions.Domain.Primitives` | This was the catch-all; split per concern. `FilesExtensions`, `DirectoryInfoExtensions`, `MemoryStreamExtensions` → `IO`; `CryptoExtensions`, `AESEncryptionExtensions` → `Cryptography`; `ExpressionExtensions`, `PredicateBuilderExtensions` → `Linq`; `TaskExtensions`, `FuncExtensions` → `Async`; `ExceptionExtensions`, `DocumentationExtensions` → `Diagnostics`; `ExpandoObjectExtensions` → `Data`; `NumbersExtensions`, `NullExtensions`, `RandomExtensions` → `Primitives` |
+| `DomainCommonExtensions.CommonExtensions.Encryption` | `RzR.Extensions.Domain.Cryptography.Rsa`, `RzR.Extensions.Domain.Cryptography.Tea` | AES extensions moved up to `Cryptography` (no `.Aes` sub-namespace because it shadows `System.Security.Cryptography.Aes`) |
+| `DomainCommonExtensions.CommonExtensions.Reflection` | `RzR.Extensions.Domain.Reflection` | |
+| `DomainCommonExtensions.CommonExtensions.SystemData` | `RzR.Extensions.Domain.Data` | |
+| `DomainCommonExtensions.CommonExtensions.TypeParam` | `RzR.Extensions.Domain.Reflection.TypeParam` | |
+| `DomainCommonExtensions.ConvertExtensions.DataReader` | `RzR.Extensions.Domain.Data.DataReader` | |
+| `DomainCommonExtensions.DataTypeExtensions` | `RzR.Extensions.Domain.Primitives`, `RzR.Extensions.Domain.Text`, `RzR.Extensions.Domain.Diagnostics` | `StringExtensions`, `StringInjectExtension` → `Text`; `SocketExtensions` → `Diagnostics`; everything else → `Primitives` |
+| `DomainCommonExtensions.Helpers` | `RzR.Extensions.Domain.IO`, `RzR.Extensions.Domain.IO.Ini`, `RzR.Extensions.Domain.Async`, `RzR.Extensions.Domain.Cryptography`, `RzR.Extensions.Domain.Primitives` | `DirectoryHelper` → `IO`; `IniFileHelper` → `IO.Ini`; `TaskRunnerHelper` → `Async`; `TinyEncryptionAlgorithmHelper` → `Cryptography.Tea`; `RandomHelper` → `Primitives` |
+| `DomainCommonExtensions.Helpers.Internal` | `RzR.Extensions.Domain.Internal`, `RzR.Extensions.Domain.Cryptography` | `Base32EncodingHelper` → `Cryptography` (no `.Encoding` sub-namespace because it shadows `System.Text.Encoding`) |
+| `DomainCommonExtensions.Helpers.Internal.AnonymousSelect[.Base|.Factory]` | `RzR.Extensions.Domain.Internal.AnonymousSelect[.Base|.Factory]` | |
+| `DomainCommonExtensions.Resources` (`RegularExpressions`) | `RzR.Extensions.Domain.Text` | |
+| `DomainCommonExtensions.Resources.Enums` | `RzR.Extensions.Domain.Collections` (`OrderType`), `RzR.Extensions.Domain.Validation` (`ExceptionType`) | |
+| `DomainCommonExtensions.Utilities` | `RzR.Extensions.Domain.Collections`, `RzR.Extensions.Domain.Cryptography` | `EnumerateUtils`, `GeneralUtils` → `Collections`; `PasswordGenerateUtils` → `Cryptography` |
+| `DomainCommonExtensions.Utilities.Ensure` | `RzR.Extensions.Domain.Validation` | `DomainEnsure`, `DomainEnsureExtensions` |
+| `DomainCommonExtensions.Utilities.LazyLoad` | `RzR.Extensions.Domain.Async.LazyLoad` | `AsyncLazy<T>`, `AsyncExpiringLazy<T>` |
 
 `RzR.Extensions.Domain.Models` is unchanged.
 

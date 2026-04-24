@@ -1,12 +1,24 @@
 # USING
 
-I think using these methods is no need for any explanations. Here you may find a lot of extensions that help in projects development.
+Most of these extension methods are self-explanatory. Browse the source for the full surface; this document focuses on the more involved primitives.
 
-The source code is open, so you can check what are available and what you can find useful and can use in your project.
+The source code is open, so you can check what is available and pick what is useful for your project.
+
+> **Namespaces (v5).** Since v5 the library is with a new namespace (from `DomainCommonExtensions` to `RzR.Extensions.Domain`), and split into focused buckets under `RzR.Extensions.Domain.*`
+> (`Async`, `Collections`, `Cryptography`, `Data`, `Diagnostics`, `Internal`, `IO`, `Linq`, `Models`, `Primitives`,
+> `Reflection`, `Text`, `Validation`). The old (v4) namespaces still resolve via `[Obsolete]` forwarders
+> in [`src/DomainCommonExtensions/_Legacy/`](../src/DomainCommonExtensions/_Legacy/) — see
+> [namespace-migration-v5.md](namespace-migration-v5.md) for the full mapping.
 
 ---
 
-## Async lazy load `AsyncLazy<T>` and `AsyncExpiringLazy<T>`
+## Async lazy load — `AsyncLazy<T>` and `AsyncExpiringLazy<T>`
+
+> Namespace: `RzR.Extensions.Domain.Async.LazyLoad`
+>
+> ```csharp
+> using RzR.Extensions.Domain.Async.LazyLoad;
+> ```
 
 ## **`AsyncLazy<T>`**
 
