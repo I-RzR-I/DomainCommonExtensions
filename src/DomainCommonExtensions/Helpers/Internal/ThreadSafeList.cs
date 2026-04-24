@@ -36,7 +36,7 @@ namespace RzR.Extensions.Domain.Helpers.Internal
         ///     (Immutable) the lock.
         /// </summary>
         /// =================================================================================================
-        private static readonly object _lock = new object();
+        private readonly object _lock = new object();
 
         /// -------------------------------------------------------------------------------------------------
         /// <summary>
