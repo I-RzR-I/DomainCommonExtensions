@@ -20,9 +20,14 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
-using RzR.Extensions.Domain.Internal;
 using RzR.Extensions.Domain.Primitives;
+
+#if NETSTANDARD2_0_OR_GREATER
+
+using RzR.Extensions.Domain.Internal;
 using RzR.Extensions.Domain.Internal.AnonymousSelect.Factory;
+
+#endif
 
 // ReSharper disable RedundantArgumentDefaultValue
 
