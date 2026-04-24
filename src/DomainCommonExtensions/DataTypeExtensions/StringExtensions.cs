@@ -646,6 +646,27 @@ namespace RzR.Extensions.Domain.DataTypeExtensions
         }
 
         /// <summary>
+        ///     Compute the SHA-256 checksum of the UTF-8 representation of <paramref name="inputString"/>
+        ///     and return it as a lower-case hexadecimal string (the de facto convention for checksums,
+        ///     ETags and content-addressable identifiers).
+        /// </summary>
+        /// <param name="inputString">Input string. Must not be <see langword="null"/>.</param>
+        /// <returns>64-character lower-case hexadecimal SHA-256 digest.</returns>
+        /// <exception cref="ArgumentNullException">Thrown when <paramref name="inputString"/> is <see langword="null"/>.</exception>
+        public static string Sha256Hex(this string inputString)
+        {
+            DomainEnsure.IsNotNull(inputString, nameof(inputString));
+
+            using var sha = SHA256.Create();
+            var hash = sha.ComputeHash(Encoding.UTF8.GetBytes(inputString));
+            var sb = new StringBuilder(hash.Length * 2);
+            foreach (var b in hash)
+                sb.Append(b.ToString("x2"));
+
+            return sb.ToString();
+        }
+
+        /// <summary>
         ///     Decode byte[] from BASE64 string
         /// </summary>
         /// <param name="encoded">Encoded byte[]</param>
