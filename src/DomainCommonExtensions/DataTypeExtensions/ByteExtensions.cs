@@ -69,6 +69,40 @@ namespace RzR.Extensions.Domain.DataTypeExtensions
         }
 
         /// <summary>
+        ///     Convert a byte array to a hexadecimal string.
+        /// </summary>
+        /// <param name="bytes">Input bytes.</param>
+        /// <param name="upperCase">When <see langword="true"/> emits upper-case hex (e.g. <c>FF</c>); otherwise lower-case (e.g. <c>ff</c>). Default is lower-case.</param>
+        /// <returns>Hexadecimal string representation of <paramref name="bytes"/>.</returns>
+        public static string ToHexString(this byte[] bytes, bool upperCase = false)
+        {
+            DomainEnsure.IsNotNull(bytes, nameof(bytes));
+
+            var format = upperCase ? "X2" : "x2";
+            var sb = new StringBuilder(bytes.Length * 2);
+            foreach (var b in bytes)
+                sb.Append(b.ToString(format));
+
+            return sb.ToString();
+        }
+
+        /// <summary>
+        ///     Compute the SHA-256 checksum of a byte array and return it as a lower-case hexadecimal string.
+        ///     Useful for content-addressable identifiers, integrity verification and ETag-like values.
+        /// </summary>
+        /// <param name="bytes">Input bytes.</param>
+        /// <returns>64-character lower-case hexadecimal SHA-256 digest.</returns>
+        public static string Sha256Hex(this byte[] bytes)
+        {
+            DomainEnsure.IsNotNull(bytes, nameof(bytes));
+
+            using var sha = SHA256.Create();
+            var hash = sha.ComputeHash(bytes);
+
+            return hash.ToHexString(false);
+        }
+
+        /// <summary>
         ///     Get SHA1 hash from bytes
         /// </summary>
         /// <param name="bytes">Bytes</param>
