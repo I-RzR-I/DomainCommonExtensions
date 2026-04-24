@@ -24,7 +24,7 @@ using System.IO;
 using System.Linq;
 using System.Runtime.Serialization;
 using System.Xml;
-using CodeSource;
+using RzR.Core.CodeSource;
 using RzR.Extensions.Domain.CommonExtensions;
 using RzR.Extensions.Domain.Utilities.Ensure;
 

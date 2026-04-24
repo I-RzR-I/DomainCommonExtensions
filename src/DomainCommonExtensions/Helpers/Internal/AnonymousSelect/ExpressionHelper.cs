@@ -21,7 +21,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
-using CodeSource;
+using RzR.Core.CodeSource;
 using RzR.Extensions.Domain.CommonExtensions;
 using RzR.Extensions.Domain.CommonExtensions.Reflection;
 using RzR.Extensions.Domain.DataTypeExtensions;
@@ -36,9 +36,9 @@ namespace RzR.Extensions.Domain.Helpers.Internal.AnonymousSelect
     ///     An internal expression helper.
     /// </summary>
     /// =================================================================================================
-    [CodeSource(SourceUrl = "https://stackoverflow.com/questions/3740532/how-to-use-expression-to-build-an-anonymous-type", Version = 1.0D, Comment = "Access the source URL from more info.")]
-    [CodeSource(SourceUrl = "https://stackoverflow.com/questions/606104/how-to-create-linq-expression-tree-to-select-an-anonymous-type", Version = 1.0D, Comment = "Access the source URL from more info.")]
-    [CodeSource(SourceUrl = "https://stackoverflow.com/questions/57524986/selector-expression-dynamic-on-iqueryable", Version = 1.0D, Comment = "Access the source URL from more info.")]
+    [CodeSource(SourceUrl = "https://stackoverflow.com/questions/3740532/how-to-use-expression-to-build-an-anonymous-type", Version = "1.0", Comment = "Access the source URL from more info.")]
+    [CodeSource(SourceUrl = "https://stackoverflow.com/questions/606104/how-to-create-linq-expression-tree-to-select-an-anonymous-type", Version = "1.0", Comment = "Access the source URL from more info.")]
+    [CodeSource(SourceUrl = "https://stackoverflow.com/questions/57524986/selector-expression-dynamic-on-iqueryable", Version = "1.0", Comment = "Access the source URL from more info.")]
     internal static class ExpressionHelper
     {
         /// -------------------------------------------------------------------------------------------------

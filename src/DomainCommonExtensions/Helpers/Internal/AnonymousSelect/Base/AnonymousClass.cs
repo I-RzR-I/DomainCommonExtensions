@@ -19,7 +19,7 @@
 using System.Collections.Generic;
 using System.Dynamic;
 using System.Reflection;
-using CodeSource;
+using RzR.Core.CodeSource;
 using RzR.Extensions.Domain.CommonExtensions;
 
 #endregion
@@ -32,7 +32,7 @@ namespace RzR.Extensions.Domain.Helpers.Internal.AnonymousSelect.Base
     /// </summary>
     /// <seealso cref="T:System.Dynamic.DynamicObject"/>
     /// =================================================================================================
-    [CodeSource(SourceUrl = "System.Linq.Dynamic.Core.DynamicClass", Version = 1.0D, Comment = "The current implementation has inspiration from a specified source URL.")]
+    [CodeSource(SourceUrl = "System.Linq.Dynamic.Core.DynamicClass", Version = "1.0", Comment = "The current implementation has inspiration from a specified source URL.")]
     public abstract class AnonymousClass : DynamicObject
     {
         /// -------------------------------------------------------------------------------------------------

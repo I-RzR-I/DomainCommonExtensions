@@ -23,7 +23,7 @@ using System.Reflection;
 using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Xml;
-using CodeSource;
+using RzR.Core.CodeSource;
 using RzR.Extensions.Domain.DataTypeExtensions;
 using RzR.Extensions.Domain.Utilities.Ensure;
 

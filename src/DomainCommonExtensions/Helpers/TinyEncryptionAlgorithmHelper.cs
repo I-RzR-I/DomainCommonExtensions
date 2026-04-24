@@ -17,7 +17,7 @@
 #region U S A G E S
 
 using System.Text;
-using CodeSource;
+using RzR.Core.CodeSource;
 using RzR.Extensions.Domain.ArraysExtensions;
 using RzR.Extensions.Domain.CommonExtensions;
 using RzR.Extensions.Domain.CommonExtensions.TypeParam;

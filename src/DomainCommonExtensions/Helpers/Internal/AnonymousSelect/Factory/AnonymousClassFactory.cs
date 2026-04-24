@@ -26,7 +26,7 @@ using System.Reflection.Emit;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading;
-using CodeSource;
+using RzR.Core.CodeSource;
 using RzR.Extensions.Domain.CommonExtensions.Reflection;
 using RzR.Extensions.Domain.DataTypeExtensions;
 using RzR.Extensions.Domain.Helpers.Internal.AnonymousSelect.Base;
@@ -46,8 +46,8 @@ namespace RzR.Extensions.Domain.Helpers.Internal.AnonymousSelect.Factory
     ///     The anonymous class factory.
     /// </summary>
     /// =================================================================================================
-    [CodeSource(SourceUrl = "https://stackoverflow.com/questions/29413942/c-sharp-anonymous-object-with-properties-from-dictionary", Version = 1.0D, Comment = "Access the source URL from more info.")]
-    [CodeSource(SourceUrl = "https://stackoverflow.com/questions/606104/how-to-create-linq-expression-tree-to-select-an-anonymous-type", Version = 1.0D, Comment = "Access the source URL from more info.")]
+    [CodeSource(SourceUrl = "https://stackoverflow.com/questions/29413942/c-sharp-anonymous-object-with-properties-from-dictionary", Version = "1.0", Comment = "Access the source URL from more info.")]
+    [CodeSource(SourceUrl = "https://stackoverflow.com/questions/606104/how-to-create-linq-expression-tree-to-select-an-anonymous-type", Version = "1.0", Comment = "Access the source URL from more info.")]
     internal static partial class AnonymousClassFactory
     {
         /// -------------------------------------------------------------------------------------------------
@@ -269,7 +269,7 @@ namespace RzR.Extensions.Domain.Helpers.Internal.AnonymousSelect.Factory
         ///     A Type.
         /// </returns>
         /// =================================================================================================
-        [CodeSource(SourceUrl = "https://stackoverflow.com/questions/29413942/c-sharp-anonymous-object-with-properties-from-dictionary", Version = 1.0D)]
+        [CodeSource(SourceUrl = "https://stackoverflow.com/questions/29413942/c-sharp-anonymous-object-with-properties-from-dictionary", Version = "1.0")]
         private static Type EmitType(AnonymousFieldGeneratorModel[] fields, bool createParameterCtor)
         {
             var fieldCount = fields.Count();
