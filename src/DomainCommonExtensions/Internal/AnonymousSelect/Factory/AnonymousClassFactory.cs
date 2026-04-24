@@ -31,7 +31,7 @@ using RzR.Extensions.Domain.Reflection;
 using RzR.Extensions.Domain.Primitives;
 using RzR.Extensions.Domain.Text;
 using RzR.Extensions.Domain.Internal.AnonymousSelect.Base;
-using RzR.Extensions.Domain.Models;
+using RzR.Extensions.Domain.Models.Internal;
 
 // ReSharper disable RedundantExplicitArrayCreation
 // ReSharper disable UseArrayEmptyMethod

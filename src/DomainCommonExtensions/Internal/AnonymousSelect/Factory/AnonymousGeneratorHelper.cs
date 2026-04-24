@@ -22,7 +22,7 @@ using System.Reflection;
 using System.Reflection.Emit;
 using System.Text;
 using RzR.Extensions.Domain.Reflection;
-using RzR.Extensions.Domain.Models;
+using RzR.Extensions.Domain.Models.Internal;
 
 // ReSharper disable RedundantUsingDirective
 

@@ -22,7 +22,7 @@ using System;
 
 #endregion
 
-namespace RzR.Extensions.Domain.Models
+namespace RzR.Extensions.Domain.Models.Internal
 {
     /// -------------------------------------------------------------------------------------------------
     /// <summary>
