@@ -25,6 +25,7 @@
 		<PackageIconUrl />
 		<RepositoryType>GIT</RepositoryType>
 		<RootNamespace>RzR.Extensions.Domain</RootNamespace>
+		<AssemblyName>RzR.Extensions.Domain</AssemblyName>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
