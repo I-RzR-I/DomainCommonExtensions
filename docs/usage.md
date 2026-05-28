@@ -4,11 +4,11 @@ Most of these extension methods are self-explanatory. Browse the source for the 
 
 The source code is open, so you can check what is available and pick what is useful for your project.
 
-> **Namespaces (v5).** Since v5 the library is with a new namespace (from `DomainCommonExtensions` to `RzR.Extensions.Domain`), and split into focused buckets under `RzR.Extensions.Domain.*`
-> (`Async`, `Collections`, `Cryptography`, `Data`, `Diagnostics`, `Internal`, `IO`, `Linq`, `Models`, `Primitives`,
-> `Reflection`, `Text`, `Validation`). The old (v4) namespaces still resolve via `[Obsolete]` forwarders
-> in [`src/DomainCommonExtensions/_Legacy/`](../src/DomainCommonExtensions/_Legacy/) — see
-> [namespace-migration-v5.md](namespace-migration-v5.md) for the full mapping.
+> **Namespaces (v5+).** Since v5 the library uses the namespace root `RzR.Extensions.Domain.*`, split into focused
+> buckets: `Async`, `Collections`, `Cryptography`, `Data`, `Diagnostics`, `Internal`, `IO`, `Linq`, `Models`,
+> `Primitives`, `Reflection`, `Text`, `Validation`. The old v4 `DomainCommonExtensions.*` namespaces and the
+> `_Legacy/` shim layer were **removed in v6** — see [namespace-migration-v5.md](namespace-migration-v5.md) for
+> the full mapping.
 
 ---
 
@@ -111,3 +111,49 @@ A thread-safe asynchronous lazy initializer with a configurable TTL. After expir
 | **Constructor params** | `factory` | `factory` + `ttl` |
 | **`IsInitializationStarted` after TTL** | N/A | Still `true` until replaced or `Reset()` |
 | **Use when** | Value must be computed once and reused indefinitely | Value needs periodic refresh (tokens, configs, rates, etc) |
+
+---
+
+## Time-ordered unique identifier — `TimeSeqId`
+
+> Namespace: `RzR.Extensions.Domain.Primitives`
+>
+> ```csharp
+> using RzR.Extensions.Domain.Primitives;
+> ```
+
+A sortable, collision-resistant string identifier — a structured alternative to `Guid`. IDs are lexicographically
+sortable by generation time and monotonically ordered within a single process.
+
+### Format
+
+```
+yyyy - MMdd - HHmmssfff - SSSS - RRRRRRRRRRRRRRRR - HHHHHH
+ [0]    [1]      [2]       [3]          [4]            [5]
+```
+
+| Block | Width | Alphabet | Content |
+|---|---|---|---|
+| `[0]` | 4 | `0-9` | Year (`yyyy`) |
+| `[1]` | 4 | `0-9` | Month and day (`MMdd`) |
+| `[2]` | 9 | `0-9` | Time to millisecond (`HHmmssfff`) |
+| `[3]` | 4 | `0-9` | Per-millisecond monotonic sequence `0000`–`9999` |
+| `[4]` | 16 | `0-9 A-F` | 64-bit CSPRNG random salt |
+| `[5]` | 6 | `0-9 A-Z` | SHA-256 integrity checksum over blocks `[0]`–`[4]` |
+
+### Usage
+
+```csharp
+string id = TimeSeqId.Generate();
+// e.g. "2026-0528-143022123-0001-A3F7B2C9D1E50246-X5K3P2"
+```
+
+### Guarantees
+
+| Property | Detail |
+|---|---|
+| **Single-process uniqueness** | The `(timestamp, sequence)` pair is unique within one process; `Generate()` is fully thread-safe. |
+| **Distributed uniqueness** | Two replicas hitting the same millisecond + sequence slot collide with probability **1 in 2⁶⁴ ≈ 5 × 10⁻²⁰** via block `[4]`. |
+| **Lexicographic sort order** | IDs sort in generation order by plain string comparison — no parsing required. |
+| **Monotonicity** | Within one process, IDs are strictly non-decreasing. Burst capacity: 9 999 IDs/ms before the generator waits for the next millisecond (lock is released during the wait). |
+| **Integrity** | Block `[5]` is a SHA-256 checksum over blocks `[0]`–`[4]`. Tampering any preceding block changes the checksum. |

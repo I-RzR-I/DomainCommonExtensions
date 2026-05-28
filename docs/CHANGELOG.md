@@ -1,3 +1,8 @@
+### **v6.0.0.8301** [[RzR](mailto:108324929+I-RzR-I@users.noreply.github.com)] 28-05-2026
+* **BREAKING:** `_Legacy/` backward-compatibility shim layer removed. The `[Obsolete]` forwarder namespaces introduced in v5 no longer exist. All consuming code must use `RzR.Extensions.Domain.*` namespaces. See [namespace-migration-v5.md](namespace-migration-v5.md) for the full mapping.
+* [DEV] - (RzR) -> New `TimeSeqId` generator in `Primitives`: time-ordered, lexicographically sortable 48-character unique identifier. Format: `yyyy-MMdd-HHmmssfff-SSSS-RRRRRRRRRRRRRRRR-HHHHHH` (year / date / time-ms / sequence / 16-hex random / 6-char SHA-256 checksum). Fully thread-safe; IDs sort in generation order by plain string comparison.
+
+
 ### **v5.0.0.7637** [[RzR](mailto:108324929+I-RzR-I@users.noreply.github.com)] 24-04-2026
 * **BREAKING:** Repository reorganized into 11 stable namespace buckets (`Async`, `Collections`, `Cryptography`, `Data`, `Diagnostics`, `Internal`, `IO`, `Linq`, `Models`, `Primitives`, `Reflection`, `Text`, `Validation`). Class names and method signatures are unchanged; only the namespaces moved. See [namespace-migration-v5.md](namespace-migration-v5.md) for the full mapping.
 * **Backward-compat shim layer** (`_Legacy/` folder): `[Obsolete]` static methods preserve the v4 namespaces so existing user code still compiles. Each call site lights up with the new v5 location.
