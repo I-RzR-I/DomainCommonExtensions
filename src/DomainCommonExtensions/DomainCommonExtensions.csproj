@@ -51,8 +51,14 @@
 		</None>
 	</ItemGroup>
 
+	<PropertyGroup>
+		<EmitCodeSource Condition="'$(EmitCodeSource)' == ''">false</EmitCodeSource>
+		<DefineConstants Condition="'$(EmitCodeSource)' == 'true'">$(DefineConstants);CODESOURCE</DefineConstants>
+	</PropertyGroup>
 	<ItemGroup>
-		<PackageReference Include="	RzR.Core.CodeSource" Version="6.0.0.94" />
+		<PackageReference Include="RzR.Core.CodeSource" Version="7.0.0.8329">
+			<PrivateAssets Condition="'$(EmitCodeSource)' != 'true'">all</PrivateAssets>
+		</PackageReference>
 		<!--<PackageReference Include="System.Linq.Dynamic.Core" Version="1.3.3" />-->
 	</ItemGroup>
 

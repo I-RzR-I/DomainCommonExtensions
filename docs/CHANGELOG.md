@@ -1,3 +1,8 @@
+### **v7.0.0.8134** [[RzR](mailto:108324929+I-RzR-I@users.noreply.github.com)] 05-10-2026
+* [b2380dd] (RzR) -> Auto commit uncommited files
+* [23d95f6] (RzR) -> BREAKING: No longer depend on RzR.Core.CodeSource (CodeSource 7.0 opt-in via EmitCodeSource).
+* [23d95f6] (RzR) -> Add string extension methods: TrimToNull, SplitAndTrim, make IsEquals, null-safe.
+
 ### **v6.0.0.8301** [[RzR](mailto:108324929+I-RzR-I@users.noreply.github.com)] 28-05-2026
 * **BREAKING:** `_Legacy/` backward-compatibility shim layer removed. The `[Obsolete]` forwarder namespaces introduced in v5 no longer exist. All consuming code must use `RzR.Extensions.Domain.*` namespaces. See [namespace-migration-v5.md](namespace-migration-v5.md) for the full mapping.
 * [DEV] - (RzR) -> New `TimeSeqId` generator in `Primitives`: time-ordered, lexicographically sortable 48-character unique identifier. Format: `yyyy-MMdd-HHmmssfff-SSSS-RRRRRRRRRRRRRRRR-HHHHHH` (year / date / time-ms / sequence / 16-hex random / 6-char SHA-256 checksum). Fully thread-safe; IDs sort in generation order by plain string comparison.
