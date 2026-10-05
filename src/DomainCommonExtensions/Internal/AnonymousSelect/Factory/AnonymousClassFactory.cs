@@ -27,6 +27,7 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading;
 using RzR.Core.CodeSource;
+// ReSharper disable RedundantUsingDirective
 using RzR.Extensions.Domain.Reflection;
 using RzR.Extensions.Domain.Primitives;
 using RzR.Extensions.Domain.Text;
@@ -56,15 +57,15 @@ namespace RzR.Extensions.Domain.Internal.AnonymousSelect.Factory
         ///     (Immutable) the current assembly version.
         /// </summary>
         /// =================================================================================================
-        private static readonly string CurrentAssemblyVersion 
-            = FileVersionInfo.GetVersionInfo(Assembly.GetExecutingAssembly().Location).FileVersion;
+        private static readonly string CurrentAssemblyVersion
+            = ResolveAssemblyVersion();
 
         /// -------------------------------------------------------------------------------------------------
         /// <summary>
         ///     (Immutable) name of the anonymous assembly.
         /// </summary>
         /// =================================================================================================
-        private static readonly string AnonymousAssemblyName 
+        private static readonly string AnonymousAssemblyName
             = $"DomainCommonExtensions.Helpers.Factory.Internal.AnonymousClassFactory, Version={CurrentAssemblyVersion}";
 
         /// -------------------------------------------------------------------------------------------------
@@ -72,7 +73,7 @@ namespace RzR.Extensions.Domain.Internal.AnonymousSelect.Factory
         ///     (Immutable) name of the anonymous module.
         /// </summary>
         /// =================================================================================================
-        private const string AnonymousModuleName 
+        private const string AnonymousModuleName
             = "DomainCommonExtensions.Helpers.Factory.Internal.AnonymousClassFactory";
 
         /// -------------------------------------------------------------------------------------------------
@@ -80,7 +81,7 @@ namespace RzR.Extensions.Domain.Internal.AnonymousSelect.Factory
         ///     (Immutable) the compiler generated attribute builder.
         /// </summary>
         /// =================================================================================================
-        private static readonly CustomAttributeBuilder CompilerGeneratedAttributeBuilder 
+        private static readonly CustomAttributeBuilder CompilerGeneratedAttributeBuilder
             = new CustomAttributeBuilder(typeof(CompilerGeneratedAttribute).GetConstructor(Type.EmptyTypes)!, new object[0]);
 
         /// -------------------------------------------------------------------------------------------------
@@ -88,7 +89,7 @@ namespace RzR.Extensions.Domain.Internal.AnonymousSelect.Factory
         ///     (Immutable) the debugger hidden attribute builder.
         /// </summary>
         /// =================================================================================================
-        private static readonly CustomAttributeBuilder DebuggerHiddenAttributeBuilder 
+        private static readonly CustomAttributeBuilder DebuggerHiddenAttributeBuilder
             = new CustomAttributeBuilder(typeof(DebuggerHiddenAttribute).GetConstructor(Type.EmptyTypes)!, new object[0]);
 
         /// -------------------------------------------------------------------------------------------------
@@ -104,7 +105,7 @@ namespace RzR.Extensions.Domain.Internal.AnonymousSelect.Factory
         ///     (Immutable) the object constructor.
         /// </summary>
         /// =================================================================================================
-        private static readonly ConstructorInfo ObjectCtor 
+        private static readonly ConstructorInfo ObjectCtor
             = typeof(object).GetConstructor(Type.EmptyTypes)!;
 
         /// -------------------------------------------------------------------------------------------------
@@ -112,7 +113,7 @@ namespace RzR.Extensions.Domain.Internal.AnonymousSelect.Factory
         ///     (Immutable) the string builder constructor.
         /// </summary>
         /// =================================================================================================
-        private static readonly ConstructorInfo StringBuilderCtor 
+        private static readonly ConstructorInfo StringBuilderCtor
             = typeof(StringBuilder).GetConstructor(Type.EmptyTypes)!;
 
         /// -------------------------------------------------------------------------------------------------
@@ -227,9 +228,9 @@ namespace RzR.Extensions.Domain.Internal.AnonymousSelect.Factory
 
             // ReSharper disable once InconsistentlySynchronizedField
             if (!GeneratedTypes.TryGetValue(key, out var type))
-                // We create only a single class at a time, through this lock.
-                // Note that this is a variant of the double-checked locking.
-                // It is safe because we are using a thread safe class.
+            // We create only a single class at a time, through this lock.
+            // Note that this is a variant of the double-checked locking.
+            // It is safe because we are using a thread safe class.
             {
                 lock (GeneratedTypes)
                 {
@@ -247,9 +248,9 @@ namespace RzR.Extensions.Domain.Internal.AnonymousSelect.Factory
 
             // ReSharper disable once InconsistentlySynchronizedField
             if (!GeneratedTypes.TryGetValue(key, out var type))
-                // We create only a single class at a time, through this lock.
-                // Note that this is a variant of the double-checked locking.
-                // It is safe because we are using a thread safe class.
+            // We create only a single class at a time, through this lock.
+            // Note that this is a variant of the double-checked locking.
+            // It is safe because we are using a thread safe class.
             {
                 lock (GeneratedTypes)
                 {
@@ -390,5 +391,45 @@ namespace RzR.Extensions.Domain.Internal.AnonymousSelect.Factory
         /// =================================================================================================
         private static string GenerateKey(IEnumerable<AnonymousFieldGeneratorModel> dynamicProperties, bool createParameterCtor)
             => $"{string.Join("|", dynamicProperties.Select(p => p.FieldName.EscapeBackSlash() + "~" + p.FieldType).ToArray())}_{(createParameterCtor ? "c" : string.Empty)}";
+
+        /// -------------------------------------------------------------------------------------------------
+        /// <summary>
+        ///     Resolves the version of the current assembly from its metadata, without reading the assembly file.
+        /// </summary>
+        /// <remarks>
+        ///     The version is used in the dynamic assembly name, so it must always be a valid <see cref="Version"/>.
+        ///     The assembly location is not used because it is empty when the assembly is loaded from a byte array
+        ///     or bundled into a single-file application. This method never throws, because it runs during type
+        ///     initialization, where any exception would permanently break the factory.
+        /// </remarks>
+        /// <returns>
+        ///     The assembly file version when it is a valid version; otherwise the assembly version; otherwise "1.0.0.0".
+        /// </returns>
+        /// =================================================================================================
+        private static string ResolveAssemblyVersion()
+        {
+            // Initial verison
+            //= FileVersionInfo.GetVersionInfo(Assembly.GetExecutingAssembly().Location).FileVersion;
+            var assembly = typeof(AnonymousClassFactory).Assembly;
+
+            try
+            {
+                var fileVersion = (Attribute.GetCustomAttribute(assembly, 
+                    typeof(AssemblyFileVersionAttribute)) as AssemblyFileVersionAttribute)?.Version;
+                if (Version.TryParse(fileVersion.IfNullThenEmpty(), out _))
+                    return fileVersion;
+            }
+            catch (Exception) { /* ignored */ }
+
+            try
+            {
+                var assemblyVersion = assembly.GetName().Version?.ToString();
+                if (!string.IsNullOrEmpty(assemblyVersion))
+                    return assemblyVersion;
+            }
+            catch (Exception) { /* ignored */ }
+
+            return "1.0.0.0";
+        }
     }
 }

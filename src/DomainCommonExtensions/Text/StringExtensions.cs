@@ -53,6 +53,10 @@ namespace RzR.Extensions.Domain.Text
         private static readonly string[] DateFormats =
             { "yyyy-MM-dd", "MM/dd/yyyy", "M/dd/yyyy", "M/d/yyyy", "MM/d/yyyy", "yyyyMMdd" };
 
+        private static readonly char[] DefaultListSeparators = { ',' };
+
+        private static readonly string[] EmptyStringArray = new string[0];
+
         /// <summary>
         ///     Split string
         /// </summary>
@@ -2192,20 +2196,15 @@ namespace RzR.Extensions.Domain.Text
         {
             return source.IsPresent() && RegularExpressions.IsWebUrlRegex.IsMatch(source);
         }
-        ///-------------------------------------------------------------------------------------------------
+
         /// <summary>
         ///     A string extension method that removes characters from start.
         /// </summary>
-        /// <param name="source">
-        ///     The source to act on.
-        /// </param>
-        /// <param name="length">
-        ///     The length. How many characters to be removed.
-        /// </param>
+        /// <param name="source">The source to act on.</param>
+        /// <param name="length">The length. How many characters to be removed.</param>
         /// <returns>
         ///     A string.
         /// </returns>
-        ///=================================================================================================
         public static string RemoveStartChars(this string source, int length)
         {
             if (source.IsMissing())
@@ -2217,20 +2216,14 @@ namespace RzR.Extensions.Domain.Text
             return source.Substring(length, source.Length - length);
         }
 
-        ///-------------------------------------------------------------------------------------------------
         /// <summary>
         ///     A string extension method that removes characters from end.
         /// </summary>
-        /// <param name="source">
-        ///     The source to act on.
-        /// </param>
-        /// <param name="length">
-        ///     The length. How many characters to be removed.
-        /// </param>
+        /// <param name="source">The source to act on.</param>
+        /// <param name="length">The length. How many characters to be removed.</param>
         /// <returns>
         ///     A string.
         /// </returns>
-        ///=================================================================================================
         public static string RemoveEndChars(this string source, int length)
         {
             if (source.IsMissing())
@@ -2242,22 +2235,20 @@ namespace RzR.Extensions.Domain.Text
             return source.Substring(0, source.Length - length);
         }
 
-        /// -------------------------------------------------------------------------------------------------
         /// <summary>
-        ///     A string extension method that query if 'source' is missing or contains any values form params.
+        ///     A string extension method that query if 'source' is missing or contains any values form
+        ///     params.
         /// </summary>
         /// <param name="source">Source string.</param>
         /// <param name="checkValues">A variable-length parameters list containing check values.</param>
         /// <returns>
         ///     True if missing or any, false if not.
         /// </returns>
-        /// =================================================================================================
         public static bool IsMissingOrAny(this string source, params string[] checkValues)
         {
             return source.IsMissing() || checkValues.NotNull().Contains(source);
         }
 
-        /// -------------------------------------------------------------------------------------------------
         /// <summary>
         ///     A string extension method that if 'source' is missing or contains any values form params.
         ///     If is true, then execute action.
@@ -2265,11 +2256,301 @@ namespace RzR.Extensions.Domain.Text
         /// <param name="source">Source string.</param>
         /// <param name="execAction">The execute action.</param>
         /// <param name="checkValues">A variable-length parameters list containing check values.</param>
-        /// =================================================================================================
         public static void IfIsMissingOrAny(this string source, Action execAction, params string[] checkValues)
         {
             if (source.IsMissingOrAny(checkValues))
                 execAction();
         }
+
+        /// <summary>
+        ///     Returns <paramref name="ifMissingValue"/> when <paramref name="source"/> is missing (null,
+        ///     empty or white-space, see <c>IsMissing</c>); otherwise returns <paramref name="source"/>. 
+        /// </summary>
+        /// <remarks>
+        ///     Equivalent to <c>IfNullOrWhiteSpace</c>. The returned source is not trimmed;
+        ///     use <c>TrimToNull()</c>/<c>TrimIfNotNull()</c> for that.
+        /// </remarks>
+        /// <param name="source">The source to act on.</param>
+        /// <param name="ifMissingValue">
+        ///     The value returned when <paramref name="source"/> is missing.
+        /// </param>
+        /// <returns>
+        ///     <paramref name="ifMissingValue"/> when <paramref name="source"/> is missing; otherwise <paramref name="source"/>
+        ///     .
+        /// </returns>
+        public static string IfIsMissing(this string source, string ifMissingValue)
+            => source.IfNullOrWhiteSpace(ifMissingValue);
+
+        /// <summary>
+        ///     Determines whether <paramref name="source"/> and <paramref name="compareValue"/> are
+        ///     equal using ordinal (case-sensitive, culture-invariant) comparison. Null-safe.
+        /// </summary>
+        /// <remarks>
+        ///     Returns true when both values are null. Not for secret/token/password comparison: it is
+        ///     not constant-time and treats missing==missing as equal. For other comparison modes use <c>
+        ///     string.Equals(a, b, StringComparison)</c>.
+        /// </remarks>
+        /// <param name="source">The source to act on.</param>
+        /// <param name="compareValue">The value to compare with.</param>
+        /// <returns>
+        ///     True if the values are equal, false if not.
+        /// </returns>
+        public static bool IsEquals(this string source, string compareValue)
+            => string.Equals(source, compareValue, StringComparison.Ordinal);
+
+        /// <summary>
+        ///     Determines whether the two strings are equal using ordinal case-insensitive comparison.
+        ///     Null-safe.
+        /// </summary>
+        /// <remarks>
+        ///     Returns true when both values are null. Not for secret/token/password comparison: it is
+        ///     not constant-time and treats missing==missing as equal. For other comparison modes use <c>
+        ///     string.Equals(a, b, StringComparison)</c>. Case-insensitive matching is ordinal; only
+        ///     ASCII case-insensitivity is guaranteed identical across runtimes.
+        /// </remarks>
+        /// <param name="source">The source to act on.</param>
+        /// <param name="compareValue">The value to compare with.</param>
+        /// <returns>
+        ///     True if the values are equal ignoring case, false if not.
+        /// </returns>
+        public static bool IsEqualsIgnoreCase(this string source, string compareValue)
+            => string.Equals(source, compareValue, StringComparison.OrdinalIgnoreCase);
+
+        /// <summary>
+        ///     Determines whether the two strings are linguistically equal using the invariant culture
+        ///     (case-sensitive). Null-safe.
+        /// </summary>
+        /// <remarks>
+        ///     Linguistic comparison; result is platform-dependent (NLS vs ICU) and ignores
+        ///     ignorable/zero-width characters. Never use for identifiers, keys, roles, hosts, paths or
+        ///     any security decision;
+        ///     use <c>IsEquals</c>/<c>IsEqualsIgnoreCase</c>. Returns true when both values are null. 
+        /// </remarks>
+        /// <param name="source">The source to act on.</param>
+        /// <param name="compareValue">The value to compare with.</param>
+        /// <returns>
+        ///     True if the values are linguistically equal, false if not.
+        /// </returns>
+        public static bool IsEqualsInvariantCulture(this string source, string compareValue)
+            => string.Equals(source, compareValue, StringComparison.InvariantCulture);
+
+        /// <summary>
+        ///     Trims <paramref name="source"/> and returns null when the result would be empty. Use it
+        ///     to normalise optional input before persistence so that empty/white-space values are
+        ///     stored as null.
+        /// </summary>
+        /// <param name="source">The source to act on.</param>
+        /// <returns>
+        ///     The trimmed source, or null when it is null, empty or white-space.
+        /// </returns>
+        public static string TrimToNull(this string source)
+            => source.IsMissing() ? null : source.Trim();
+
+        /// <summary>
+        ///     Splits <paramref name="source"/> by <paramref name="separators"/> (default ','), trims
+        ///     every entry and removes empty entries. Intended for configuration and query lists such as
+        ///     "a.com, b.com".
+        /// </summary>
+        /// <remarks>
+        ///     Returns an empty array (never null) when there are no entries; it may be a shared zero-
+        ///     length instance. An empty result means 'no entries': callers using it as an allow-list
+        ///     must treat empty as deny-all, not allow-all. Duplicates are preserved. White-space is
+        ///     defined by <c>char.IsWhiteSpace</c>.
+        /// </remarks>
+        /// <param name="source">The source to act on.</param>
+        /// <param name="separators">
+        ///     The separator characters. When null or empty, ',' is used (never white-space splitting).
+        /// </param>
+        /// <returns>
+        ///     The trimmed, non-empty entries in their original order.
+        /// </returns>
+        public static string[] SplitAndTrim(this string source, params char[] separators)
+        {
+            if (source.IsMissing())
+                return EmptyStringArray;
+
+            var effectiveSeparators = separators == null || separators.Length == 0
+                ? DefaultListSeparators
+                : separators;
+
+            var parts = source.Split(effectiveSeparators);
+            var count = 0;
+            for (var i = 0; i < parts.Length; i++)
+            {
+                var trimmed = parts[i].Trim();
+                if (trimmed.Length > 0)
+                    parts[count++] = trimmed;
+            }
+
+            if (count == parts.Length)
+                return parts;
+
+            if (count == 0)
+                return EmptyStringArray;
+
+            var result = new string[count];
+            Array.Copy(parts, result, count);
+
+            return result;
+        }
+
+        /// <summary>
+        ///     Returns <paramref name="source"/> prefixed with <paramref name="prefix"/> unless it
+        ///     already starts with it. Counterpart of <c>TrimPrefix</c>: for a non-white-space prefix
+        ///     and a source that does not already start with it, <c>TrimPrefix(EnsureStartsWith(s, p),
+        ///     p) == s</c>. <c>TrimPrefix</c> treats a white-space-only prefix as missing, so such
+        ///     prefixes are added here but not removed there.
+        /// </summary>
+        /// <exception cref="ArgumentException">
+        ///     Thrown when <paramref name="stringComparison"/> is not a defined <see cref="StringComparison"/>
+        ///     value, the source is not missing (see <c>IsMissing</c>) and the prefix is not null or
+        ///     empty.
+        /// </exception>
+        /// <param name="source">The source to act on.</param>
+        /// <param name="prefix">The prefix to ensure.</param>
+        /// <param name="stringComparison">
+        ///     (Optional)
+        ///     The comparison used to check the existing prefix. Default OrdinalIgnoreCase.
+        /// </param>
+        /// <returns>
+        ///     <paramref name="source"/> when it already starts with <paramref name="prefix"/>;
+        ///     otherwise prefix + source.
+        /// </returns>
+        public static string EnsureStartsWith(this string source, string prefix,
+            StringComparison stringComparison = StringComparison.OrdinalIgnoreCase)
+        {
+            if (source.IsMissing() || string.IsNullOrEmpty(prefix))
+                return source;
+
+            return source.StartsWith(prefix, stringComparison) ? source : prefix + source;
+        }
+
+        /// <summary>
+        ///     Returns <paramref name="source"/> suffixed with <paramref name="suffix"/> unless it
+        ///     already ends with it (e.g. trailing '/' on a base URL). Counterpart of <c>TrimSuffix</c>:
+        ///     for a non-white-space suffix and a source that does not already end with it, <c>
+        ///     TrimSuffix(EnsureEndsWith(s, x), x) == s</c>. <c>TrimSuffix</c> treats a white-space-only
+        ///     suffix as missing, so such suffixes are added here but not removed there.
+        /// </summary>
+        /// <exception cref="ArgumentException">
+        ///     Thrown when <paramref name="stringComparison"/> is not a defined <see cref="StringComparison"/>
+        ///     value, the source is not missing (see <c>IsMissing</c>) and the suffix is not null or
+        ///     empty.
+        /// </exception>
+        /// <param name="source">The source to act on.</param>
+        /// <param name="suffix">The suffix to ensure.</param>
+        /// <param name="stringComparison">
+        ///     (Optional)
+        ///     The comparison used to check the existing suffix. Default OrdinalIgnoreCase.
+        /// </param>
+        /// <returns>
+        ///     <paramref name="source"/> when it already ends with <paramref name="suffix"/>; otherwise
+        ///     source + suffix.
+        /// </returns>
+        public static string EnsureEndsWith(this string source, string suffix,
+            StringComparison stringComparison = StringComparison.OrdinalIgnoreCase)
+        {
+            if (source.IsMissing() || string.IsNullOrEmpty(suffix))
+                return source;
+
+            return source.EndsWith(suffix, stringComparison) ? source : source + suffix;
+        }
+
+        /// <summary>
+        ///     Returns the part of <paramref name="source"/> before the first occurrence of 
+        ///     <paramref name="separator"/>. If the separator is not found, the whole source is returned.
+        /// </summary>
+        /// <param name="source">The source to act on.</param>
+        /// <param name="separator">The separator to search for.</param>
+        /// <param name="ignoreCase">
+        ///     (Optional)
+        ///     True to match the separator using OrdinalIgnoreCase; false (default) for Ordinal.
+        /// </param>
+        /// <returns>
+        ///     The text before the first separator, or <paramref name="source"/> when the separator is
+        ///     not found.
+        /// </returns>
+        public static string SubstringBefore(this string source, string separator, bool ignoreCase = false)
+        {
+            if (source == null || string.IsNullOrEmpty(separator))
+                return source;
+
+            var index = source.IndexOf(separator, ToOrdinalComparison(ignoreCase));
+
+            return index < 0 ? source : source.Substring(0, index);
+        }
+
+        /// <summary>
+        ///     Returns the part of <paramref name="source"/> after the first occurrence 
+        ///     of <paramref name="separator"/>, or an empty string when the separator is not found.
+        /// </summary>
+        /// <param name="source">The source to act on.</param>
+        /// <param name="separator">The separator to search for.</param>
+        /// <param name="ignoreCase">
+        ///     (Optional)
+        ///     True to match the separator using OrdinalIgnoreCase; false (default) for Ordinal.
+        /// </param>
+        /// <returns>
+        ///     The text after the first separator, or an empty string when the separator is not found.
+        /// </returns>
+        public static string SubstringAfter(this string source, string separator, bool ignoreCase = false)
+        {
+            if (source == null || string.IsNullOrEmpty(separator))
+                return source;
+
+            var index = source.IndexOf(separator, ToOrdinalComparison(ignoreCase));
+
+            return index < 0 ? string.Empty : source.Substring(index + separator.Length);
+        }
+
+        /// <summary>
+        ///     Replaces every occurrence of <paramref name="oldValue"/> in <paramref name="source"/> with
+        ///     <paramref name="newValue"/> using ordinal case-insensitive matching. Available on all
+        ///     target frameworks (string.Replace with StringComparison is not available on
+        ///     net40/net45/netstandard2.0).
+        /// </summary>
+        /// <param name="source">The source to act on.</param>
+        /// <param name="oldValue">The value to be replaced.</param>
+        /// <param name="newValue">The replacement value. Null removes the matches.</param>
+        /// <returns>
+        ///     A string with all matches replaced, or the same <paramref name="source"/> reference when
+        ///     nothing matches.
+        /// </returns>
+        public static string ReplaceIgnoreCase(this string source, string oldValue, string newValue)
+        {
+            if (source == null || string.IsNullOrEmpty(oldValue))
+                return source;
+
+            var index = source.IndexOf(oldValue, 0, StringComparison.OrdinalIgnoreCase);
+            if (index < 0)
+                return source;
+
+            var replacement = newValue ?? string.Empty;
+            var builder = new StringBuilder(source.Length);
+            var start = 0;
+            while (index >= 0)
+            {
+                builder.Append(source, start, index - start).Append(replacement);
+
+                start = index + oldValue.Length;
+                index = start < source.Length
+                    ? source.IndexOf(oldValue, start, StringComparison.OrdinalIgnoreCase)
+                    : -1;
+            }
+
+            builder.Append(source, start, source.Length - start);
+
+            return builder.ToString();
+        }
+
+        /// <summary>
+        ///     Maps a case-sensitivity flag to the matching ordinal comparison.
+        /// </summary>
+        /// <param name="ignoreCase">True for OrdinalIgnoreCase, false for Ordinal.</param>
+        /// <returns>
+        ///     An ordinal <see cref="StringComparison"/> value.
+        /// </returns>
+        private static StringComparison ToOrdinalComparison(bool ignoreCase)
+            => ignoreCase ? StringComparison.OrdinalIgnoreCase : StringComparison.Ordinal;
     }
 }
