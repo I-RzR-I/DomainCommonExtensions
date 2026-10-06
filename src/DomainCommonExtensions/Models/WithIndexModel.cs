@@ -43,5 +43,16 @@ namespace RzR.Extensions.Domain.Models
         /// </value>
         /// =================================================================================================
         public T Item { get; set; }
+
+        /// <summary>
+        ///     Deconstructs this instance into individual members from this object.
+        /// </summary>
+        /// <param name="item">[out] The item.</param>
+        /// <param name="index">[out] The index.</param>
+        public void Deconstruct(out T item, out int index)
+        {
+            item = Item;
+            index = Index;
+        }
     }
 }
