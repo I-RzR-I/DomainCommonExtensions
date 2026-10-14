@@ -40,7 +40,8 @@ namespace RzR.Extensions.Domain.Async.LazyLoad
     ///     <para>
     ///         <b>Thread safety:</b> all public members are safe to call concurrently.
     ///         A thundering-herd guard ensures that only one factory invocation is in flight
-    ///         at a time; concurrent callers share the same in-progress <see cref="Task{T}"/>.
+    ///         at a time; concurrent callers share the same in-progress <see cref="Task{T}"/>,
+    ///         and each expiry triggers a single refresh.
     ///     </para>
     ///     <para>
     ///         <b>Fault recovery:</b> if the factory faults or is cancelled, the entry is treated
@@ -81,19 +82,23 @@ namespace RzR.Extensions.Domain.Async.LazyLoad
         /// </summary>
         /// <param name="factory">
         ///     An asynchronous delegate that produces the value on demand (first access and after
-        ///     each expiry, fault, or reset). Receives a <see cref="CancellationToken"/> forwarded
-        ///     from the caller of <see cref="GetValueAsync"/>.
+        ///     each expiry, fault, or reset). Receives the <see cref="CancellationToken"/> forwarded
+        ///     from the caller of <see cref="GetValueAsync"/> that started the run.
         /// </param>
         /// <param name="ttl">
-        ///     How long a successfully computed value remains valid. After this duration the next
-        ///     <see cref="GetValueAsync"/> call triggers a fresh factory invocation. Pass
-        ///     <see cref="TimeSpan.Zero"/> to disable caching (factory called on every request).
+        ///     How long a successfully computed value remains valid, measured from the start of the
+        ///     factory run. After this duration the next <see cref="GetValueAsync"/> call triggers a
+        ///     fresh factory invocation. Pass <see cref="TimeSpan.Zero"/> to disable caching: the
+        ///     factory is called on every request once the previous run has completed (concurrent
+        ///     callers share an in-flight run; a hung factory is not bypassed until <see cref="Reset"/>).
+        ///     Pass <see cref="TimeSpan.MaxValue"/> or <see cref="Timeout.InfiniteTimeSpan"/> for a
+        ///     value that never expires.
         /// </param>
         /// <exception cref="ArgumentNullException">
         ///     Thrown when <paramref name="factory"/> is <see langword="null"/>.
         /// </exception>
         /// <exception cref="ArgumentOutOfRangeException">
-        ///     Thrown when <paramref name="ttl"/> is negative.
+        ///     Thrown when <paramref name="ttl"/> is negative and not <see cref="Timeout.InfiniteTimeSpan"/>.
         /// </exception>
         /// =================================================================================================
         public AsyncExpiringLazy(Func<CancellationToken, Task<T>> factory, TimeSpan ttl)
@@ -103,10 +108,10 @@ namespace RzR.Extensions.Domain.Async.LazyLoad
 
             _factory = factory;
 
-            if (ttl < TimeSpan.Zero)
+            if (ttl < TimeSpan.Zero && ttl != Timeout.InfiniteTimeSpan)
                 throw new ArgumentOutOfRangeException(nameof(ttl), "TTL must not be negative.");
 
-            _ttl = ttl;
+            _ttl = ttl == Timeout.InfiniteTimeSpan ? TimeSpan.MaxValue : ttl;
         }
 
         /// -------------------------------------------------------------------------------------------------
@@ -153,8 +158,10 @@ namespace RzR.Extensions.Domain.Async.LazyLoad
         ///     triggers a fresh factory invocation and awaits its result.
         /// </summary>
         /// <param name="cancellationToken">
-        ///     A <see cref="CancellationToken"/> forwarded to the factory when a new invocation is
-        ///     needed. Has no effect when a valid cached value is returned directly.
+        ///     A <see cref="CancellationToken"/> forwarded to the factory when this call starts a new
+        ///     invocation. Cancelling it cancels that shared in-flight run, so every caller awaiting
+        ///     it observes the cancellation and the next call retries. Has no effect when a valid
+        ///     cached value or an already running task is returned.
         /// </param>
         /// <returns>
         ///     A <see cref="Task{T}"/> that completes with the (possibly freshly computed) value.
@@ -169,20 +176,14 @@ namespace RzR.Extensions.Domain.Async.LazyLoad
         {
             var entry = Volatile.Read(ref _entry);
 
-            if (entry.IsNotNull()
-                && DateTimeOffset.UtcNow < entry.Expiration
-                && !entry.Task.IsFaulted
-                && !entry.Task.IsCanceled)
-                return entry.Task;
-
-            return RefreshAsync(entry, cancellationToken);
+            return IsReusable(entry) ? entry.Task : RefreshAsync(entry, cancellationToken);
         }
 
         /// -------------------------------------------------------------------------------------------------
         /// <summary>
         ///     Performs a lock-free cache refresh using a compare-and-swap (CAS) loop.
         ///     A <see cref="TaskCompletionSource{T}"/> placeholder is stored atomically before the
-        ///     factory is invoked so that losing threads can await the winner's task rather than
+        ///     factory is invoked so that losing threads join the winner's task rather than
         ///     starting duplicate factory calls (thundering-herd prevention).
         /// </summary>
         /// <param name="current">
@@ -196,38 +197,75 @@ namespace RzR.Extensions.Domain.Async.LazyLoad
         ///     the same factory run.
         /// </returns>
         /// =================================================================================================
-        private Task<T> RefreshAsync(Entry current, CancellationToken cancellationToken = default)
+        private Task<T> RefreshAsync(Entry current, CancellationToken cancellationToken)
         {
-            var tcs = new TaskCompletionSource<T>();
-            var newEntry = new Entry(tcs.Task, DateTimeOffset.UtcNow + _ttl);
-
-            if (Interlocked.CompareExchange(ref _entry, newEntry, current) != current)
+            while (true)
             {
-                // Another thread won the race. Re-read and decide.
-                var readValue = Volatile.Read(ref _entry);
+                var tcs = new TaskCompletionSource<T>();
+                var newEntry = new Entry(tcs.Task, GetExpiration());
+                var observed = Interlocked.CompareExchange(ref _entry, newEntry, current);
 
-                if (readValue.IsNotNull()
-                    && DateTimeOffset.UtcNow < readValue.Expiration
-                    && !readValue.Task.IsFaulted
-                    && !readValue.Task.IsCanceled)
-                    return readValue.Task;
+                if (observed == current)
+                {
+                    _ = RunFactoryAsync(tcs, cancellationToken);
 
-                // readValue is null (Reset), expired, or faulted — retry.
-                return RefreshAsync(readValue, cancellationToken);
+                    return tcs.Task;
+                }
+
+                if (IsReusable(observed))
+                    return observed.Task;
+
+                current = observed;
             }
+        }
 
-            // We won the CAS — invoke the factory.
-            RunFactory(tcs, cancellationToken);
+        /// -------------------------------------------------------------------------------------------------
+        /// <summary>
+        ///     Determines whether an entry can be shared with a new caller: either its factory run is
+        ///     still in flight, or it completed successfully and its TTL has not yet elapsed.
+        /// </summary>
+        /// <param name="entry">The entry to inspect; may be <see langword="null"/>.</param>
+        /// <returns>
+        ///     <see langword="true"/> if the caller should join <paramref name="entry"/>; otherwise
+        ///     <see langword="false"/>.
+        /// </returns>
+        /// =================================================================================================
+        private static bool IsReusable(Entry entry)
+        {
+            if (entry.IsNull())
+                return false;
 
-            return tcs.Task;
+            if (!entry.Task.IsCompleted)
+                return true;
+
+            return entry.Task.Status == TaskStatus.RanToCompletion
+                   && DateTimeOffset.UtcNow < entry.Expiration;
+        }
+
+        /// -------------------------------------------------------------------------------------------------
+        /// <summary>
+        ///     Computes the expiration instant of an entry created now, saturating at
+        ///     <see cref="DateTimeOffset.MaxValue"/> so that very large TTLs never overflow.
+        /// </summary>
+        /// <returns>
+        ///     The UTC instant at which a value produced by a factory run started now expires.
+        /// </returns>
+        /// =================================================================================================
+        private DateTimeOffset GetExpiration()
+        {
+            var now = DateTimeOffset.UtcNow;
+
+            return _ttl >= DateTimeOffset.MaxValue - now
+                ? DateTimeOffset.MaxValue
+                : now + _ttl;
         }
 
         /// -------------------------------------------------------------------------------------------------
         /// <summary>
         ///     Invokes the user-supplied factory and forwards its result, fault, or cancellation to
-        ///     <paramref name="taskCompletionSource"/>. Declared <c>async void</c> so that
-        ///     <see cref="RefreshAsync"/> can return the TCS task immediately; exceptions are
-        ///     captured via the TCS rather than propagated to the caller.
+        ///     <paramref name="taskCompletionSource"/>. Exceptions are captured via the TCS rather than
+        ///     propagated to the caller. The run only completes its own TCS, so a run that finishes
+        ///     after <see cref="Reset"/> never clears or publishes into a newer entry.
         /// </summary>
         /// <param name="taskCompletionSource">
         ///     The <see cref="TaskCompletionSource{T}"/> whose task is already being awaited by
@@ -236,9 +274,13 @@ namespace RzR.Extensions.Domain.Async.LazyLoad
         /// <param name="cancellationToken">
         ///     The token forwarded from the originating <see cref="GetValueAsync"/> call.
         /// </param>
+        /// <returns>
+        ///     A <see cref="Task"/> that completes once the factory has resolved and the TCS
+        ///     has been signalled.
+        /// </returns>
         /// =================================================================================================
-        private async void RunFactory(TaskCompletionSource<T> taskCompletionSource, 
-            CancellationToken cancellationToken = default)
+        private async Task RunFactoryAsync(TaskCompletionSource<T> taskCompletionSource,
+            CancellationToken cancellationToken)
         {
             try
             {

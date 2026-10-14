@@ -112,7 +112,7 @@ namespace RzR.Extensions.Domain.Async.LazyLoad
         ///     <see langword="true"/> once <see cref="GetValueAsync"/> has been called at least
         ///     once and the state has not been cleared by <see cref="Reset"/>; otherwise
         ///     <see langword="false"/>. Returns <see langword="true"/> while the factory is still
-        ///     running or even if it has faulted (until <see cref="Reset"/> is called).
+        ///     running or after it has completed successfully.
         /// </value>
         /// =================================================================================================
         public bool IsInitializationStarted => Volatile.Read(ref _state).IsNotNull();
@@ -125,8 +125,9 @@ namespace RzR.Extensions.Domain.Async.LazyLoad
         /// </summary>
         /// <param name="cancellationToken">
         ///     A <see cref="CancellationToken"/> that is linked to the token passed to the factory.
-        ///     Only affects the current in-flight factory invocation; other concurrently waiting
-        ///     callers are not independently cancelled.
+        ///     Cancelling it cancels the shared in-flight factory run started by this call, so every
+        ///     caller awaiting that run observes the cancellation and the state is cleared for a
+        ///     retry. Has no effect when a cached or already running task is returned.
         /// </param>
         /// <returns>
         ///     A <see cref="Task{T}"/> that completes with the initialized value. All concurrent
@@ -147,16 +148,17 @@ namespace RzR.Extensions.Domain.Async.LazyLoad
                     return current.Task;
 
                 var cts = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
+                var token = cts.Token;
                 var tcs = new TaskCompletionSource<T>();
                 var newState = new LazyState(tcs.Task, cts);
 
                 if (Interlocked.CompareExchange(ref _state, newState, current) != current)
                 {
                     cts.Dispose();
-                    continue; // Retry instead of returning a potentially-null value
+                    continue;
                 }
 
-                _ = RunFactoryAsync(tcs, cts);
+                _ = RunFactoryAsync(newState, token, tcs);
 
                 return tcs.Task;
             }
@@ -164,79 +166,50 @@ namespace RzR.Extensions.Domain.Async.LazyLoad
 
         /// -------------------------------------------------------------------------------------------------
         /// <summary>
-        ///     Invokes the user-supplied factory, forwards its result or exception to
-        ///     <paramref name="taskCompletionSource"/>, and disposes <paramref name="cancelTokenSource"/>
-        ///     on the success path. Calls <see cref="Reset"/> on fault or cancellation so that
-        ///     the next caller can retry.
+        ///     Invokes the user-supplied factory with <paramref name="cancellationToken"/>, forwards its
+        ///     result or exception to <paramref name="taskCompletionSource"/>, and disposes the linked
+        ///     <see cref="CancellationTokenSource"/> of <paramref name="state"/> once the run has
+        ///     resolved; the run is its only disposer. On fault or cancellation the state is cleared
+        ///     only if it is still the current one, so a run that finishes after <see cref="Reset"/>
+        ///     never clears a newer state.
         /// </summary>
+        /// <param name="state">
+        ///     The state published for this factory run.
+        /// </param>
+        /// <param name="cancellationToken">
+        ///     The token of the linked <see cref="LazyState.CancelTokenSource"/>, captured before the
+        ///     state was published.
+        /// </param>
         /// <param name="taskCompletionSource">
         ///     The <see cref="TaskCompletionSource{T}"/> whose task is already exposed to all callers.
-        /// </param>
-        /// <param name="cancelTokenSource">
-        ///     The linked <see cref="CancellationTokenSource"/> created for this factory run;
-        ///     disposed on the success path to release the external token registration.
         /// </param>
         /// <returns>
         ///     A <see cref="Task"/> that completes once the factory has resolved and the TCS
         ///     has been signalled.
         /// </returns>
         /// =================================================================================================
-        private async Task RunFactoryAsync(TaskCompletionSource<T> taskCompletionSource,
-            CancellationTokenSource cancelTokenSource)
+        private async Task RunFactoryAsync(LazyState state, CancellationToken cancellationToken,
+            TaskCompletionSource<T> taskCompletionSource)
         {
             try
             {
-                var task = _factory(cancelTokenSource.Token);
-
-                if (!task.IsCompleted)
-                {
-                    var result = await task.ConfigureAwait(false);
-                    taskCompletionSource.TrySetResult(result);
-                }
-                else
-                {
-                    // Avoid running continuations inline on the caller's thread
-                    // when the factory returns an already-completed task.
-                    _ = Task.Run(async () =>
-                    {
-                        try
-                        {
-                            var result = await task.ConfigureAwait(false);
-                            taskCompletionSource.TrySetResult(result);
-                            cancelTokenSource.Dispose();
-                        }
-                        catch (OperationCanceledException)
-                        {
-                            taskCompletionSource.TrySetCanceled();
-                            Reset();
-                        }
-                        catch (Exception ex)
-                        {
-                            taskCompletionSource.TrySetException(ex);
-                            Reset();
-                        }
-                    });
-
-                    return;
-                }
+                var result = await _factory(cancellationToken).ConfigureAwait(false);
+                taskCompletionSource.TrySetResult(result);
             }
             catch (OperationCanceledException)
             {
+                Interlocked.CompareExchange(ref _state, null, state);
                 taskCompletionSource.TrySetCanceled();
-                Reset();
-
-                return;
             }
             catch (Exception ex)
             {
+                Interlocked.CompareExchange(ref _state, null, state);
                 taskCompletionSource.TrySetException(ex);
-                Reset();
-
-                return;
             }
-
-            // Success path: dispose the linked CTS to release the token registration.
-            cancelTokenSource.Dispose();
+            finally
+            {
+                state.CancelTokenSource.Dispose();
+            }
         }
 
         /// -------------------------------------------------------------------------------------------------
@@ -247,7 +220,9 @@ namespace RzR.Extensions.Domain.Async.LazyLoad
         /// <remarks>
         ///     After this call <see cref="IsInitializationStarted"/> and <see cref="IsValueCreated"/>
         ///     both return <see langword="false"/>, and the next call to <see cref="GetValueAsync"/>
-        ///     starts a fresh factory invocation. Safe to call concurrently or multiple times.
+        ///     starts a fresh factory invocation. A cancelled in-progress run completes only its own
+        ///     task and never clears or publishes into the new state. Safe to call concurrently or
+        ///     multiple times.
         /// </remarks>
         /// =================================================================================================
         public void Reset()
@@ -262,8 +237,6 @@ namespace RzR.Extensions.Domain.Async.LazyLoad
                 old.CancelTokenSource.Cancel();
             }
             catch (ObjectDisposedException) { }
-
-            old.CancelTokenSource.Dispose();
         }
 
         /// -------------------------------------------------------------------------------------------------
@@ -325,7 +298,7 @@ namespace RzR.Extensions.Domain.Async.LazyLoad
             /// <summary>
             ///     The linked <see cref="CancellationTokenSource"/> whose token is forwarded to the
             ///     factory. Cancelled by <see cref="Reset"/> if a factory run is in progress;
-            ///     disposed on the success path by <see cref="RunFactoryAsync"/>.
+            ///     disposed by <see cref="RunFactoryAsync"/> once the run has resolved.
             /// </summary>
             /// =================================================================================================
             public readonly CancellationTokenSource CancelTokenSource;
