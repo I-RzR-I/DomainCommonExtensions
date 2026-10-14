@@ -17,6 +17,7 @@
 #region U S A G E S
 
 using System.Data;
+using RzR.Extensions.Domain.Internal.Data;
 
 // ReSharper disable RedundantCast
 
@@ -34,11 +35,16 @@ namespace RzR.Extensions.Domain.Data.DataReader
         /// </summary>
         /// <param name="dataReader">Data reader</param>
         /// <param name="columnName">Column name</param>
-        /// <returns></returns>
-        /// <remarks></remarks>
+        /// <returns>The column value as double, or 0 when the value is DBNull, null, empty or whitespace.</returns>
+        /// <remarks>
+        ///     A missing column throws the data provider's exception. Typed numbers are converted directly,
+        ///     without a text round-trip. Strings are parsed with the invariant culture first (exponent allowed,
+        ///     no thousands separator), then with the current culture. Malformed values throw
+        ///     <see cref="System.FormatException"/>.
+        /// </remarks>
         public static double ToDouble(this IDataReader dataReader, string columnName)
-            => dataReader.IsWithValue(columnName)
-                ? double.Parse(dataReader[columnName].ToString())
+            => DataValueConverter.TryRead(dataReader, columnName, out var value)
+                ? DataValueConverter.ToDouble(value, columnName)
                 : 0;
 
         /// <summary>
@@ -46,11 +52,13 @@ namespace RzR.Extensions.Domain.Data.DataReader
         /// </summary>
         /// <param name="dataReader">Data reader</param>
         /// <param name="columnName">Column name</param>
-        /// <returns></returns>
-        /// <remarks></remarks>
+        /// <returns>The column value as double, or null when the value is DBNull, null, empty or whitespace.</returns>
+        /// <remarks>
+        ///     Converts like <see cref="ToDouble"/>. A missing column throws the data provider's exception.
+        /// </remarks>
         public static double? ToNullDouble(this IDataReader dataReader, string columnName)
-            => dataReader.IsWithValue(columnName)
-                ? double.Parse(dataReader[columnName].ToString())
+            => DataValueConverter.TryRead(dataReader, columnName, out var value)
+                ? DataValueConverter.ToDouble(value, columnName)
                 : (double?)null;
     }
 }

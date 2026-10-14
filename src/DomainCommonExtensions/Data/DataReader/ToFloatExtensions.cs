@@ -17,6 +17,7 @@
 #region U S A G E S
 
 using System.Data;
+using RzR.Extensions.Domain.Internal.Data;
 
 // ReSharper disable RedundantCast
 
@@ -34,11 +35,16 @@ namespace RzR.Extensions.Domain.Data.DataReader
         /// </summary>
         /// <param name="dataReader">Data reader</param>
         /// <param name="columnName">Column name</param>
-        /// <returns></returns>
-        /// <remarks></remarks>
+        /// <returns>The column value as float, or 0 when the value is DBNull, null, empty or whitespace.</returns>
+        /// <remarks>
+        ///     A missing column throws the data provider's exception. Typed numbers are converted directly; a
+        ///     value out of the float range becomes infinity. Strings are parsed with the invariant culture first
+        ///     (exponent allowed, no thousands separator), then with the current culture. Malformed values throw
+        ///     <see cref="System.FormatException"/>.
+        /// </remarks>
         public static float ToFloat(this IDataReader dataReader, string columnName)
-        => dataReader.IsWithValue(columnName)
-            ? float.Parse(dataReader[columnName].ToString())
+        => DataValueConverter.TryRead(dataReader, columnName, out var value)
+            ? DataValueConverter.ToSingle(value, columnName)
             : 0;
 
         /// <summary>
@@ -46,11 +52,13 @@ namespace RzR.Extensions.Domain.Data.DataReader
         /// </summary>
         /// <param name="dataReader">Data reader</param>
         /// <param name="columnName">Column name</param>
-        /// <returns></returns>
-        /// <remarks></remarks>
+        /// <returns>The column value as float, or null when the value is DBNull, null, empty or whitespace.</returns>
+        /// <remarks>
+        ///     Converts like <see cref="ToFloat"/>. A missing column throws the data provider's exception.
+        /// </remarks>
         public static float? ToNullFloat(this IDataReader dataReader, string columnName)
-        => dataReader.IsWithValue(columnName)
-            ? float.Parse(dataReader[columnName].ToString())
+        => DataValueConverter.TryRead(dataReader, columnName, out var value)
+            ? DataValueConverter.ToSingle(value, columnName)
             : (float?)null;
     }
 }

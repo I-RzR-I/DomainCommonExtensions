@@ -16,8 +16,8 @@
 
 #region U S A G E S
 
-using System;
 using System.Data;
+using RzR.Extensions.Domain.Internal.Data;
 
 // ReSharper disable RedundantCast
 
@@ -35,11 +35,16 @@ namespace RzR.Extensions.Domain.Data.DataReader
         /// </summary>
         /// <param name="dataReader">Data reader</param>
         /// <param name="columnName">Column name</param>
-        /// <returns></returns>
-        /// <remarks></remarks>
+        /// <returns>The column value as short, or 0 when the value is DBNull, null, empty or whitespace.</returns>
+        /// <remarks>
+        ///     A missing column throws the data provider's exception. Typed numbers are converted with
+        ///     overflow checks; a decimal or double must have no fractional part (it is never rounded).
+        ///     Strings are parsed with the invariant culture first, then the current culture. Malformed
+        ///     values throw <see cref="System.FormatException"/>, out-of-range values <see cref="System.OverflowException"/>.
+        /// </remarks>
         public static short ToInt16(this IDataReader dataReader, string columnName)
-        => dataReader.IsWithValue(columnName)
-            ? Convert.ToInt16(dataReader[columnName].ToString())
+        => DataValueConverter.TryRead(dataReader, columnName, out var value)
+            ? DataValueConverter.ToInt16(value, columnName)
             : (short)0;
 
         /// <summary>
@@ -47,11 +52,13 @@ namespace RzR.Extensions.Domain.Data.DataReader
         /// </summary>
         /// <param name="dataReader">Data reader</param>
         /// <param name="columnName">Column name</param>
-        /// <returns></returns>
-        /// <remarks></remarks>
+        /// <returns>The column value as short, or null when the value is DBNull, null, empty or whitespace.</returns>
+        /// <remarks>
+        ///     Converts like <see cref="ToInt16"/>. A missing column throws the data provider's exception.
+        /// </remarks>
         public static short? ToNullInt16(this IDataReader dataReader, string columnName)
-        => dataReader.IsWithValue(columnName)
-            ? Convert.ToInt16(dataReader[columnName].ToString())
+        => DataValueConverter.TryRead(dataReader, columnName, out var value)
+            ? DataValueConverter.ToInt16(value, columnName)
             : (short?)null;
 
         /// <summary>
@@ -59,23 +66,27 @@ namespace RzR.Extensions.Domain.Data.DataReader
         /// </summary>
         /// <param name="dataReader">Data reader</param>
         /// <param name="columnName">Column name</param>
-        /// <returns></returns>
-        /// <remarks></remarks>
+        /// <returns>The column value as ushort, or 0 when the value is DBNull, null, empty or whitespace.</returns>
+        /// <remarks>
+        ///     Converts like <see cref="ToInt16"/>. A missing column throws the data provider's exception.
+        /// </remarks>
         public static ushort ToUInt16(this IDataReader dataReader, string columnName)
-        => dataReader.IsWithValue(columnName)
+        => DataValueConverter.TryRead(dataReader, columnName, out var value)
 
-            ? Convert.ToUInt16(dataReader[columnName].ToString()) : (ushort)0;
+            ? DataValueConverter.ToUInt16(value, columnName) : (ushort)0;
 
         /// <summary>
         ///     Convert to nullable ushort from DataReader
         /// </summary>
         /// <param name="dataReader">Data reader</param>
         /// <param name="columnName">Column name</param>
-        /// <returns></returns>
-        /// <remarks></remarks>
+        /// <returns>The column value as ushort, or null when the value is DBNull, null, empty or whitespace.</returns>
+        /// <remarks>
+        ///     Converts like <see cref="ToInt16"/>. A missing column throws the data provider's exception.
+        /// </remarks>
         public static ushort? ToNullUInt16(this IDataReader dataReader, string columnName)
-        => dataReader.IsWithValue(columnName)
-            ? Convert.ToUInt16(dataReader[columnName].ToString())
+        => DataValueConverter.TryRead(dataReader, columnName, out var value)
+            ? DataValueConverter.ToUInt16(value, columnName)
             : (ushort?)null;
 
         /// <summary>
@@ -83,11 +94,13 @@ namespace RzR.Extensions.Domain.Data.DataReader
         /// </summary>
         /// <param name="dataReader">Data reader</param>
         /// <param name="columnName">Column name</param>
-        /// <returns></returns>
-        /// <remarks></remarks>
+        /// <returns>The column value as int, or 0 when the value is DBNull, null, empty or whitespace.</returns>
+        /// <remarks>
+        ///     Converts like <see cref="ToInt16"/>. A missing column throws the data provider's exception.
+        /// </remarks>
         public static int ToInt32(this IDataReader dataReader, string columnName)
-        => dataReader.IsWithValue(columnName)
-            ? Convert.ToInt32(dataReader[columnName].ToString())
+        => DataValueConverter.TryRead(dataReader, columnName, out var value)
+            ? DataValueConverter.ToInt32(value, columnName)
             : 0;
 
         /// <summary>
@@ -95,11 +108,13 @@ namespace RzR.Extensions.Domain.Data.DataReader
         /// </summary>
         /// <param name="dataReader">Data reader</param>
         /// <param name="columnName">Column name</param>
-        /// <returns></returns>
-        /// <remarks></remarks>
+        /// <returns>The column value as int, or null when the value is DBNull, null, empty or whitespace.</returns>
+        /// <remarks>
+        ///     Converts like <see cref="ToInt16"/>. A missing column throws the data provider's exception.
+        /// </remarks>
         public static int? ToNullInt32(this IDataReader dataReader, string columnName)
-        => dataReader.IsWithValue(columnName)
-            ? Convert.ToInt32(dataReader[columnName].ToString())
+        => DataValueConverter.TryRead(dataReader, columnName, out var value)
+            ? DataValueConverter.ToInt32(value, columnName)
             : (int?)null;
 
         /// <summary>
@@ -107,11 +122,13 @@ namespace RzR.Extensions.Domain.Data.DataReader
         /// </summary>
         /// <param name="dataReader">Data reader</param>
         /// <param name="columnName">Column name</param>
-        /// <returns></returns>
-        /// <remarks></remarks>
+        /// <returns>The column value as uint, or 0 when the value is DBNull, null, empty or whitespace.</returns>
+        /// <remarks>
+        ///     Converts like <see cref="ToInt16"/>. A missing column throws the data provider's exception.
+        /// </remarks>
         public static uint ToUInt32(this IDataReader dataReader, string columnName)
-        => dataReader.IsWithValue(columnName)
-            ? Convert.ToUInt32(dataReader[columnName].ToString())
+        => DataValueConverter.TryRead(dataReader, columnName, out var value)
+            ? DataValueConverter.ToUInt32(value, columnName)
             : 0;
 
         /// <summary>
@@ -119,11 +136,13 @@ namespace RzR.Extensions.Domain.Data.DataReader
         /// </summary>
         /// <param name="dataReader">Data reader</param>
         /// <param name="columnName">Column name</param>
-        /// <returns></returns>
-        /// <remarks></remarks>
+        /// <returns>The column value as uint, or null when the value is DBNull, null, empty or whitespace.</returns>
+        /// <remarks>
+        ///     Converts like <see cref="ToInt16"/>. A missing column throws the data provider's exception.
+        /// </remarks>
         public static uint? ToNullUInt32(this IDataReader dataReader, string columnName)
-        => dataReader.IsWithValue(columnName)
-            ? Convert.ToUInt32(dataReader[columnName].ToString())
+        => DataValueConverter.TryRead(dataReader, columnName, out var value)
+            ? DataValueConverter.ToUInt32(value, columnName)
             : (uint?)null;
 
         /// <summary>
@@ -131,11 +150,13 @@ namespace RzR.Extensions.Domain.Data.DataReader
         /// </summary>
         /// <param name="dataReader">Data reader</param>
         /// <param name="columnName">Column name</param>
-        /// <returns></returns>
-        /// <remarks></remarks>
+        /// <returns>The column value as long, or 0 when the value is DBNull, null, empty or whitespace.</returns>
+        /// <remarks>
+        ///     Converts like <see cref="ToInt16"/>. A missing column throws the data provider's exception.
+        /// </remarks>
         public static long ToInt64(this IDataReader dataReader, string columnName)
-        => dataReader.IsWithValue(columnName)
-            ? Convert.ToInt64(dataReader[columnName].ToString())
+        => DataValueConverter.TryRead(dataReader, columnName, out var value)
+            ? DataValueConverter.ToInt64(value, columnName)
             : 0;
 
         /// <summary>
@@ -143,11 +164,13 @@ namespace RzR.Extensions.Domain.Data.DataReader
         /// </summary>
         /// <param name="dataReader">Data reader</param>
         /// <param name="columnName">Column name</param>
-        /// <returns></returns>
-        /// <remarks></remarks>
+        /// <returns>The column value as long, or null when the value is DBNull, null, empty or whitespace.</returns>
+        /// <remarks>
+        ///     Converts like <see cref="ToInt16"/>. A missing column throws the data provider's exception.
+        /// </remarks>
         public static long? ToNullInt64(this IDataReader dataReader, string columnName)
-        => dataReader.IsWithValue(columnName)
-            ? Convert.ToInt64(dataReader[columnName].ToString())
+        => DataValueConverter.TryRead(dataReader, columnName, out var value)
+            ? DataValueConverter.ToInt64(value, columnName)
             : (long?)null;
 
         /// <summary>
@@ -155,11 +178,13 @@ namespace RzR.Extensions.Domain.Data.DataReader
         /// </summary>
         /// <param name="dataReader">Data reader</param>
         /// <param name="columnName">Column name</param>
-        /// <returns></returns>
-        /// <remarks></remarks>
+        /// <returns>The column value as ulong, or 0 when the value is DBNull, null, empty or whitespace.</returns>
+        /// <remarks>
+        ///     Converts like <see cref="ToInt16"/>. A missing column throws the data provider's exception.
+        /// </remarks>
         public static ulong ToUInt64(this IDataReader dataReader, string columnName)
-        => dataReader.IsWithValue(columnName)
-            ? Convert.ToUInt64(dataReader[columnName].ToString())
+        => DataValueConverter.TryRead(dataReader, columnName, out var value)
+            ? DataValueConverter.ToUInt64(value, columnName)
             : 0;
 
         /// <summary>
@@ -167,11 +192,13 @@ namespace RzR.Extensions.Domain.Data.DataReader
         /// </summary>
         /// <param name="dataReader">Data reader</param>
         /// <param name="columnName">Column name</param>
-        /// <returns></returns>
-        /// <remarks></remarks>
+        /// <returns>The column value as ulong, or null when the value is DBNull, null, empty or whitespace.</returns>
+        /// <remarks>
+        ///     Converts like <see cref="ToInt16"/>. A missing column throws the data provider's exception.
+        /// </remarks>
         public static ulong? ToNullUInt64(this IDataReader dataReader, string columnName)
-        => dataReader.IsWithValue(columnName)
-            ? Convert.ToUInt64(dataReader[columnName].ToString())
+        => DataValueConverter.TryRead(dataReader, columnName, out var value)
+            ? DataValueConverter.ToUInt64(value, columnName)
             : (ulong?)null;
     }
 }

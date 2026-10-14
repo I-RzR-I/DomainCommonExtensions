@@ -18,6 +18,7 @@
 
 using System;
 using System.Data;
+using RzR.Extensions.Domain.Internal.Data;
 
 // ReSharper disable RedundantCast
 
@@ -35,11 +36,15 @@ namespace RzR.Extensions.Domain.Data.DataReader
         /// </summary>
         /// <param name="dataReader">Data reader</param>
         /// <param name="columnName">Column name</param>
-        /// <returns></returns>
-        /// <remarks></remarks>
+        /// <returns>The column value as Guid, or Guid.Empty when the value is DBNull, null, empty or whitespace.</returns>
+        /// <remarks>
+        ///     A missing column throws the data provider's exception. A typed Guid is returned as is; other
+        ///     values are parsed from their text. Malformed values (including byte arrays) throw
+        ///     <see cref="FormatException"/>.
+        /// </remarks>
         public static Guid ToGuid(this IDataReader dataReader, string columnName)
-            => dataReader.IsWithValue(columnName)
-                ? Guid.Parse(dataReader[columnName].ToString())
+            => DataValueConverter.TryRead(dataReader, columnName, out var value)
+                ? DataValueConverter.ToGuid(value, columnName)
                 : Guid.Empty;
 
         /// <summary>
@@ -47,11 +52,13 @@ namespace RzR.Extensions.Domain.Data.DataReader
         /// </summary>
         /// <param name="dataReader">Data reader</param>
         /// <param name="columnName">Column name</param>
-        /// <returns></returns>
-        /// <remarks></remarks>
+        /// <returns>The column value as Guid, or null when the value is DBNull, null, empty or whitespace.</returns>
+        /// <remarks>
+        ///     Converts like <see cref="ToGuid"/>. A missing column throws the data provider's exception.
+        /// </remarks>
         public static Guid? ToNullGuid(this IDataReader dataReader, string columnName)
-            => dataReader.IsWithValue(columnName)
-                ? Guid.Parse(dataReader[columnName].ToString())
+            => DataValueConverter.TryRead(dataReader, columnName, out var value)
+                ? DataValueConverter.ToGuid(value, columnName)
                 : (Guid?)null;
     }
 }

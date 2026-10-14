@@ -17,6 +17,7 @@
 #region U S A G E S
 
 using System.Data;
+using RzR.Extensions.Domain.Internal.Data;
 
 // ReSharper disable RedundantCast
 
@@ -34,22 +35,28 @@ namespace RzR.Extensions.Domain.Data.DataReader
         /// </summary>
         /// <param name="dataReader">Data reader</param>
         /// <param name="columnName">Column name</param>
-        /// <returns></returns>
-        /// <remarks></remarks>
+        /// <returns>The column value as bool, or false when the value is DBNull, null, empty or whitespace.</returns>
+        /// <remarks>
+        ///     A missing column throws the data provider's exception. A typed bool is returned as is; numbers
+        ///     map 0 to false and any other value to true; the strings "1", "0", "true" and "false" are accepted
+        ///     (case-insensitive, trimmed). Any other value throws <see cref="System.FormatException"/>.
+        /// </remarks>
         public static bool ToBool(this IDataReader dataReader, string columnName)
-            => dataReader.IsWithValue(columnName)
-               && bool.Parse(dataReader[columnName].ToString());
+            => DataValueConverter.TryRead(dataReader, columnName, out var value)
+               && DataValueConverter.ToBoolean(value, columnName);
 
         /// <summary>
         ///     Convert to nullable bool from DataReader
         /// </summary>
         /// <param name="dataReader">Data reader</param>
         /// <param name="columnName">Column name</param>
-        /// <returns></returns>
-        /// <remarks></remarks>
+        /// <returns>The column value as bool, or null when the value is DBNull, null, empty or whitespace.</returns>
+        /// <remarks>
+        ///     Converts like <see cref="ToBool"/>. A missing column throws the data provider's exception.
+        /// </remarks>
         public static bool? ToNullBool(this IDataReader dataReader, string columnName)
-            => dataReader.IsWithValue(columnName)
-                ? bool.Parse(dataReader[columnName].ToString())
+            => DataValueConverter.TryRead(dataReader, columnName, out var value)
+                ? DataValueConverter.ToBoolean(value, columnName)
                 : (bool?)null;
     }
 }
