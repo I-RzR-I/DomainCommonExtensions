@@ -101,9 +101,9 @@ namespace DataTypeTests.DataTests
 
         [DataRow("a", "a", "a")]
         [DataRow("a", "g", "a")]
-        //[DataRow("a", null, "a")]
-        //[DataRow(null, "r", null)]
-        //[DataRow(null, null, null)]
+        [DataRow("a", null, "a")]
+        [DataRow(null, "r", null)]
+        [DataRow(null, null, null)]
         [TestMethod]
         public void IfEquals_string_Test(string sourceValue, string checkValue, string exceptedResult)
         {
@@ -190,9 +190,9 @@ namespace DataTypeTests.DataTests
 
         [DataRow("a", "a", "a")]
         [DataRow("a", "g", "a")]
-        //[DataRow("a", null, "a")]
-        //[DataRow(null, "r", null)]
-        //[DataRow(null, null, null)]
+        [DataRow("a", null, "a")]
+        [DataRow(null, "r", null)]
+        [DataRow(null, null, null)]
         [TestMethod]
         public void IfNotEquals_string_Test(string sourceValue, string checkValue, string exceptedResult)
         {

@@ -16,6 +16,7 @@
 
 #region U S A G E S
 
+using DataTypeTests.TestHelpers;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using RzR.Extensions.Domain.Async;
 using RzR.Extensions.Domain.Cryptography;
@@ -69,10 +70,10 @@ namespace DataTypeTests.DataTests
             Assert.AreEqual(11, flag1);
 
             var flag2 = initValue.SetFlag(flagValue, false);
-            var isSetFlag2 = flag1.IsFlagSet(flagValue);
+            var isSetFlag2 = flag2.IsFlagSet(flagValue);
 
             Assert.IsNotNull(flag2);
-            Assert.IsTrue(isSetFlag2);
+            Assert.IsFalse(isSetFlag2);
             Assert.AreEqual(8, flag2);
         }
 
@@ -89,10 +90,10 @@ namespace DataTypeTests.DataTests
             Assert.AreEqual(11, flag1);
 
             var flag2 = initValue.SetFlag(flagValue, false);
-            var isSetFlag2 = flag1.IsFlagSet(flagValue);
+            var isSetFlag2 = flag2.IsFlagSet(flagValue);
 
             Assert.IsNotNull(flag2);
-            Assert.IsTrue(isSetFlag2);
+            Assert.IsFalse(isSetFlag2);
             Assert.AreEqual(8, flag2);
         }
 
@@ -106,10 +107,13 @@ namespace DataTypeTests.DataTests
         [TestMethod]
         public void AsReadableFileSize_Test(long size, string excepted)
         {
-            var result = size.AsReadableFileSize();
+            using (new CultureScopeTestHelper(""))
+            {
+                var result = size.AsReadableFileSize();
 
-            Assert.IsNotNull(result);
-            Assert.AreEqual(excepted, result);
+                Assert.IsNotNull(result);
+                Assert.AreEqual(excepted, result);
+            }
         }
 
         [DataRow(1, 0, 2)]
