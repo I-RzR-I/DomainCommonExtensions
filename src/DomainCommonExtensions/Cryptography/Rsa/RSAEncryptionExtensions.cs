@@ -32,14 +32,11 @@ using RzR.Extensions.Domain.Validation;
 
 namespace RzR.Extensions.Domain.Cryptography.Rsa
 {
-    /// -------------------------------------------------------------------------------------------------
     /// <content>
     ///     A crypto extensions.
     /// </content>
-    /// =================================================================================================
     public static partial class CryptoExtensions
     {
-        /// -------------------------------------------------------------------------------------------------
         /// <summary>
         ///     Encrypt a string using the supplied key. Encoding is done using RSA encryption.
         /// </summary>
@@ -51,7 +48,6 @@ namespace RzR.Extensions.Domain.Cryptography.Rsa
         /// <returns>
         ///     A string representing a byte array separated by a minus sign.
         /// </returns>
-        /// =================================================================================================
         public static string EncryptWithRSA(this string stringToEncrypt, string key)
         {
             stringToEncrypt.ThrowArgIfNullOrEmpty("An empty string value cannot be encrypted.");
@@ -65,7 +61,6 @@ namespace RzR.Extensions.Domain.Cryptography.Rsa
             return BitConverter.ToString(bytes);
         }
 
-        /// -------------------------------------------------------------------------------------------------
         /// <summary>
         ///     Decrypt a string using the supplied key. Decoding is done using RSA encryption.
         /// </summary>
@@ -77,7 +72,6 @@ namespace RzR.Extensions.Domain.Cryptography.Rsa
         /// <returns>
         ///     The decrypted string or null if decryption failed.
         /// </returns>
-        /// =================================================================================================
         public static string DecryptWithRSA(this string stringToDecrypt, string key)
         {
             string result = null;
@@ -104,7 +98,6 @@ namespace RzR.Extensions.Domain.Cryptography.Rsa
             return result;
         }
 
-        /// -------------------------------------------------------------------------------------------------
         /// <summary>
         ///     Encrypt a string using the supplied key. Encoding is done using RSA encryption.
         /// </summary>
@@ -120,7 +113,6 @@ namespace RzR.Extensions.Domain.Cryptography.Rsa
         /// <returns>
         ///     The encrypted string or null if decryption failed.
         /// </returns>
-        /// =================================================================================================
         public static string EncryptRSAXmlKey(this string stringToEncrypt, int keySize, string publicKey, bool isKeyBase64Encoded = false)
         {
             stringToEncrypt.ThrowArgIfNullOrEmpty("An empty string value cannot be encrypted.");
@@ -134,7 +126,6 @@ namespace RzR.Extensions.Domain.Cryptography.Rsa
             return encryptedData.ToBase64String();
         }
 
-        /// -------------------------------------------------------------------------------------------------
         /// <summary>
         ///     Decrypt a string using the supplied key. Decoding is done using RSA encryption.
         /// </summary>
@@ -150,7 +141,6 @@ namespace RzR.Extensions.Domain.Cryptography.Rsa
         /// <returns>
         ///     The decrypted string or null if decryption failed.
         /// </returns>
-        /// =================================================================================================
         public static string DecryptRSAXmlKey(this string stringToDecrypt, int keySize, string privateKey, bool isKeyBase64Encoded = false)
         {
             stringToDecrypt.ThrowArgIfNullOrEmpty("An empty string value cannot be decrypted.");
@@ -170,7 +160,6 @@ namespace RzR.Extensions.Domain.Cryptography.Rsa
             }
         }
 
-        /// -------------------------------------------------------------------------------------------------
         /// <summary>
         ///     A string extension method that encrypts a rsa certificate.
         /// </summary>
@@ -179,7 +168,6 @@ namespace RzR.Extensions.Domain.Cryptography.Rsa
         /// <returns>
         ///     The encrypted string or null if decryption failed.
         /// </returns>
-        /// =================================================================================================
         public static string EncryptRSACertificate(this string stringToEncrypt, RSACryptoServiceProvider publicKey)
         {
             try
@@ -199,7 +187,6 @@ namespace RzR.Extensions.Domain.Cryptography.Rsa
 
         }
 
-        /// -------------------------------------------------------------------------------------------------
         /// <summary>
         ///     A string extension method that decrypt rsa certificate.
         /// </summary>
@@ -208,7 +195,6 @@ namespace RzR.Extensions.Domain.Cryptography.Rsa
         /// <returns>
         ///     The decrypted string or null if decryption failed.
         /// </returns>
-        /// =================================================================================================
         public static string DecryptRSACertificate(this string stringToDecrypt, RSACryptoServiceProvider privateKey)
         {
             try
@@ -227,16 +213,20 @@ namespace RzR.Extensions.Domain.Cryptography.Rsa
             }
         }
 
-        /// -------------------------------------------------------------------------------------------------
         /// <summary>
         ///     A string extension method that encrypts a rsa certificate.
         /// </summary>
+        /// <remarks>
+        ///     Padding is PKCS#1 v1.5 over UTF-16LE, interoperable with the RSACryptoServiceProvider
+        ///     overload. On netstandard2.0/2.1 the key is read with GetRSAPublicKey, so any RSA
+        ///     implementation works. On net40/net45 the public key must be an RSACryptoServiceProvider,
+        ///     otherwise null is returned.
+        /// </remarks>
         /// <param name="stringToEncrypt">String that must be encrypted.</param>
         /// <param name="certificate">The certificate.</param>
         /// <returns>
-        ///     The encrypted string or null if decryption failed.
+        ///     The encrypted string or null if encryption failed.
         /// </returns>
-        /// =================================================================================================
         public static string EncryptRSACertificate(this string stringToEncrypt, X509Certificate2 certificate)
         {
             try
@@ -245,8 +235,16 @@ namespace RzR.Extensions.Domain.Cryptography.Rsa
                     return null;
 
                 var byteData = Encoding.Unicode.GetBytes(stringToEncrypt);
+#if NETSTANDARD2_0_OR_GREATER
+                var rsaKey = certificate.GetRSAPublicKey();
+                if (rsaKey.IsNull())
+                    return null;
+
+                var encrypted = rsaKey.Encrypt(byteData, RSAEncryptionPadding.Pkcs1);
+#else
                 var rsaKeyProvider = (RSACryptoServiceProvider)certificate.PublicKey.Key;
                 var encrypted = rsaKeyProvider.Encrypt(byteData, false);
+#endif
 
                 return Convert.ToBase64String(encrypted);
             }
@@ -257,16 +255,20 @@ namespace RzR.Extensions.Domain.Cryptography.Rsa
 
         }
 
-        /// -------------------------------------------------------------------------------------------------
         /// <summary>
         ///     A string extension method that decrypt rsa certificate.
         /// </summary>
+        /// <remarks>
+        ///     Expects PKCS#1 v1.5 ciphertext over UTF-16LE, as produced by either EncryptRSACertificate
+        ///     overload. On netstandard2.0/2.1 the key is read with GetRSAPrivateKey, so any RSA
+        ///     implementation works. On net40/net45 the private key must be an RSACryptoServiceProvider
+        ///     (CNG/KSP-backed private keys are not supported there), otherwise null is returned. 
+        /// </remarks>
         /// <param name="stringToDecrypt">String that must be decrypted.</param>
         /// <param name="certificate">The certificate.</param>
         /// <returns>
         ///     The decrypted string or null if decryption failed.
         /// </returns>
-        /// =================================================================================================
         public static string DecryptRSACertificate(this string stringToDecrypt, X509Certificate2 certificate)
         {
             try
@@ -275,8 +277,16 @@ namespace RzR.Extensions.Domain.Cryptography.Rsa
                     return null;
 
                 var encrypted = Convert.FromBase64String(stringToDecrypt);
+#if NETSTANDARD2_0_OR_GREATER
+                var rsaKey = certificate.GetRSAPrivateKey();
+                if (rsaKey.IsNull())
+                    return null;
+
+                var decrypted = rsaKey.Decrypt(encrypted, RSAEncryptionPadding.Pkcs1);
+#else
                 var rsaKeyProvider = (RSACryptoServiceProvider)certificate.PrivateKey;
                 var decrypted = rsaKeyProvider.Decrypt(encrypted, false);
+#endif
 
                 return Encoding.Unicode.GetString(decrypted);
             }
