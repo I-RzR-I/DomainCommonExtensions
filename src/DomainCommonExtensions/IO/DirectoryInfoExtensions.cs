@@ -19,48 +19,40 @@
 using System;
 using System.IO;
 using System.Linq;
-using RzR.Extensions.Domain.Collections;
 using RzR.Extensions.Domain.Primitives;
 
 #endregion
 
 namespace RzR.Extensions.Domain.IO
 {
-    /// -------------------------------------------------------------------------------------------------
     /// <summary>
     ///     A directory information extensions.
     /// </summary>
-    /// =================================================================================================
     public static class DirectoryInfoExtensions
     {
-        /// -------------------------------------------------------------------------------------------------
         /// <summary>
         ///     A DirectoryInfo extension method that gets matching files.
         /// </summary>
         /// <param name="directory">Pathname of the directory.</param>
-        /// <param name="searchPatterns">The search patterns. Multiple search pattern separated by ';'.</param>
+        /// <param name="searchPatterns">
+        ///     The search patterns. Multiple search pattern separated by ';'.
+        /// </param>
         /// <param name="searchOption">The search option.</param>
         /// <returns>
         ///     An array of file information.
         /// </returns>
-        /// =================================================================================================
         public static FileInfo[] GetMatchingFiles(this DirectoryInfo directory, string searchPatterns,
             SearchOption searchOption)
         {
-            var searchPatternArray = searchPatterns.Split(';');
-            var matches = new FileInfo[] { };
-            foreach (var searchPattern in searchPatternArray)
-                matches.AddRange(directory.GetFiles(searchPattern, searchOption));
-
-            return matches;
+            return searchPatterns.Split(new[] { ';' }, StringSplitOptions.RemoveEmptyEntries)
+                .SelectMany(searchPattern => directory.GetFiles(searchPattern, searchOption))
+                .ToArray();
         }
 
-        /// -------------------------------------------------------------------------------------------------
         /// <summary>
         ///     A System.IO.DirectoryInfo extension method that empties the given directory.
         /// </summary>
         /// <param name="directory">Pathname of the directory.</param>
-        /// =================================================================================================
         public static void Empty(this DirectoryInfo directory)
         {
             foreach (var file in directory.GetFiles()) 
@@ -70,7 +62,6 @@ namespace RzR.Extensions.Domain.IO
                 subDirectory.Delete(true);
         }
 
-        /// -------------------------------------------------------------------------------------------------
         /// <summary>
         ///     Checks for the given folder in a directory path and returns the parent of that folder.
         /// </summary>
@@ -79,7 +70,6 @@ namespace RzR.Extensions.Domain.IO
         /// <returns>
         ///     The parent of.
         /// </returns>
-        /// =================================================================================================
         public static DirectoryInfo GetParentOf(this DirectoryInfo dir, string folder)
         {
             dir = dir.Where(d => d.Name.Equals(folder, StringComparison.OrdinalIgnoreCase));
@@ -87,7 +77,6 @@ namespace RzR.Extensions.Domain.IO
             return dir.IsNotNull() ? dir.Parent : null;
         }
 
-        /// -------------------------------------------------------------------------------------------------
         /// <summary>
         ///     Checks parent directories against the given predicate and returns the first match.
         /// </summary>
@@ -96,7 +85,6 @@ namespace RzR.Extensions.Domain.IO
         /// <returns>
         ///     A DirectoryInfo.
         /// </returns>
-        /// =================================================================================================
         public static DirectoryInfo Where(this DirectoryInfo dir, Func<DirectoryInfo, bool> test)
         {
             while (dir.IsNotNull() && !test(dir))
@@ -105,7 +93,6 @@ namespace RzR.Extensions.Domain.IO
             return dir;
         }
 
-        /// -------------------------------------------------------------------------------------------------
         /// <summary>
         ///     A DirectoryInfo extension method that query if 'dir' has directories.
         /// </summary>
@@ -113,13 +100,11 @@ namespace RzR.Extensions.Domain.IO
         /// <returns>
         ///     True if directories, false if not.
         /// </returns>
-        /// =================================================================================================
         public static bool HasDirectories(this DirectoryInfo dir)
         {
             return dir.Exists && dir.EnumerateDirectories().Any();
         }
 
-        /// -------------------------------------------------------------------------------------------------
         /// <summary>
         ///     A DirectoryInfo extension method that query if 'dir' has files.
         /// </summary>
@@ -127,13 +112,11 @@ namespace RzR.Extensions.Domain.IO
         /// <returns>
         ///     True if files, false if not.
         /// </returns>
-        /// =================================================================================================
         public static bool HasFiles(this DirectoryInfo dir)
         {
             return dir.Exists && dir.EnumerateFiles().Any();
         }
 
-        /// -------------------------------------------------------------------------------------------------
         /// <summary>
         ///     A DirectoryInfo extension method that query if 'DirectoryInfo' is empty.
         /// </summary>
@@ -141,7 +124,6 @@ namespace RzR.Extensions.Domain.IO
         /// <returns>
         ///     True if empty, false if not.
         /// </returns>
-        /// =================================================================================================
         public static bool IsEmpty(this DirectoryInfo dir)
         {
             return dir.HasFiles().IsFalse() && dir.HasDirectories().IsFalse();
