@@ -22,7 +22,8 @@ using System;
 #endregion
 
 #if !NETCOREAPP3_0_OR_GREATER
-namespace RzR.Extensions.Domain.Internal.Attributes
+// ReSharper disable once CheckNamespace
+namespace System.Runtime.CompilerServices
 {
     /// <summary>
     ///     Internal polyfill of the compiler attribute that captures the source text of the argument

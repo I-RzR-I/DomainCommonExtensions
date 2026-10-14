@@ -20,7 +20,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using RzR.Extensions.Domain.Internal.Attributes;
+using System.Runtime.CompilerServices;
 using RzR.Extensions.Domain.Primitives;
 using RzR.Extensions.Domain.Text;
 

@@ -43,158 +43,135 @@ using RzR.Extensions.Domain.Models.Internal;
 
 namespace RzR.Extensions.Domain.Internal.AnonymousSelect.Factory
 {
-    /// -------------------------------------------------------------------------------------------------
     /// <summary>
     ///     The anonymous class factory.
     /// </summary>
-    /// =================================================================================================
     [CodeSource(SourceUrl = "https://stackoverflow.com/questions/29413942/c-sharp-anonymous-object-with-properties-from-dictionary", Version = "1.0", Comment = "Access the source URL from more info.")]
     [CodeSource(SourceUrl = "https://stackoverflow.com/questions/606104/how-to-create-linq-expression-tree-to-select-an-anonymous-type", Version = "1.0", Comment = "Access the source URL from more info.")]
     internal static partial class AnonymousClassFactory
     {
-        /// -------------------------------------------------------------------------------------------------
+        /// <summary>
+        ///     (Immutable)
+        ///     The maximum number of fields (properties) of one generated type.
+        /// </summary>
+        internal const int MaxFieldCount = 256;
+
+        /// <summary>
+        ///     (Immutable)
+        ///     The maximum number of distinct types generated per process.
+        /// </summary>
+        ///
+        /// <remarks>
+        ///     Emitted types are never unloaded, so the cache is a hard cap rather than an evicting
+        ///     cache: evicting an entry would only emit the same type again and grow memory further.
+        /// </remarks>
+        internal const int MaxGeneratedTypeCount = 4096;
+
         /// <summary>
         ///     (Immutable) the current assembly version.
         /// </summary>
-        /// =================================================================================================
         private static readonly string CurrentAssemblyVersion
             = ResolveAssemblyVersion();
 
-        /// -------------------------------------------------------------------------------------------------
         /// <summary>
         ///     (Immutable) name of the anonymous assembly.
         /// </summary>
-        /// =================================================================================================
         private static readonly string AnonymousAssemblyName
             = $"DomainCommonExtensions.Helpers.Factory.Internal.AnonymousClassFactory, Version={CurrentAssemblyVersion}";
 
-        /// -------------------------------------------------------------------------------------------------
         /// <summary>
         ///     (Immutable) name of the anonymous module.
         /// </summary>
-        /// =================================================================================================
         private const string AnonymousModuleName
             = "DomainCommonExtensions.Helpers.Factory.Internal.AnonymousClassFactory";
 
-        /// -------------------------------------------------------------------------------------------------
         /// <summary>
         ///     (Immutable) the compiler generated attribute builder.
         /// </summary>
-        /// =================================================================================================
         private static readonly CustomAttributeBuilder CompilerGeneratedAttributeBuilder
             = new CustomAttributeBuilder(typeof(CompilerGeneratedAttribute).GetConstructor(Type.EmptyTypes)!, new object[0]);
 
-        /// -------------------------------------------------------------------------------------------------
         /// <summary>
         ///     (Immutable) the debugger hidden attribute builder.
         /// </summary>
-        /// =================================================================================================
         private static readonly CustomAttributeBuilder DebuggerHiddenAttributeBuilder
             = new CustomAttributeBuilder(typeof(DebuggerHiddenAttribute).GetConstructor(Type.EmptyTypes)!, new object[0]);
 
-        /// -------------------------------------------------------------------------------------------------
         /// <summary>
         ///     (Immutable) the debugger browsable attribute builder.
         /// </summary>
-        /// =================================================================================================
         private static readonly CustomAttributeBuilder DebuggerBrowsableAttributeBuilder
             = new CustomAttributeBuilder(typeof(DebuggerBrowsableAttribute).GetConstructor(new[] { typeof(DebuggerBrowsableState) })!, new object[] { DebuggerBrowsableState.Never });
 
-        /// -------------------------------------------------------------------------------------------------
         /// <summary>
         ///     (Immutable) the object constructor.
         /// </summary>
-        /// =================================================================================================
         private static readonly ConstructorInfo ObjectCtor
             = typeof(object).GetConstructor(Type.EmptyTypes)!;
 
-        /// -------------------------------------------------------------------------------------------------
         /// <summary>
         ///     (Immutable) the string builder constructor.
         /// </summary>
-        /// =================================================================================================
         private static readonly ConstructorInfo StringBuilderCtor
             = typeof(StringBuilder).GetConstructor(Type.EmptyTypes)!;
 
-        /// -------------------------------------------------------------------------------------------------
         /// <summary>
         ///     (Immutable) the equality comparer.
         /// </summary>
-        /// =================================================================================================
         private static readonly Type EqualityComparer = typeof(EqualityComparer<>);
 
-        /// -------------------------------------------------------------------------------------------------
         /// <summary>
         ///     (Immutable) list of types of the generated.
         /// </summary>
-        /// =================================================================================================
         private static readonly ConcurrentDictionary<string, Type> GeneratedTypes = new ConcurrentDictionary<string, Type>();
 
-        /// -------------------------------------------------------------------------------------------------
         /// <summary>
         ///     (Immutable) the module builder.
         /// </summary>
-        /// =================================================================================================
         private static readonly ModuleBuilder ModuleBuilder;
 
-        /// -------------------------------------------------------------------------------------------------
-        /// <summary>
-        ///     Zero-based index of the.
-        /// </summary>
-        /// =================================================================================================
         private static int _index = -1;
 
 #if UAP10_0 || NETSTANDARD
-        /// -------------------------------------------------------------------------------------------------
+
         /// <summary>
         ///     (Immutable) the object to string.
         /// </summary>
-        /// =================================================================================================
         private static readonly MethodInfo ObjectToString = typeof(object).GetMethod(nameof(ToString), BindingFlags.Instance | BindingFlags.Public)!;
 #else
-        /// -------------------------------------------------------------------------------------------------
+
         /// <summary>
         ///     (Immutable) the object to string.
         /// </summary>
-        /// =================================================================================================
         private static readonly MethodInfo ObjectToString = typeof(object).GetMethod(nameof(ToString), BindingFlags.Instance | BindingFlags.Public, null, Type.EmptyTypes, null)!;
 #endif
 
 #if UAP10_0 || NETSTANDARD
-        /// -------------------------------------------------------------------------------------------------
+
         /// <summary>
         ///     (Immutable) the string builder append string.
         /// </summary>
-        /// =================================================================================================
         private static readonly MethodInfo StringBuilderAppendString = typeof(StringBuilder).GetMethod(nameof(StringBuilder.Append), new[] { typeof(string) })!;
 
-        /// -------------------------------------------------------------------------------------------------
         /// <summary>
         ///     (Immutable) the string builder append object.
         /// </summary>
-        /// =================================================================================================
         private static readonly MethodInfo StringBuilderAppendObject = typeof(StringBuilder).GetMethod(nameof(StringBuilder.Append), new[] { typeof(object) })!;
 #else
-        /// -------------------------------------------------------------------------------------------------
         /// <summary>
         ///     (Immutable) the string builder append string.
         /// </summary>
-        /// =================================================================================================
         private static readonly MethodInfo StringBuilderAppendString = typeof(StringBuilder).GetMethod(nameof(StringBuilder.Append), BindingFlags.Instance | BindingFlags.Public, null, new[] { typeof(string) }, null)!;
 
-        /// -------------------------------------------------------------------------------------------------
         /// <summary>
         ///     (Immutable) the string builder append object.
         /// </summary>
-        /// =================================================================================================
         private static readonly MethodInfo StringBuilderAppendObject = typeof(StringBuilder).GetMethod(nameof(StringBuilder.Append), BindingFlags.Instance | BindingFlags.Public, null, new[] { typeof(object) }, null)!;
 #endif
 
-        /// -------------------------------------------------------------------------------------------------
         /// <summary>
         ///     Initializes static members of the <see cref="AnonymousClassFactory"/> class.
         /// </summary>
-        /// =================================================================================================
         static AnonymousClassFactory()
         {
             var assemblyName = new AssemblyName(AnonymousAssemblyName);
@@ -211,57 +188,127 @@ namespace RzR.Extensions.Domain.Internal.AnonymousSelect.Factory
             ModuleBuilder = assemblyBuilder.DefineDynamicModule(AnonymousModuleName);
         }
 
-        /// -------------------------------------------------------------------------------------------------
         /// <summary>
         ///     Creates a type.
         /// </summary>
+        /// <exception cref="ArgumentException">
+        ///     Thrown when there are more than <see cref="MaxFieldCount"/> properties.
+        /// </exception>
+        /// <exception cref="InvalidOperationException">
+        ///     Thrown when a new type is needed and <see cref="MaxGeneratedTypeCount"/> types already
+        ///     exist.
+        /// </exception>
         /// <param name="properties">The properties.</param>
         /// <param name="createParameterCtor">(Optional) True to create parameter constructor.</param>
         /// <returns>
         ///     The new type.
         /// </returns>
-        /// =================================================================================================
         public static Type CreateType(IEnumerable<PropertyInfo> properties, bool createParameterCtor = true)
         {
             var fields = properties.Select(x => new AnonymousFieldGeneratorModel(x.PropertyType, x.Name)).ToArray();
-            var key = GenerateKey(fields, createParameterCtor);
 
-            // ReSharper disable once InconsistentlySynchronizedField
-            if (!GeneratedTypes.TryGetValue(key, out var type))
-            // We create only a single class at a time, through this lock.
-            // Note that this is a variant of the double-checked locking.
-            // It is safe because we are using a thread safe class.
-            {
-                lock (GeneratedTypes)
-                {
-                    return GeneratedTypes.GetOrAdd(key, _ => EmitType(fields, createParameterCtor));
-                }
-            }
-
-            return type;
+            return GetOrEmitType(fields, createParameterCtor, nameof(properties));
         }
 
+        /// <summary>
+        ///     Creates a type.
+        /// </summary>
+        /// <exception cref="ArgumentException">
+        ///     Thrown when there are more than <see cref="MaxFieldCount"/> fields.
+        /// </exception>
+        /// <exception cref="InvalidOperationException">
+        ///     Thrown when a new type is needed and <see cref="MaxGeneratedTypeCount"/> types already
+        ///     exist.
+        /// </exception>
+        /// <param name="sourceTypes">The field types.</param>
+        /// <param name="sourceNames">The field names, in the same order as the types.</param>
+        /// <param name="createParameterCtor">(Optional) True to create parameter constructor.</param>
+        /// <returns>
+        ///     The new type.
+        /// </returns>
         public static Type CreateType(Type[] sourceTypes, string[] sourceNames, bool createParameterCtor = true)
         {
             var fields = sourceNames.Select((t, i) => new AnonymousFieldGeneratorModel(sourceTypes[i], t)).ToArray();
+
+            return GetOrEmitType(fields, createParameterCtor, nameof(sourceNames));
+        }
+
+        /// <summary>
+        ///     Gets the cached type for the fields, or emits and caches a new one.
+        /// </summary>
+        /// <remarks>
+        ///     The key keeps the field order, because the order defines the generated properties and
+        ///     therefore the serialized output. At most <see cref="MaxGeneratedTypeCount"/> types are
+        ///     ever emitted.
+        /// </remarks>
+        /// <exception cref="ArgumentException">
+        ///     Thrown when one or more arguments have unsupported or illegal values.
+        /// </exception>
+        /// <exception cref="InvalidOperationException">
+        ///     Thrown when the requested operation is invalid.
+        /// </exception>
+        /// <param name="fields">The fields.</param>
+        /// <param name="createParameterCtor">True to create parameter constructor.</param>
+        /// <param name="paramName">The parameter name reported when there are too many fields.</param>
+        /// <returns>
+        ///     The type.
+        /// </returns>
+        private static Type GetOrEmitType(AnonymousFieldGeneratorModel[] fields, bool createParameterCtor,
+            string paramName)
+        {
+            if (fields.Length > MaxFieldCount)
+                throw new ArgumentException($"A generated type supports at most {MaxFieldCount} fields.", paramName);
+
+            // Validated before DefineType, so an unsupported type never leaves an unfinished, uncounted TypeBuilder.
+            var unsupportedField = fields.FirstOrDefault(f => !IsSupportedFieldType(f.FieldType));
+            if (unsupportedField.IsNotNull())
+                throw new ArgumentException(
+                    $"The field '{unsupportedField!.FieldName}' has a type that a generated type cannot hold.", paramName);
+
             var key = GenerateKey(fields, createParameterCtor);
 
             // ReSharper disable once InconsistentlySynchronizedField
-            if (!GeneratedTypes.TryGetValue(key, out var type))
-            // We create only a single class at a time, through this lock.
-            // Note that this is a variant of the double-checked locking.
-            // It is safe because we are using a thread safe class.
-            {
-                lock (GeneratedTypes)
-                {
-                    return GeneratedTypes.GetOrAdd(key, _ => EmitType(fields, createParameterCtor));
-                }
-            }
+            if (GeneratedTypes.TryGetValue(key, out var type))
+                return type;
 
-            return type;
+            // Only one type is emitted at a time, so the count check and the add cannot race.
+            lock (GeneratedTypes)
+            {
+                if (GeneratedTypes.TryGetValue(key, out type))
+                    return type;
+
+                if (GeneratedTypes.Count >= MaxGeneratedTypeCount)
+                    throw new InvalidOperationException(
+                        $"The limit of {MaxGeneratedTypeCount} generated anonymous types has been reached.");
+
+                type = EmitType(fields, createParameterCtor);
+                GeneratedTypes[key] = type;
+
+                return type;
+            }
         }
 
-        /// -------------------------------------------------------------------------------------------------
+        /// <summary>
+        ///     Determines whether a type can be the type of a field of a generated type.
+        /// </summary>
+        /// <remarks>
+        ///     By-ref, pointer and byref-like (ref struct) types cannot be stored in a class field.
+        ///     Byref-like types are detected by their IsByRefLikeAttribute, because Type.IsByRefLike
+        ///     does not exist on every target framework.
+        /// </remarks>
+        /// <param name="fieldType">The field type.</param>
+        /// <returns>
+        ///     True if the type is supported; otherwise false.
+        /// </returns>
+        internal static bool IsSupportedFieldType(Type fieldType)
+        {
+            if (fieldType.IsByRef || fieldType.IsPointer)
+                return false;
+
+            return !fieldType.IsValueType || !fieldType.GetCustomAttributes(false)
+                .Any(a => a.GetType().FullName == "System.Runtime.CompilerServices.IsByRefLikeAttribute");
+        }
+
         /// <summary>
         ///     Emit type.
         /// </summary>
@@ -270,7 +317,6 @@ namespace RzR.Extensions.Domain.Internal.AnonymousSelect.Factory
         /// <returns>
         ///     A Type.
         /// </returns>
-        /// =================================================================================================
         [CodeSource(SourceUrl = "https://stackoverflow.com/questions/29413942/c-sharp-anonymous-object-with-properties-from-dictionary", Version = "1.0")]
         private static Type EmitType(AnonymousFieldGeneratorModel[] fields, bool createParameterCtor)
         {
@@ -379,33 +425,36 @@ namespace RzR.Extensions.Domain.Internal.AnonymousSelect.Factory
 
         }
 
-        /// -------------------------------------------------------------------------------------------------
         /// <summary>
         ///     Generates a key.
         /// </summary>
+        /// <remarks>
+        ///     Each name is length-prefixed and each type is assembly-qualified, so names that contain
+        ///     the separators, or same-named types from different assemblies, never share a key.
+        /// </remarks>
         /// <param name="dynamicProperties">The dynamic properties.</param>
         /// <param name="createParameterCtor">True to create parameter constructor.</param>
         /// <returns>
         ///     The key.
         /// </returns>
-        /// =================================================================================================
         private static string GenerateKey(IEnumerable<AnonymousFieldGeneratorModel> dynamicProperties, bool createParameterCtor)
-            => $"{string.Join("|", dynamicProperties.Select(p => p.FieldName.EscapeBackSlash() + "~" + p.FieldType).ToArray())}_{(createParameterCtor ? "c" : string.Empty)}";
+            => $"{string.Join("|", dynamicProperties.Select(p => p.FieldName.Length + ":" + p.FieldName + "~" + (p.FieldType.AssemblyQualifiedName ?? p.FieldType.ToString())).ToArray())}_{(createParameterCtor ? "c" : string.Empty)}";
 
-        /// -------------------------------------------------------------------------------------------------
         /// <summary>
-        ///     Resolves the version of the current assembly from its metadata, without reading the assembly file.
+        ///     Resolves the version of the current assembly from its metadata, without reading the
+        ///     assembly file.
         /// </summary>
         /// <remarks>
-        ///     The version is used in the dynamic assembly name, so it must always be a valid <see cref="Version"/>.
-        ///     The assembly location is not used because it is empty when the assembly is loaded from a byte array
-        ///     or bundled into a single-file application. This method never throws, because it runs during type
-        ///     initialization, where any exception would permanently break the factory.
+        ///     The version is used in the dynamic assembly name, so it must always be a valid <see cref="Version"/>
+        ///     . The assembly location is not used because it is empty when the assembly is loaded from
+        ///     a byte array or bundled into a single-file application. This method never throws, because
+        ///     it runs during type initialization, where any exception would permanently break the
+        ///     factory.
         /// </remarks>
         /// <returns>
-        ///     The assembly file version when it is a valid version; otherwise the assembly version; otherwise "1.0.0.0".
+        ///     The assembly file version when it is a valid version; otherwise the assembly version;
+        ///     otherwise "1.0.0.0".
         /// </returns>
-        /// =================================================================================================
         private static string ResolveAssemblyVersion()
         {
             // Initial verison

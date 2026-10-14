@@ -19,7 +19,7 @@
 
 using System;
 using System.Globalization;
-using RzR.Extensions.Domain.Internal.Attributes;
+using System.Runtime.CompilerServices;
 
 #endregion
 
