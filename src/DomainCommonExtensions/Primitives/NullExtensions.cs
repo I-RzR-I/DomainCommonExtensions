@@ -43,7 +43,11 @@ namespace RzR.Extensions.Domain.Primitives
         /// <typeparam name="Tk"></typeparam>
         /// <typeparam name="Tv"></typeparam>
         /// <param name="source"></param>
-        /// <returns></returns>
+        /// <returns>true when source equals default(KeyValuePair&lt;Tk, Tv&gt;).</returns>
+        /// <remarks>
+        ///     A real pair whose key and value are both default (for example 0 =&gt; 0) is indistinguishable
+        ///     from default and also returns true. To check whether a key was found use TryGetValue.
+        /// </remarks>
         public static bool IsNull<Tk, Tv>(this KeyValuePair<Tk, Tv> source)
         {
             return source.Equals(default(KeyValuePair<Tk, Tv>));

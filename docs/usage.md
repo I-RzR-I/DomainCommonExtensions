@@ -155,5 +155,5 @@ string id = TimeSeqId.Generate();
 | **Single-process uniqueness** | The `(timestamp, sequence)` pair is unique within one process; `Generate()` is fully thread-safe. |
 | **Distributed uniqueness** | Two replicas hitting the same millisecond + sequence slot collide with probability **1 in 2⁶⁴ ≈ 5 × 10⁻²⁰** via block `[4]`. |
 | **Lexicographic sort order** | IDs sort in generation order by plain string comparison — no parsing required. |
-| **Monotonicity** | Within one process, IDs are strictly non-decreasing. Burst capacity: 9 999 IDs/ms before the generator waits for the next millisecond (lock is released during the wait). |
-| **Integrity** | Block `[5]` is a SHA-256 checksum over blocks `[0]`–`[4]`. Tampering any preceding block changes the checksum. |
+| **Monotonicity** | Within one process, IDs are strictly increasing. Burst capacity: 10 000 IDs/ms (sequence `0000`–`9999`) before the generator waits for the next millisecond (lock is released during the wait). |
+| **Integrity** | Block `[5]` is a SHA-256 checksum over blocks `[0]`–`[4]` that detects accidental corruption (e.g. a mistyped character). It is unkeyed, not a MAC or signature: anyone can recompute it, so it does not protect against deliberate tampering. |

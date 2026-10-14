@@ -17,6 +17,7 @@
 #region U S A G E S
 
 using System.Data;
+using RzR.Extensions.Domain.Internal.Data;
 
 // ReSharper disable RedundantCast
 
@@ -34,11 +35,18 @@ namespace RzR.Extensions.Domain.Data.DataReader
         /// </summary>
         /// <param name="dataReader">Data reader</param>
         /// <param name="columnName">Column name</param>
-        /// <returns></returns>
-        /// <remarks></remarks>
+        /// <returns>
+        ///     The column value as char, or '\0' when the value is DBNull, null, empty or whitespace
+        ///     (a single space also returns '\0').
+        /// </returns>
+        /// <remarks>
+        ///     A missing column throws the data provider's exception. A typed char is returned as is; any
+        ///     other value must have a text of exactly one character, otherwise
+        ///     <see cref="System.FormatException"/> is thrown.
+        /// </remarks>
         public static char ToChar(this IDataReader dataReader, string columnName)
-            => dataReader.IsWithValue(columnName)
-                ? char.Parse(dataReader[columnName].ToString())
+            => DataValueConverter.TryRead(dataReader, columnName, out var value)
+                ? DataValueConverter.ToChar(value, columnName)
                 : char.MinValue;
 
         /// <summary>
@@ -46,11 +54,13 @@ namespace RzR.Extensions.Domain.Data.DataReader
         /// </summary>
         /// <param name="dataReader">Data reader</param>
         /// <param name="columnName">Column name</param>
-        /// <returns></returns>
-        /// <remarks></remarks>
+        /// <returns>The column value as char, or null when the value is DBNull, null, empty or whitespace.</returns>
+        /// <remarks>
+        ///     Converts like <see cref="ToChar"/>. A missing column throws the data provider's exception.
+        /// </remarks>
         public static char? ToNullChar(this IDataReader dataReader, string columnName)
-            => dataReader.IsWithValue(columnName)
-                ? char.Parse(dataReader[columnName].ToString())
+            => DataValueConverter.TryRead(dataReader, columnName, out var value)
+                ? DataValueConverter.ToChar(value, columnName)
                 : (char?)null;
     }
 }

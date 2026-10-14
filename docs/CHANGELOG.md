@@ -1,3 +1,29 @@
+### **v7.1.0.5494** [[RzR](mailto:108324929+I-RzR-I@users.noreply.github.com)] 14-10-2026
+* [640858f] (RzR) -> Auto commit uncommited files
+* [a8450b2] (RzR) -> [#1] - add new tests for existing methods.
+* [3f08ab5] (RzR) -> [#1] - refactor primitive type extensions, refactor exec code and update documentation.
+* [8115bbe] (RzR) -> [#1] - refactor reflection extensions and adapt the documentaiton + refactor code.
+* [ad71a0c] (RzR) -> [#1] - refactor string and regular expression extensions and adapt the documentaiton + refactor code.
+* [29b06ef] (RzR) -> [#1] - refactor linq extensions and adapt the documentaiton.
+* [77b5d53] (RzR) -> [#1] - add new `Path` extensions and IO extensions code refactor.
+* [39d3807] (RzR) -> [#1] - refactor diagnostics extensions and adapt the documentaiton.
+* [767362a] (RzR) -> [#1] - refactor and add new internal helpers.
+* [b60cd2f] (RzR) -> [#1] - refactor the `DataTable` extensions and update the documentaion.
+* [e5a74ef] (RzR) -> [#1] - add new `DataRecord` extensions and internal code refactor.
+* [d4dc578] (RzR) -> [#1] - add new `DataReader` extensions and internal code refactor.
+* [fa32261] (RzR) -> [#1] - add domain ensure guard utils.
+* [32640b4] (RzR) -> [#1] - refactor the password generate util and RSA encryption.
+* [b01bf01] (RzR) -> [#1] - adapt the documentation for enumerable and list extensions with code refactor.
+* [b1d7ad5] (RzR) -> [#1] - add `DynamicList`.`ParseListOfTInDynamic`, extension and adapt the documentation.
+* [656f545] (RzR) -> [#1] - adapt the documentation for tuple, null, memory, AES encryption classes.
+* [0fed899] (RzR) -> [#1] - adapt the documentation and code refactor for collection and concurrent queue.
+* [918ea6c] (RzR) -> [#1] - add `Array`.`InsertAt`, `SetAt` extensions and adapt the documentation.
+* [eaab5d1] (RzR) -> [#1] - adapt the documentation and code refactor for disposable stack, index enumerable, and insensitive case hashtable.
+* [c9b69c7] (RzR) -> [#1] - add `Task`.`WithTimeout` extension.
+* [7cb2554] (RzR) -> [#1] - add `SemaphoreSlim` `LockAsync` extension.
+* [be851d1] (RzR) -> [#1] - adjust the async lazy documentation and minor code changes.
+* [5ec2a65] (RzR) -> Add deconstruct to the `WithIndexModel` struct.
+
 ### **v7.0.0.8134** [[RzR](mailto:108324929+I-RzR-I@users.noreply.github.com)] 05-10-2026
 * [b2380dd] (RzR) -> Auto commit uncommited files
 * [23d95f6] (RzR) -> BREAKING: No longer depend on RzR.Core.CodeSource (CodeSource 7.0 opt-in via EmitCodeSource).

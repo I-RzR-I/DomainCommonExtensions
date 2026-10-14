@@ -35,12 +35,26 @@ namespace RzR.Extensions.Domain.Diagnostics
         ///     Using IOControl code to configure socket KeepAliveValues for line disconnection detection(because default is toooo
         ///     slow)
         /// </summary>
+        /// <remarks>
+        ///     IOControl(IOControlCode.KeepAliveValues) is Windows-specific; on other platforms it may throw
+        ///     PlatformNotSupportedException.
+        /// </remarks>
         /// <param name="tcpClient">TcpClient</param>
         /// <param name="keepAliveTime">The keep alive time. (ms)</param>
         /// <param name="keepAliveInterval">The keep alive interval. (ms)</param>
+        /// <exception cref="ArgumentNullException">Thrown when <paramref name="tcpClient"/> is null.</exception>
+        /// <exception cref="ArgumentOutOfRangeException">
+        ///     Thrown when keepAliveTime or keepAliveInterval is negative.
+        /// </exception>
         public static void SetSocketKeepAliveValues(this TcpClient tcpClient, int keepAliveTime, int keepAliveInterval)
         {
             DomainEnsure.IsNotNull(tcpClient, nameof(tcpClient));
+
+            if (keepAliveTime < 0)
+                throw new ArgumentOutOfRangeException(nameof(keepAliveTime), keepAliveTime, "The keep alive time cannot be negative.");
+
+            if (keepAliveInterval < 0)
+                throw new ArgumentOutOfRangeException(nameof(keepAliveInterval), keepAliveInterval, "The keep alive interval cannot be negative.");
 
             //KeepAliveTime: default value is 2hr
             //KeepAliveInterval: default value is 1s and Detect 5 times

@@ -98,23 +98,22 @@ namespace RzR.Extensions.Domain.Primitives
         }
 
         /// <summary>
-        ///     Copy properties from object to another
+        ///     Copy properties from object to another.
         /// </summary>
-        /// <param name="fromObject">Copy from</param>
-        /// <param name="toObject">Copy to</param>
-        /// <remarks></remarks>
+        /// <remarks>
+        ///     Only public, instance, non-indexer properties with a public getter are copied to
+        ///     properties with the same name that have a public setter; a value that is not compatible
+        ///     with the destination property type (checked at run time, so int to long is still copied)
+        ///     is skipped, as is any other property.
+        /// </remarks>
+        /// <param name="fromObject">Copy from.</param>
+        /// <param name="toObject">Copy to.</param>
         public static void CopyPropertiesTo(this object fromObject, object toObject)
         {
             DomainEnsure.IsNotNull(fromObject, nameof(fromObject));
             DomainEnsure.IsNotNull(toObject, nameof(toObject));
 
-            var toObjectProperties = toObject.GetType().GetProperties();
-            foreach (var propTo in toObjectProperties)
-            {
-                var propFrom = fromObject.GetType().GetProperty(propTo.Name);
-                if (propFrom != null && propFrom.CanWrite)
-                    propTo.SetValue(toObject, propFrom.GetValue(fromObject, null), null);
-            }
+            Reflection.ReflectionExtensions.CopyPublicProperties(fromObject, toObject, true);
         }
 
         /// <summary>

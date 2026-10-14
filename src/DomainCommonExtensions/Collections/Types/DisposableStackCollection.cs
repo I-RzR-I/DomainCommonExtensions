@@ -50,7 +50,18 @@ namespace RzR.Extensions.Domain.Collections.Types
         /// </value>
         public int Length => _disposable.Count;
 
-        /// <inheritdoc />
+        /// <summary>
+        ///     Disposes every resource in the stack, in last-in first-out order.
+        /// </summary>
+        /// <exception cref="AggregateException">
+        ///     Thrown when more than one resource throws while being disposed; it holds every thrown exception.
+        /// </exception>
+        /// <remarks>
+        ///     Null entries are skipped. A resource that throws does not stop the disposal of the remaining ones.
+        ///     When exactly one resource throws, that exception is rethrown after all resources were processed
+        ///     (with its original stack trace on .NET Framework 4.5+ and .NET Standard).
+        ///     The instance is marked as disposed before any resource is disposed, so a second call is a no-op.
+        /// </remarks>
         public void Dispose()
         {
             if (_disposed)
@@ -58,13 +69,48 @@ namespace RzR.Extensions.Domain.Collections.Types
 
             _disposed = true;
 
+            List<Exception> exceptions = null;
             if (_disposable.IsNotNull())
             {
                 while (_disposable.Count.IsGreaterThanZero())
-                    _disposable.Pop().Dispose();
+                {
+                    var resource = _disposable.Pop();
+                    if (resource.IsNull())
+                        continue;
+
+                    try
+                    {
+                        resource.Dispose();
+                    }
+                    catch (Exception exception)
+                    {
+                        (exceptions ??= new List<Exception>()).Add(exception);
+                    }
+                }
             }
 
             GC.SuppressFinalize(this);
+
+            if (exceptions.IsNull())
+                return;
+
+            if (exceptions!.Count == 1)
+                Rethrow(exceptions[0]);
+            else
+                throw new AggregateException(exceptions);
+        }
+
+        /// <summary>
+        ///     Rethrows the given exception, preserving its original stack trace where the target framework allows it.
+        /// </summary>
+        /// <param name="exception">The exception to rethrow.</param>
+        private static void Rethrow(Exception exception)
+        {
+#if NET45_OR_GREATER || NET || NETSTANDARD1_0_OR_GREATER
+            System.Runtime.ExceptionServices.ExceptionDispatchInfo.Capture(exception).Throw();
+#else
+            throw exception;
+#endif
         }
 
         /// <summary>

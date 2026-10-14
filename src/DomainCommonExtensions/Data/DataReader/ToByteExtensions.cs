@@ -17,6 +17,7 @@
 #region U S A G E S
 
 using System.Data;
+using RzR.Extensions.Domain.Internal.Data;
 
 // ReSharper disable RedundantCast
 
@@ -34,11 +35,17 @@ namespace RzR.Extensions.Domain.Data.DataReader
         /// </summary>
         /// <param name="dataReader">Data reader</param>
         /// <param name="columnName">Column name</param>
-        /// <returns></returns>
-        /// <remarks></remarks>
+        /// <returns>The column value as byte, or 0 when the value is DBNull, null, empty or whitespace.</returns>
+        /// <remarks>
+        ///     A missing column throws the data provider's exception. Typed numbers are converted with
+        ///     overflow checks; a decimal or double must have no fractional part (it is never rounded).
+        ///     Strings are parsed with the invariant culture first, then the current culture. Malformed
+        ///     values throw <see cref="System.FormatException"/>, out-of-range values
+        ///     <see cref="System.OverflowException"/>.
+        /// </remarks>
         public static byte ToByte(this IDataReader dataReader, string columnName)
-            => dataReader.IsWithValue(columnName)
-                ? byte.Parse(dataReader[columnName].ToString())
+            => DataValueConverter.TryRead(dataReader, columnName, out var value)
+                ? DataValueConverter.ToByte(value, columnName)
                 : byte.MinValue;
 
         /// <summary>
@@ -46,11 +53,13 @@ namespace RzR.Extensions.Domain.Data.DataReader
         /// </summary>
         /// <param name="dataReader">Data reader</param>
         /// <param name="columnName">Column name</param>
-        /// <returns></returns>
-        /// <remarks></remarks>
+        /// <returns>The column value as byte, or null when the value is DBNull, null, empty or whitespace.</returns>
+        /// <remarks>
+        ///     Converts like <see cref="ToByte"/>. A missing column throws the data provider's exception.
+        /// </remarks>
         public static byte? ToNullByte(this IDataReader dataReader, string columnName)
-            => dataReader.IsWithValue(columnName)
-                ? byte.Parse(dataReader[columnName].ToString())
+            => DataValueConverter.TryRead(dataReader, columnName, out var value)
+                ? DataValueConverter.ToByte(value, columnName)
                 : (byte?)null;
 
         /// <summary>
@@ -58,11 +67,16 @@ namespace RzR.Extensions.Domain.Data.DataReader
         /// </summary>
         /// <param name="dataReader">Data reader</param>
         /// <param name="columnName">Column name</param>
-        /// <returns></returns>
-        /// <remarks></remarks>
+        /// <returns>
+        ///     The column value as sbyte, or <see cref="sbyte.MinValue"/> (-128, not 0) when the value is DBNull,
+        ///     null, empty or whitespace.
+        /// </returns>
+        /// <remarks>
+        ///     Converts like <see cref="ToByte"/>. A missing column throws the data provider's exception.
+        /// </remarks>
         public static sbyte ToSByte(this IDataReader dataReader, string columnName)
-            => dataReader.IsWithValue(columnName)
-                ? sbyte.Parse(dataReader[columnName].ToString())
+            => DataValueConverter.TryRead(dataReader, columnName, out var value)
+                ? DataValueConverter.ToSByte(value, columnName)
                 : sbyte.MinValue;
 
         /// <summary>
@@ -70,11 +84,13 @@ namespace RzR.Extensions.Domain.Data.DataReader
         /// </summary>
         /// <param name="dataReader">Data reader</param>
         /// <param name="columnName">Column name</param>
-        /// <returns></returns>
-        /// <remarks></remarks>
+        /// <returns>The column value as sbyte, or null when the value is DBNull, null, empty or whitespace.</returns>
+        /// <remarks>
+        ///     Converts like <see cref="ToByte"/>. A missing column throws the data provider's exception.
+        /// </remarks>
         public static sbyte? ToNullSByte(this IDataReader dataReader, string columnName)
-            => dataReader.IsWithValue(columnName)
-                ? sbyte.Parse(dataReader[columnName].ToString())
+            => DataValueConverter.TryRead(dataReader, columnName, out var value)
+                ? DataValueConverter.ToSByte(value, columnName)
                 : (sbyte?)null;
     }
 }

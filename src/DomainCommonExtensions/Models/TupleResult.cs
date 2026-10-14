@@ -24,7 +24,8 @@ namespace RzR.Extensions.Domain.Models
     /// <remarks>
     ///     <see cref="TupleResult"/> structs are immutable, stack-allocated value types that support
     ///     C# deconstruction syntax. They serve as a self-describing alternative to
-    ///     <see cref="System.ValueTuple"/> when named type parameters are desired in public APIs.
+    ///     <see><cref>System.ValueTuple</cref></see>
+    ///     when named type parameters are desired in public APIs.
     ///     <example>
     ///     <code>
     ///     var city = TupleResult.Create("New York", 8_000_000, 468.9);

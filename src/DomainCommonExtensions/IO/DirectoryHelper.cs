@@ -17,8 +17,10 @@
 #region U S A G E S
 
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using RzR.Extensions.Domain.Internal;
 using RzR.Extensions.Domain.Primitives;
 
 #endregion
@@ -46,19 +48,34 @@ namespace RzR.Extensions.Domain.IO
         /// </summary>
         /// <param name="source">Source directory info</param>
         /// <param name="target">Target directory info</param>
-        /// <remarks></remarks>
+        /// <exception cref="ArgumentException">
+        ///     Thrown before anything is created when <paramref name="target"/> is the same directory as
+        ///     <paramref name="source"/> or is located inside it.
+        /// </exception>
+        /// <exception cref="DirectoryNotFoundException">
+        ///     Thrown before anything is created when <paramref name="source"/> does not exist.
+        /// </exception>
         public static void CopyDirectory(DirectoryInfo source, DirectoryInfo target)
         {
+            source.Refresh();
+            target.Refresh();
+
+            if (LexicalPathHelper.IsSameOrDescendant(source.FullName, target.FullName))
+                throw new ArgumentException(
+                    "The target directory must not be the source directory or be located inside it.", nameof(target));
+
+            var entries = new List<KeyValuePair<FileSystemInfo, string>>();
+            CollectCopyEntries(source, target.FullName, entries);
+
             if (target.Exists.IsFalse())
                 target.Create();
 
-            foreach (var fileInfo in source.GetFiles())
-                fileInfo.CopyTo(Path.Combine(target.ToString(), fileInfo.Name), true);
-
-            foreach (var directoryInfo in source.GetDirectories())
+            foreach (var entry in entries)
             {
-                var childDirectory = target.CreateSubdirectory(directoryInfo.Name);
-                CopyDirectory(directoryInfo, childDirectory);
+                if (entry.Key is FileInfo fileInfo)
+                    fileInfo.CopyTo(entry.Value, true);
+                else
+                    Directory.CreateDirectory(entry.Value);
             }
         }
 
@@ -67,7 +84,17 @@ namespace RzR.Extensions.Domain.IO
         /// </summary>
         /// <param name="sourcePath">Source directory path</param>
         /// <param name="targetPath">Target directory path</param>
-        /// <remarks></remarks>
+        /// <exception cref="ArgumentException">
+        ///     Thrown before anything is created when <paramref name="targetPath"/> is the same directory as
+        ///     <paramref name="sourcePath"/> or is located inside it.
+        /// </exception>
+        /// <exception cref="DirectoryNotFoundException">
+        ///     Thrown before anything is created when <paramref name="sourcePath"/> does not exist.
+        /// </exception>
+        /// <remarks>
+        ///     Behaves as <see cref="CopyDirectory(DirectoryInfo, DirectoryInfo)"/>, including how links are
+        ///     handled.
+        /// </remarks>
         public static void CopyDirectory(string sourcePath, string targetPath)
         {
             CopyDirectory(new DirectoryInfo(sourcePath), new DirectoryInfo(targetPath));
@@ -77,24 +104,21 @@ namespace RzR.Extensions.Domain.IO
         ///     Delete the directory and all files that are there
         /// </summary>
         /// <param name="source">Source directory info</param>
-        /// <remarks></remarks>
         public static void DeleteDirectory(DirectoryInfo source)
         {
+            source.Refresh();
             if (source.Exists.IsFalse()) return;
 
-            foreach (var fileInfo in source.GetFiles()) 
-                fileInfo.Delete();
-            foreach (var childDirectory in source.GetDirectories()) 
-                DeleteDirectory(childDirectory);
-
-            source.Delete();
+            DeleteDirectoryEntry(source);
         }
 
         /// <summary>
         ///     Delete the directory and all files that are there
         /// </summary>
         /// <param name="sourcePath">Source directory path</param>
-        /// <remarks></remarks>
+        /// <remarks>
+        ///     Behaves as <see cref="DeleteDirectory(DirectoryInfo)"/>, including how links are handled.
+        /// </remarks>
         public static void DeleteDirectory(string sourcePath)
         {
             DeleteDirectory(new DirectoryInfo(sourcePath));
@@ -104,14 +128,15 @@ namespace RzR.Extensions.Domain.IO
         ///     Count file in directory
         /// </summary>
         /// <param name="directory">Files directory</param>
-        /// <returns></returns>
+        /// <returns>
+        ///     The number of files directly in <paramref name="directory"/> plus all files below it.
+        /// </returns>
         /// <remarks></remarks>
         public static int FileCount(string directory)
         {
             var dirInfo = new DirectoryInfo(directory);
 
-            return dirInfo.EnumerateDirectories().AsParallel()
-                .SelectMany(di => di.EnumerateFiles("*.*", SearchOption.AllDirectories)).Count();
+            return dirInfo.EnumerateFiles("*.*", SearchOption.AllDirectories).Count();
         }
 
         /// <summary>
@@ -119,14 +144,16 @@ namespace RzR.Extensions.Domain.IO
         /// </summary>
         /// <param name="directory">Files directory</param>
         /// <param name="searchOption">File search option</param>
-        /// <returns></returns>
+        /// <returns>
+        ///     The number of files in <paramref name="directory"/>, including subdirectories when
+        ///     <paramref name="searchOption"/> is <see cref="SearchOption.AllDirectories"/>.
+        /// </returns>
         /// <remarks></remarks>
         public static int FileCount(string directory, SearchOption searchOption)
         {
             var dirInfo = new DirectoryInfo(directory);
 
-            return dirInfo.EnumerateDirectories().AsParallel()
-                .SelectMany(di => di.EnumerateFiles("*.*", searchOption)).Count();
+            return dirInfo.EnumerateFiles("*.*", searchOption).Count();
         }
 
         /// <summary>
@@ -135,14 +162,13 @@ namespace RzR.Extensions.Domain.IO
         /// <param name="directory">Files directory</param>
         /// <param name="searchOption">File search option</param>
         /// <param name="searchPattern">File search pattern</param>
-        /// <returns></returns>
+        /// <returns>The number of files in the directory matching the pattern, using the search option.</returns>
         /// <remarks></remarks>
         public static int FileCount(string directory, SearchOption searchOption, string searchPattern)
         {
             var dirInfo = new DirectoryInfo(directory);
 
-            return dirInfo.EnumerateDirectories().AsParallel()
-                .SelectMany(di => di.EnumerateFiles(searchPattern, searchOption)).Count();
+            return dirInfo.EnumerateFiles(searchPattern, searchOption).Count();
         }
 
         /// <summary>
@@ -179,6 +205,75 @@ namespace RzR.Extensions.Domain.IO
         public static bool ExistFileInDirectory(string directoryWithFile)
         {
             return File.Exists(directoryWithFile);
+        }
+
+        /// <summary>
+        ///     Records, in copy order, every file and directory below <paramref name="directory"/> that
+        ///     is not a link, paired with the full path it is copied to.
+        /// </summary>
+        /// <remarks>
+        ///     Recurses manually instead of using <see cref="SearchOption.AllDirectories"/>, because the
+        ///     .NET Framework enumeration walks into junctions.
+        /// </remarks>
+        /// <param name="directory">The source directory to read.</param>
+        /// <param name="targetPath">
+        ///     The full path that mirrors <paramref name="directory"/> in the target.
+        /// </param>
+        /// <param name="entries">
+        ///     Receives each source entry and its target path, parents before children.
+        /// </param>
+        private static void CollectCopyEntries(DirectoryInfo directory, string targetPath,
+            List<KeyValuePair<FileSystemInfo, string>> entries)
+        {
+            foreach (var fileInfo in directory.GetFiles())
+            {
+                if (FileSystemLinkHelper.IsLink(fileInfo)) continue;
+
+                entries.Add(new KeyValuePair<FileSystemInfo, string>(fileInfo, Path.Combine(targetPath, fileInfo.Name)));
+            }
+
+            foreach (var childDirectory in directory.GetDirectories())
+            {
+                if (FileSystemLinkHelper.IsLink(childDirectory)) continue;
+
+                var childTargetPath = Path.Combine(targetPath, childDirectory.Name);
+                entries.Add(new KeyValuePair<FileSystemInfo, string>(childDirectory, childTargetPath));
+                CollectCopyEntries(childDirectory, childTargetPath, entries);
+            }
+        }
+
+        /// <summary>
+        ///     Deletes <paramref name="directory"/> and its content without following links.
+        /// </summary>
+        /// <remarks>
+        ///     Directory and file links are removed with <see cref="FileSystemLinkHelper.RemoveLinkEntry"/>
+        ///     , which removes the link entry by its exact name and leaves its target untouched. Regular
+        ///     files and directories use the BCL delete; on .NET Framework that applies Win32 name
+        ///     normalization, so a regular entry whose name ends in a dot or space can fail to delete (a
+        ///     pre-existing BCL limitation).
+        /// </remarks>
+        /// <param name="directory">The directory to delete.</param>
+        private static void DeleteDirectoryEntry(DirectoryInfo directory)
+        {
+            if (FileSystemLinkHelper.IsLink(directory))
+            {
+                FileSystemLinkHelper.RemoveLinkEntry(directory);
+
+                return;
+            }
+
+            foreach (var fileInfo in directory.GetFiles())
+            {
+                if (FileSystemLinkHelper.IsLink(fileInfo))
+                    FileSystemLinkHelper.RemoveLinkEntry(fileInfo);
+                else
+                    fileInfo.Delete();
+            }
+
+            foreach (var childDirectory in directory.GetDirectories())
+                DeleteDirectoryEntry(childDirectory);
+
+            directory.Delete();
         }
     }
 }

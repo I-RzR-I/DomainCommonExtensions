@@ -25,95 +25,70 @@ using RzR.Extensions.Domain.Validation;
 
 namespace RzR.Extensions.Domain.Primitives
 {
-    /// -------------------------------------------------------------------------------------------------
     /// <summary>
     ///     A random helper.
     /// </summary>
-    /// =================================================================================================
     public sealed class RandomHelper
     {
-        /// -------------------------------------------------------------------------------------------------
         /// <summary>
         ///     (Immutable) the letter alphabet.
         /// </summary>
-        /// =================================================================================================
         private const string LetterAlphabet = LetterUpperAlphabet + LetterLowerAlphabet;
 
-        /// -------------------------------------------------------------------------------------------------
         /// <summary>
         ///     (Immutable) the letter lower alphabet.
         /// </summary>
-        /// =================================================================================================
         private const string LetterLowerAlphabet = "abcdefghijklmnopqrstuvwxyz";
 
-        /// -------------------------------------------------------------------------------------------------
         /// <summary>
         ///     (Immutable) the letter upper alphabet.
         /// </summary>
-        /// =================================================================================================
         private const string LetterUpperAlphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
-        /// -------------------------------------------------------------------------------------------------
         /// <summary>
         ///     (Immutable) the alphanumeric alphabet.
         /// </summary>
-        /// =================================================================================================
         private const string AlphaNumericAlphabet = LetterAlphabet + "0123456789";
 
-        /// -------------------------------------------------------------------------------------------------
         /// <summary>
         ///     (Immutable) the URL safe alphabet.
         /// </summary>
-        /// =================================================================================================
         private const string UrlSafeAlphabet = AlphaNumericAlphabet + "-_";
 
-        /// -------------------------------------------------------------------------------------------------
         /// <summary>
         ///     (Immutable) the locker.
         /// </summary>
-        /// =================================================================================================
         private static readonly Lazy<object> Locker = new Lazy<object>(() => new object(), LazyThreadSafetyMode.ExecutionAndPublication);
 
-        /// -------------------------------------------------------------------------------------------------
         /// <summary>
         ///     (Immutable) the local seed.
         /// </summary>
-        /// =================================================================================================
         private readonly Random _localSeed;
 
-        /// -------------------------------------------------------------------------------------------------
         /// <summary>
         ///     (Immutable) the seed.
         /// </summary>
-        /// =================================================================================================
         private readonly Random _seed = new Random();
 
-        /// -------------------------------------------------------------------------------------------------
         /// <summary>
         ///     Initializes a new instance of the <see cref="RandomHelper" /> class.
         /// </summary>
-        /// =================================================================================================
         private RandomHelper() => _localSeed = _seed ?? new Random();
 
-        /// -------------------------------------------------------------------------------------------------
         /// <summary>
         ///     Initializes a new instance of the <see cref="RandomHelper" /> class.
         /// </summary>
         /// <param name="localSeed">Random seed.</param>
-        /// =================================================================================================
         public RandomHelper(Random localSeed) => _localSeed = localSeed;
 
-        /// -------------------------------------------------------------------------------------------------
         /// <summary>
         ///     Random instance.
         /// </summary>
         /// <value>
         ///     The instance.
         /// </value>
-        /// =================================================================================================
         public static RandomHelper Instance { get; } = new RandomHelper();
 
-        /// -------------------------------------------------------------------------------------------------
         /// <summary>
         ///     Generate new random number.
         /// </summary>
@@ -122,7 +97,6 @@ namespace RzR.Extensions.Domain.Primitives
         /// <returns>
         ///     An int.
         /// </returns>
-        /// =================================================================================================
         public int Number(int min = 0, int max = 1)
         {
             lock (Locker.Value)
@@ -139,7 +113,6 @@ namespace RzR.Extensions.Domain.Primitives
             }
         }
 
-        /// -------------------------------------------------------------------------------------------------
         /// <summary>
         ///     Generates a random long value within a range.
         /// </summary>
@@ -151,7 +124,6 @@ namespace RzR.Extensions.Domain.Primitives
         /// <returns>
         ///     A long.
         /// </returns>
-        /// =================================================================================================
         public long Long(long min, long max)
         {
             if (min > max)
@@ -163,18 +135,26 @@ namespace RzR.Extensions.Domain.Primitives
                 _localSeed.NextBytes(buffer);
                 var value = BitConverter.ToInt64(buffer, 0);
 
-                return Math.Abs(value % (max - min + 1)) + min;
+                var distance = unchecked((ulong)max - (ulong)min);
+                if (distance <= long.MaxValue)
+                    return Math.Abs(value % (max - min + 1)) + min;
+
+                // The range does not fit in a long, so reduce it as unsigned.
+                // distance + 1 wraps to 0 only for the full 2^64 range, where every value is valid.
+                var range = unchecked(distance + 1);
+                if (range == 0)
+                    return value;
+
+                return unchecked((long)((ulong)value % range + (ulong)min));
             }
         }
 
-        /// -------------------------------------------------------------------------------------------------
         /// <summary>
         ///     Generates a random double between 0.0 and 1.0.
         /// </summary>
         /// <returns>
         ///     A double.
         /// </returns>
-        /// =================================================================================================
         public double Double()
         {
             lock (Locker.Value)
@@ -183,24 +163,20 @@ namespace RzR.Extensions.Domain.Primitives
             }
         }
 
-        /// -------------------------------------------------------------------------------------------------
         /// <summary>
         ///     Generates a random decimal between 0 and 1.
         /// </summary>
         /// <returns>
         ///     A decimal.
         /// </returns>
-        /// =================================================================================================
         public decimal Decimal() => (decimal)Double();
 
-        /// -------------------------------------------------------------------------------------------------
         /// <summary>
         ///     Generate new random bool value.
         /// </summary>
         /// <returns>
         ///     New bool value.
         /// </returns>
-        /// =================================================================================================
         public bool Bool()
         {
             lock (Locker.Value)
@@ -209,7 +185,6 @@ namespace RzR.Extensions.Domain.Primitives
             }
         }
 
-        /// -------------------------------------------------------------------------------------------------
         /// <summary>
         ///     Gets the random letter.
         /// </summary>
@@ -219,7 +194,6 @@ namespace RzR.Extensions.Domain.Primitives
         /// <returns>
         ///     A random letter (string).
         /// </returns>
-        /// =================================================================================================
         public string Letter()
         {
             lock (Locker.Value)
@@ -231,7 +205,6 @@ namespace RzR.Extensions.Domain.Primitives
             }
         }
 
-        /// -------------------------------------------------------------------------------------------------
         /// <summary>
         ///     Gets the random letters.
         /// </summary>
@@ -242,7 +215,6 @@ namespace RzR.Extensions.Domain.Primitives
         /// <returns>
         ///     A random letters (string).
         /// </returns>
-        /// =================================================================================================
         public string Letters(int length)
         {
             lock (Locker.Value)
@@ -260,7 +232,6 @@ namespace RzR.Extensions.Domain.Primitives
             }
         }
 
-        /// -------------------------------------------------------------------------------------------------
         /// <summary>
         ///     Returns a random lowercase letter.
         /// </summary>
@@ -270,7 +241,6 @@ namespace RzR.Extensions.Domain.Primitives
         /// <returns>
         ///     A char.
         /// </returns>
-        /// =================================================================================================
         public char LowerLetter()
         {
             lock (Locker.Value)
@@ -281,7 +251,6 @@ namespace RzR.Extensions.Domain.Primitives
             }
         }
 
-        /// -------------------------------------------------------------------------------------------------
         /// <summary>
         ///     Returns a random uppercase letter.
         /// </summary>
@@ -291,7 +260,6 @@ namespace RzR.Extensions.Domain.Primitives
         /// <returns>
         ///     A char.
         /// </returns>
-        /// =================================================================================================
         public char UpperLetter()
         {
             lock (Locker.Value)
@@ -302,7 +270,6 @@ namespace RzR.Extensions.Domain.Primitives
             }
         }
 
-        /// -------------------------------------------------------------------------------------------------
         /// <summary>
         ///     Generates a random alphanumeric string.
         /// </summary>
@@ -310,7 +277,6 @@ namespace RzR.Extensions.Domain.Primitives
         /// <returns>
         ///     A string.
         /// </returns>
-        /// =================================================================================================
         public string AlphaNumeric(int length)
         {
             lock (Locker.Value)
@@ -324,7 +290,6 @@ namespace RzR.Extensions.Domain.Primitives
             }
         }
 
-        /// -------------------------------------------------------------------------------------------------
         /// <summary>
         ///     Generates a random numeric string.
         /// </summary>
@@ -332,7 +297,6 @@ namespace RzR.Extensions.Domain.Primitives
         /// <returns>
         ///     A string.
         /// </returns>
-        /// =================================================================================================
         public string Digits(int length)
         {
             lock (Locker.Value)
@@ -346,25 +310,27 @@ namespace RzR.Extensions.Domain.Primitives
             }
         }
 
-        /// -------------------------------------------------------------------------------------------------
         /// <summary>
         ///     Generates a new Guid.
         /// </summary>
         /// <returns>
         ///     A GUID.
         /// </returns>
-        /// =================================================================================================
         public Guid Guid() => System.Guid.NewGuid();
 
-        /// -------------------------------------------------------------------------------------------------
         /// <summary>
         ///     Generates a short, URL-safe token.
         /// </summary>
+        /// <remarks>
+        ///     The token comes from <see cref="System.Random"/>, which is predictable and not
+        ///     cryptographically secure. Do not use it for passwords, session or reset tokens, API keys
+        ///     or any other secret; use <see cref="System.Security.Cryptography.RandomNumberGenerator"/>
+        ///     for those.
+        /// </remarks>
         /// <param name="length">(Optional) Number of letters.</param>
         /// <returns>
         ///     A string.
         /// </returns>
-        /// =================================================================================================
         public string Token(int length = 16)
         {
             lock (Locker.Value)
@@ -378,7 +344,6 @@ namespace RzR.Extensions.Domain.Primitives
             }
         }
 
-        /// -------------------------------------------------------------------------------------------------
         /// <summary>
         ///     Generates a random DateTime between two dates.
         /// </summary>
@@ -390,7 +355,6 @@ namespace RzR.Extensions.Domain.Primitives
         /// <returns>
         ///     A DateTime.
         /// </returns>
-        /// =================================================================================================
         public DateTime DateTime(DateTime min, DateTime max)
         {
             if (min > max)
@@ -402,7 +366,6 @@ namespace RzR.Extensions.Domain.Primitives
             return min.AddTicks(randTicks);
         }
 
-        /// -------------------------------------------------------------------------------------------------
         /// <summary>
         ///     Generates a random TimeSpan within a range.
         /// </summary>
@@ -414,7 +377,6 @@ namespace RzR.Extensions.Domain.Primitives
         /// <returns>
         ///     A TimeSpan.
         /// </returns>
-        /// =================================================================================================
         public TimeSpan TimeSpan(TimeSpan min, TimeSpan max)
         {
             if (min > max)
@@ -425,7 +387,6 @@ namespace RzR.Extensions.Domain.Primitives
             return System.TimeSpan.FromTicks(ticks);
         }
 
-        /// -------------------------------------------------------------------------------------------------
         /// <summary>
         ///     Picks a random item from an array.
         /// </summary>
@@ -437,7 +398,6 @@ namespace RzR.Extensions.Domain.Primitives
         /// <returns>
         ///     A T.
         /// </returns>
-        /// =================================================================================================
         public T Pick<T>(params T[] values)
         {
             if (values.IsNullOrEmptyEnumerable())
@@ -449,7 +409,6 @@ namespace RzR.Extensions.Domain.Primitives
             }
         }
 
-        /// -------------------------------------------------------------------------------------------------
         /// <summary>
         ///     Shuffles an array in-place.
         /// </summary>
@@ -458,7 +417,6 @@ namespace RzR.Extensions.Domain.Primitives
         /// </exception>
         /// <typeparam name="T">Generic type parameter.</typeparam>
         /// <param name="array">The array.</param>
-        /// =================================================================================================
         public void Shuffle<T>(T[] array)
         {
             if (array.IsNullOrEmptyEnumerable())
@@ -477,7 +435,6 @@ namespace RzR.Extensions.Domain.Primitives
             }
         }
 
-        /// -------------------------------------------------------------------------------------------------
         /// <summary>
         ///     Returns a random enum value.
         /// </summary>
@@ -485,7 +442,6 @@ namespace RzR.Extensions.Domain.Primitives
         /// <returns>
         ///     A TEnum.
         /// </returns>
-        /// =================================================================================================
         public TEnum Enum<TEnum>() where TEnum : struct, Enum
         {
             lock (Locker.Value)

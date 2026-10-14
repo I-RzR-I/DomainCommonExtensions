@@ -228,6 +228,11 @@ namespace RzR.Extensions.Domain.Validation
         /// <summary>
         ///     Internal throw exception.
         /// </summary>
+        /// <remarks>
+        ///     For <see cref="ArgumentNullException"/> and <see cref="ArgumentOutOfRangeException"/> a message
+        ///     without a parameter name is kept (ParamName is null). For <see cref="ArgumentOutOfRangeException"/>
+        ///     with a parameter name and a message, a non-null <paramref name="sourceObject"/> is kept as the actual value.
+        /// </remarks>
         /// <exception cref="Exception">Thrown when an exception error condition occurs.</exception>
         /// <exception cref="ArgumentException">
         ///     Thrown when one or more arguments have unsupported or illegal values.
@@ -301,16 +306,20 @@ namespace RzR.Extensions.Domain.Validation
                         throw new ArgumentNullException(parameterName, errorMessage);
                     else if (parameterName.IsPresent() && errorMessage.IsMissing() && innerException.IsNull())
                         throw new ArgumentNullException(parameterName);
+                    else if (parameterName.IsMissing() && errorMessage.IsPresent() && innerException.IsNull())
+                        throw new ArgumentNullException(null, errorMessage);
                     else throw new ArgumentNullException();
                 case ExceptionType.ArgumentOutOfRangeException:
                     if (errorMessage.IsPresent() && innerException.IsNotNull())
                         throw new ArgumentOutOfRangeException(errorMessage, innerException);
-                    else if (parameterName.IsPresent() && errorMessage.IsPresent() && innerException.IsNull())
-                        throw new ArgumentOutOfRangeException(parameterName, errorMessage);
                     else if (parameterName.IsPresent() && errorMessage.IsPresent() && sourceObject.IsNotNull())
                         throw new ArgumentOutOfRangeException(parameterName, sourceObject, errorMessage);
+                    else if (parameterName.IsPresent() && errorMessage.IsPresent() && innerException.IsNull())
+                        throw new ArgumentOutOfRangeException(parameterName, errorMessage);
                     else if (parameterName.IsPresent() && errorMessage.IsMissing() && innerException.IsNull())
                         throw new ArgumentOutOfRangeException(parameterName);
+                    else if (parameterName.IsMissing() && errorMessage.IsPresent() && innerException.IsNull())
+                        throw new ArgumentOutOfRangeException(null, errorMessage);
                     else throw new ArgumentOutOfRangeException();
                 case ExceptionType.DivideByZeroException:
                     if (errorMessage.IsPresent() && innerException.IsNotNull())

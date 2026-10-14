@@ -19,7 +19,11 @@
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Linq;
+using System.Reflection;
 using RzR.Extensions.Domain.Primitives;
+using RzR.Extensions.Domain.Reflection;
+using RzR.Extensions.Domain.Validation;
 
 #endregion
 
@@ -31,21 +35,27 @@ namespace RzR.Extensions.Domain.Collections
     public static class ListExtensions
     {
         /// <summary>
-        ///     Cast list to DataSet
+        ///     Cast list to DataSet.
         /// </summary>
-        /// <param name="list"></param>
-        /// <returns></returns>
-        /// <typeparam name="T"></typeparam>
-        /// <remarks></remarks>
+        /// <remarks>
+        ///     Indexer properties are skipped; a hidden (new) property gives one column, 
+        ///     from its most-derived declaration.
+        /// </remarks>
+        /// <typeparam name="T">.</typeparam>
+        /// <param name="list">.</param>
+        /// <returns>
+        ///     List as a DataSet.
+        /// </returns>
         public static DataSet ToDataSet<T>(this IList<T> list)
         {
-            var elementType = typeof(T);
+            var properties = ReflectionExtensions.GetMostDerivedProperties(typeof(T),
+                BindingFlags.Public | BindingFlags.Instance | BindingFlags.Static).Values.ToArray();
             var ds = new DataSet();
             var t = new DataTable();
             ds.Tables.Add(t);
 
             //add a column to table for each public property on T
-            foreach (var propInfo in elementType.GetProperties())
+            foreach (var propInfo in properties)
             {
                 var colType = Nullable.GetUnderlyingType(propInfo.PropertyType) ?? propInfo.PropertyType;
 
@@ -57,7 +67,7 @@ namespace RzR.Extensions.Domain.Collections
             {
                 var row = t.NewRow();
 
-                foreach (var propInfo in elementType.GetProperties())
+                foreach (var propInfo in properties)
                     row[propInfo.Name] = propInfo.GetValue(item, null) ?? DBNull.Value;
 
                 t.Rows.Add(row);
@@ -119,9 +129,11 @@ namespace RzR.Extensions.Domain.Collections
         /// <typeparam name="T">Generic type parameter.</typeparam>
         /// <param name="source">Source list.</param>
         /// <param name="item">The item.</param>
+        /// <exception cref="ArgumentNullException">Thrown when <paramref name="source"/> is null.</exception>
         public static void AddToListIfNotExist<T>(this List<T> source, T item)
         {
-            source ??= new List<T>();
+            DomainEnsure.IsNotNull(source, nameof(source));
+
             if (source.IndexOf(item) == -1)
                 source.Add(item);
         }

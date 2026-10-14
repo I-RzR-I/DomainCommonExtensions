@@ -120,7 +120,7 @@ namespace RzR.Extensions.Domain.Collections.Types
         /// <param name="list">(Immutable) the list.</param>
         /// =================================================================================================
         public IndexableEnumerable(IEnumerable<T> list)
-            : this((IList<T>)list)
+            : this(AsList(list))
         { }
 
         /// -------------------------------------------------------------------------------------------------
@@ -190,6 +190,22 @@ namespace RzR.Extensions.Domain.Collections.Types
             => GetEnumerator();
 
         /// <inheritdoc />
-        public void Dispose() { _list.Clear(); }
+        /// <remarks>
+        ///     Does nothing: the wrapped list belongs to the caller and is never cleared.
+        /// </remarks>
+        public void Dispose() { }
+
+        /// -------------------------------------------------------------------------------------------------
+        /// <summary>
+        ///     Returns the sequence as a list, materialising it only when it is not already a list.
+        /// </summary>
+        /// <param name="list">The sequence.</param>
+        /// <returns>
+        ///     The same instance when it is an IList&lt;T&gt;, a new list with its items otherwise, or null
+        ///     when <paramref name="list"/> is null.
+        /// </returns>
+        /// =================================================================================================
+        private static IList<T> AsList(IEnumerable<T> list)
+            => list as IList<T> ?? (list == null ? null : new List<T>(list));
     }
 }

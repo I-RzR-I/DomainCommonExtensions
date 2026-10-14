@@ -37,16 +37,35 @@ namespace RzR.Extensions.Domain.IO
         ///     Check if file is used
         /// </summary>
         /// <param name="path">File path</param>
-        /// <returns></returns>
-        /// <remarks></remarks>
+        /// <returns>
+        ///     True when the file cannot be opened exclusively (it is also true when another process has it
+        ///     open for reading only); false when it is free or does not exist.
+        /// </returns>
+        /// <exception cref="UnauthorizedAccessException">
+        ///     Thrown when the caller has no read/write access to <paramref name="path"/>, e.g. a read-only
+        ///     file or a directory path.
+        /// </exception>
+        /// <remarks>A missing file, directory or drive is not created and returns false.</remarks>
         public static bool IsFileInUse(this string path)
         {
             try
             {
-                using var fs = new FileStream(path, FileMode.OpenOrCreate);
+                using var fs = new FileStream(path, FileMode.Open, FileAccess.ReadWrite, FileShare.None);
                 var canWrite = fs.CanWrite;
 
                 return canWrite.IsFalse();
+            }
+            catch (FileNotFoundException)
+            {
+                return false;
+            }
+            catch (DirectoryNotFoundException)
+            {
+                return false;
+            }
+            catch (DriveNotFoundException)
+            {
+                return false;
             }
             catch (IOException)
             {

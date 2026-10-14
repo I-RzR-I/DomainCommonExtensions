@@ -34,6 +34,22 @@ namespace RzR.Extensions.Domain.Cryptography
         /// <summary>
         ///     Encrypt a string. Encoding is done using AES encryption.
         /// </summary>
+        /// <remarks>
+        ///     AES-CBC with PKCS7 padding over the UTF-8 plain text; the output is Base64 of the ciphertext only (the IV
+        ///     is not included).
+        ///     When isLongStringKey is false the key is the raw UTF-8 bytes of <paramref name="key"/>, which must be
+        ///     exactly 16, 24 or 32 bytes (AES-128/192/256), otherwise a CryptographicException is thrown.
+        ///     When isLongStringKey is true the key is an unsalted, single-pass MD5 hash of the UTF-8 key (16 bytes), so
+        ///     the cipher is always AES-128 and <paramref name="keySize"/> = 256 has no effect. This is not a password
+        ///     key derivation function.
+        ///     In both cases the effective key size comes from the key bytes, not from <paramref name="keySize"/>;
+        ///     keySize must still be 128, 192 or 256 and blockSize must be 128, otherwise a CryptographicException is thrown.
+        ///     The caller supplies the IV: reusing an IV with the same key reveals when two messages share a prefix.
+        ///     Use a new random 16-byte IV for every message and store it with the ciphertext.
+        ///     There is no authentication (MAC): ciphertext can be altered undetected, and if decryption errors are
+        ///     observable by an attacker the scheme is open to padding-oracle attacks.
+        ///     Not suitable for password storage or new designs; prefer authenticated encryption (e.g. AES-GCM).
+        /// </remarks>
         /// <param name="plainText">Plaint text to be encrypted.</param>
         /// <param name="key">Encryption key.</param>
         /// <param name="iv">Initialization vector.</param>
@@ -77,6 +93,14 @@ namespace RzR.Extensions.Domain.Cryptography
         /// <summary>
         ///     Decrypt a string. Decoding is done using AES encryption.
         /// </summary>
+        /// <remarks>
+        ///     Reverses <see cref="AesEncryptString"/>: AES-CBC with PKCS7 padding, UTF-8 plain text, and the same key
+        ///     handling (raw UTF-8 key of 16, 24 or 32 bytes, or an unsalted MD5 hash of the key, i.e. always AES-128,
+        ///     when isLongStringKey is true). The IV must be the one used for encryption.
+        ///     There is no authentication (MAC): tampered ciphertext is not detected, and a CryptographicException is
+        ///     thrown on bad padding. Do not expose decryption errors to untrusted callers (padding-oracle risk).
+        ///     Not suitable for password storage or new designs; prefer authenticated encryption (e.g. AES-GCM).
+        /// </remarks>
         /// <param name="cipherText">Encrypted text to be decrypted</param>
         /// <param name="key">Decryption key.</param>
         /// <param name="iv">Initialization vector.</param>

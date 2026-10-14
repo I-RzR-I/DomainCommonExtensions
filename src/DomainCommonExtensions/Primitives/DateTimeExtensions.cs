@@ -90,7 +90,7 @@ namespace RzR.Extensions.Domain.Primitives
         /// </summary>
         /// <param name="value">Input string date</param>
         /// <param name="cultureInfo">culture info name</param>
-        /// <returns></returns>
+        /// <returns>true when value is a valid date in the given culture; otherwise false</returns>
         /// <remarks> cultureInfo = ('en-US', 'ru-RU', 'ro-RO', etc)</remarks>
         public static bool CheckCultureDateTime(this string value, string cultureInfo)
         {
@@ -103,10 +103,6 @@ namespace RzR.Extensions.Domain.Primitives
                 var d = Convert.ToDateTime(value, new CultureInfo(cultureInfo, false).DateTimeFormat);
 
                 return d != DateTime.MinValue;
-            }
-            catch (FormatException format)
-            {
-                throw new FormatException($"Input string is not in {cultureInfo} format", format);
             }
             catch
             {
@@ -150,6 +146,39 @@ namespace RzR.Extensions.Domain.Primitives
             var years = dtToday.Year - input.Year;
             if (dtToday.Month < input.Month ||
                 dtToday.Month == input.Month && dtToday.Day < input.Day)
+                years -= 1;
+
+            return years;
+        }
+
+        /// <summary>
+        ///     Calculates the age, in whole years, of <paramref name="birthDate"/> on the date
+        ///     <paramref name="asOf"/>.
+        /// </summary>
+        /// <remarks>
+        ///     Only the date parts are compared: the time of day and <see cref="DateTime.Kind"/> of both
+        ///     values are ignored and no time-zone conversion is made. A 29 February birthday is reached
+        ///     on
+        ///     1 March in non-leap years, the same rule as <see cref="CalculateAge(DateTime)"/>.
+        ///     Unlike that overload, an as-of date before the birthdate throws instead of returning a
+        ///     negative age.
+        /// </remarks>
+        /// <exception cref="ArgumentOutOfRangeException">
+        ///     <paramref name="asOf"/> is a calendar date earlier than <paramref name="birthDate"/>.
+        /// </exception>
+        /// <param name="birthDate">The birthdate.</param>
+        /// <param name="asOf">The date on which the age is calculated.</param>
+        /// <returns>
+        ///     The number of full years between <paramref name="birthDate"/> and <paramref name="asOf"/>.
+        /// </returns>
+        public static int CalculateAge(this DateTime birthDate, DateTime asOf)
+        {
+            if (asOf.Date < birthDate.Date)
+                throw new ArgumentOutOfRangeException(nameof(asOf), asOf, "The as-of date cannot be earlier than the birth date.");
+
+            var years = asOf.Year - birthDate.Year;
+            if (asOf.Month < birthDate.Month ||
+                asOf.Month == birthDate.Month && asOf.Day < birthDate.Day)
                 years -= 1;
 
             return years;
@@ -383,13 +412,13 @@ namespace RzR.Extensions.Domain.Primitives
         ///     Get the date of the end of the month
         /// </summary>
         /// <param name="input">Reference input date</param>
-        /// <returns></returns>
+        /// <returns>The last day of the month (time 00:00, Kind Unspecified); works for December 9999.</returns>
         /// <remarks></remarks>
         public static DateTime EndOfMonth(this DateTime input)
         {
             DomainEnsure.IsNotNull(input, nameof(input));
 
-            return StartOfMonth(input).AddMonths(1).AddDays(-1).Date;
+            return new DateTime(input.Year, input.Month, DateTime.DaysInMonth(input.Year, input.Month));
         }
 
         /// <summary>
@@ -411,15 +440,15 @@ namespace RzR.Extensions.Domain.Primitives
         ///     Get the previous month date
         /// </summary>
         /// <param name="input">Reference input date</param>
-        /// <returns></returns>
-        /// <remarks></remarks>
+        /// <returns>The last day of the previous month (time 00:00, Kind Unspecified).</returns>
+        /// <remarks>January 0001 has no previous month and throws ArgumentOutOfRangeException.</remarks>
         public static DateTime EndOfPreviousMonth(this DateTime input)
         {
             DomainEnsure.IsNotNull(input, nameof(input));
 
             input = input.AddMonths(-1);
 
-            return StartOfMonth(input).AddMonths(1).AddDays(-1).Date;
+            return new DateTime(input.Year, input.Month, DateTime.DaysInMonth(input.Year, input.Month));
         }
 
         /// <summary>
@@ -452,13 +481,13 @@ namespace RzR.Extensions.Domain.Primitives
         ///     Get a number of days in the month
         /// </summary>
         /// <param name="input">Reference input date</param>
-        /// <returns></returns>
+        /// <returns>The number of days in the month of input; works for January 0001 and December 9999.</returns>
         /// <remarks></remarks>
         public static int DaysInMonth(this DateTime input)
         {
             DomainEnsure.IsNotNull(input, nameof(input));
 
-            return (int)(EndOfMonth(input) - StartOfMonth(input).AddDays(-1)).TotalDays;
+            return DateTime.DaysInMonth(input.Year, input.Month);
         }
 
         /// <summary>
@@ -500,7 +529,7 @@ namespace RzR.Extensions.Domain.Primitives
         /// </summary>
         /// <param name="sourceTime">Source date time</param>
         /// <returns>Returns TimeStamp.TotalSeconds.</returns>
-        /// <remarks></remarks>
+        /// <remarks>See also <see cref="ToUnixTimeSeconds(DateTime)"/>.</remarks>
         public static long ToEpochTime(this DateTime sourceTime)
         {
             var t = sourceTime.ToUniversalTime() - DateTime.MinValue.Epoch();
@@ -509,16 +538,39 @@ namespace RzR.Extensions.Domain.Primitives
         }
 
         /// <summary>
+        ///     Convert the given DateTime in Unix time, in whole seconds since 1970-01-01T00:00:00Z.
+        /// </summary>
+        /// <param name="sourceTime">Source date time.</param>
+        /// <returns>
+        ///     The elapsed seconds since 1970-01-01T00:00:00Z, computed as a double and truncated toward
+        ///     zero.
+        /// </returns>
+        public static long ToUnixTimeSeconds(this DateTime sourceTime)
+            => ToEpochTime(sourceTime);
+
+        /// <summary>
         ///     A DateTime extension method that converts a sourceTime to an epoch.
         /// </summary>
         /// <param name="sourceTime">Source date time.</param>
         /// <returns>
         ///     SourceTime as a long. Returns TimeStamp.TotalMilliseconds.
         /// </returns>
+        /// <remarks>See also <see cref="ToUnixTimeMilliseconds(DateTime)"/>.</remarks>
         public static long ToEpoch(this DateTime sourceTime)
         {
             return (long)(sourceTime.ToUniversalTime() - DateTime.MinValue.Epoch()).TotalMilliseconds;
         }
+
+        /// <summary>
+        ///     Convert the given DateTime in Unix time, in whole milliseconds since 1970-01-01T00:00:00Z.
+        /// </summary>
+        /// <param name="sourceTime">Source date time.</param>
+        /// <returns>
+        ///     The elapsed milliseconds since 1970-01-01T00:00:00Z, computed as a double and truncated
+        ///     toward zero.
+        /// </returns>
+        public static long ToUnixTimeMilliseconds(this DateTime sourceTime)
+            => ToEpoch(sourceTime);
 
         /// <summary>
         ///     Creates a new object from the given epoch.
@@ -537,7 +589,7 @@ namespace RzR.Extensions.Domain.Primitives
         /// </summary>
         /// <param name="sourceTime">Source date time</param>
         /// <returns></returns>
-        /// <remarks></remarks>
+        /// <remarks>For dates from 1900-03-01 the value is one day lower than Excel's serial date / DateTime.ToOADate().</remarks>
         public static double ToExcelTime(this DateTime sourceTime)
         {
             var t = sourceTime - new DateTime(1899, 12, 31);
@@ -625,6 +677,35 @@ namespace RzR.Extensions.Domain.Primitives
 
             return new DateTime(notNullDate.Year, notNullDate.Month, notNullDate.Day,
                 notNullDate.Hour, notNullDate.Minute, notNullDate.Second);
+        }
+
+        /// <summary>
+        ///     Truncates <paramref name="value"/> down to a whole multiple of <paramref name="resolution"/>
+        ///     , preserving its <see cref="DateTime.Kind"/>.
+        /// </summary>
+        /// <remarks>
+        ///     Truncation is by ticks counted from <see cref="DateTime.MinValue"/>, so resolutions that
+        ///     divide a day (second, minute, hour, day) align to calendar boundaries; other resolutions
+        ///     align to multiples counted from 0001-01-01.
+        /// </remarks>
+        /// <exception cref="ArgumentOutOfRangeException">
+        ///     <paramref name="resolution"/> is <see cref="TimeSpan.Zero"/> or negative.
+        /// </exception>
+        /// <param name="value">The value to truncate.</param>
+        /// <param name="resolution">
+        ///     The resolution to truncate to, for example <c>TimeSpan.FromSeconds(1)</c> to clear the
+        ///     sub-second part.
+        /// </param>
+        /// <returns>
+        ///     A DateTime whose ticks are <c>value.Ticks - value.Ticks % resolution.Ticks</c>, with the
+        ///     same Kind as <paramref name="value"/>.
+        /// </returns>
+        public static DateTime Truncate(this DateTime value, TimeSpan resolution)
+        {
+            if (resolution <= TimeSpan.Zero)
+                throw new ArgumentOutOfRangeException(nameof(resolution), resolution, "The resolution must be greater than zero.");
+
+            return value.AddTicks(-(value.Ticks % resolution.Ticks));
         }
 
         /// <summary>

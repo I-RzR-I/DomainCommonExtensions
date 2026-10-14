@@ -108,14 +108,42 @@ namespace RzR.Extensions.Domain.Primitives
         }
 
         /// <summary>
-        ///     Checks if the role flag is set
+        ///     Checks whether any bit of the flag is set
         /// </summary>
-        /// <param name="value"></param>
-        /// <param name="flag"></param>
-        /// <returns></returns>
+        /// <param name="value">Value to check</param>
+        /// <param name="flag">Flag mask</param>
+        /// <returns>true if ANY bit of flag is set in value; otherwise false (also false when flag is 0).</returns>
         public static bool IsFlagSet(this int value, int flag)
         {
             return (value & flag) != 0;
+        }
+
+        /// <summary>
+        ///     Checks whether all bits of <paramref name="flags"/> are set in <paramref name="value"/>.
+        /// </summary>
+        /// <param name="value">Value to check.</param>
+        /// <param name="flags">Flags mask.</param>
+        /// <returns>
+        ///     True if every bit of <paramref name="flags"/> is set in <paramref name="value"/>;
+        ///     otherwise false. True when <paramref name="flags"/> is 0, like Enum.HasFlag.
+        /// </returns>
+        public static bool HasAllFlags(this int value, int flags)
+        {
+            return (value & flags) == flags;
+        }
+
+        /// <summary>
+        ///     Checks whether any bit of <paramref name="flags"/> is set in <paramref name="value"/>.
+        /// </summary>
+        /// <param name="value">Value to check.</param>
+        /// <param name="flags">Flags mask.</param>
+        /// <returns>
+        ///     True if at least one bit of <paramref name="flags"/> is set in <paramref name="value"/>;
+        ///     otherwise false. False when <paramref name="flags"/> is 0.
+        /// </returns>
+        public static bool HasAnyFlag(this int value, int flags)
+        {
+            return (value & flags) != 0;
         }
 
         /// <summary>
@@ -140,11 +168,16 @@ namespace RzR.Extensions.Domain.Primitives
             return  (value ?? 0) < 0;
         }
 
-        ///-------------------------------------------------------------------------------------------------
-        /// <summary>Gets excel column name.</summary>
+        /// <summary>
+        ///     Gets excel column name.
+        /// </summary>
+        /// <exception cref="ArgumentOutOfRangeException">
+        ///     Thrown when <paramref name="columnIndex"/> is less than 0 or greater than 18277 (ZZZ).
+        /// </exception>
         /// <param name="columnIndex">Zero-based index of the column.</param>
-        /// <returns>The excel column name.</returns>
-        ///=================================================================================================
+        /// <returns>
+        ///     The excel column name.
+        /// </returns>
         public static string GetExcelColumnName(this int columnIndex)
         {
             // A - Z
@@ -177,7 +210,7 @@ namespace RzR.Extensions.Domain.Primitives
                 return string.Format(CultureInfo.InvariantCulture, "{0}{1}{2}", firstChar, secondChar, thirdChar);
             }
             
-            throw new ArgumentOutOfRangeException($"Column reference ({columnIndex}) is out of range");
+            throw new ArgumentOutOfRangeException(nameof(columnIndex), columnIndex, "Column reference is out of range");
         }
     }
 }
