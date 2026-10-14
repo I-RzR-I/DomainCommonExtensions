@@ -44,6 +44,11 @@ namespace RzR.Extensions.Domain.Diagnostics
         private static readonly Dictionary<Assembly, Exception> FailCache = new Dictionary<Assembly, Exception>();
 
         /// <summary>
+        ///     Lock guarding every access to <see cref="Cache"/> and <see cref="FailCache"/>
+        /// </summary>
+        private static readonly object CacheLock = new object();
+
+        /// <summary>
         ///     Provides the documentation comments for a specific method
         /// </summary>
         /// <param name="methodInfo">The MethodInfo (reflection data ) of the member to find documentation for</param>
@@ -56,7 +61,8 @@ namespace RzR.Extensions.Domain.Diagnostics
             {
                 if (parametersString.Length.IsGreaterThanZero()) parametersString += ",";
 
-                parametersString += parameterInfo.ParameterType.FullName;
+                // Nested types are "Outer+Inner" in reflection but "Outer.Inner" in the XML
+                parametersString += parameterInfo.ParameterType.FullName?.Replace('+', '.');
             }
 
             //AL: 15.04.2008 ==> BUG-FIX remove “()” if parametersString is empty
@@ -126,14 +132,16 @@ namespace RzR.Extensions.Domain.Diagnostics
         /// <param name="prefix">The prefix as seen in the name attribute in the documentation XML</param>
         /// <param name="name">Where relevant, the full name qualifier for the element</param>
         /// <returns>The member that has a name that describes the specified reflection element</returns>
+        /// <remarks>Nested type names ("Outer+Inner") are written as "Outer.Inner", as in the XML documentation IDs.</remarks>
         private static XmlElement XmlFromName(this Type type, char prefix, string name)
         {
             string fullName;
+            var typeName = type.FullName?.Replace('+', '.');
 
             if (name.IsNullOrEmpty())
-                fullName = prefix + ":" + type.FullName;
+                fullName = prefix + ":" + typeName;
             else
-                fullName = prefix + ":" + type.FullName + "." + name;
+                fullName = prefix + ":" + typeName + "." + name;
 
             var xmlDocument = XmlFromAssembly(type.Assembly);
             var matchedElement =
@@ -149,25 +157,29 @@ namespace RzR.Extensions.Domain.Diagnostics
         /// <returns>The XML document</returns>
         /// <remarks>
         ///     This version uses a cache to preserve the assemblies, so that
-        ///     the XML file is not loaded and parsed on every single lookup
+        ///     the XML file is not loaded and parsed on every single lookup.
+        ///     The caches are guarded by a lock, so the XML file is loaded at most once per assembly.
         /// </remarks>
         public static XmlDocument XmlFromAssembly(this Assembly assembly)
         {
-            if (FailCache.ContainsKey(assembly)) return null;
-
-            try
+            lock (CacheLock)
             {
-                if (!Cache.ContainsKey(assembly))
-                    // load the document into the cache
-                    Cache[assembly] = XmlFromAssemblyNonCached(assembly);
+                if (FailCache.ContainsKey(assembly)) return null;
 
-                return Cache[assembly];
-            }
-            catch (Exception exception)
-            {
-                FailCache[assembly] = exception;
+                try
+                {
+                    if (!Cache.ContainsKey(assembly))
+                        // load the document into the cache
+                        Cache[assembly] = XmlFromAssemblyNonCached(assembly);
 
-                return null;
+                    return Cache[assembly];
+                }
+                catch (Exception exception)
+                {
+                    FailCache[assembly] = exception;
+
+                    return null;
+                }
             }
         }
 
@@ -176,37 +188,67 @@ namespace RzR.Extensions.Domain.Diagnostics
         /// </summary>
         /// <param name="assembly">The assembly to find the XML document for</param>
         /// <returns>The XML document</returns>
+        /// <remarks>
+        ///     The XML file is looked up next to Assembly.Location first, then next to the file URI CodeBase
+        ///     (e.g. a shadow-copied assembly). DTD processing and external resolution are disabled when loading the XML.
+        /// </remarks>
         private static XmlDocument XmlFromAssemblyNonCached(Assembly assembly)
         {
-            var assemblyFilename = assembly.CodeBase;
+            var filePath = FindDocumentationFile(assembly.Location);
 
-            const string prefix = "file:///";
-
-            if (assemblyFilename.StartsWith(prefix))
+            if (filePath == null)
             {
-                StreamReader streamReader;
+                var codeBase = assembly.CodeBase;
 
-                var filePath = Path.ChangeExtension(assemblyFilename.Substring(prefix.Length), ".xml");
-                if (!File.Exists(filePath)) return null;
+                if (codeBase.IsNullOrEmpty()
+                    || !Uri.TryCreate(codeBase, UriKind.Absolute, out var codeBaseUri)
+                    || !codeBaseUri.IsFile)
+                {
+                    if (assembly.Location.IsNullOrEmpty())
+                        throw new Exception("Could not ascertain assembly filename", null);
 
-                try
-                {
-                    streamReader = new StreamReader(filePath);
-                }
-                catch (FileNotFoundException exception)
-                {
-                    throw new Exception(
-                        "XML documentation not present (make sure it is turned on in project properties when building)",
-                        exception);
+                    return null;
                 }
 
-                var xmlDocument = new XmlDocument();
-                xmlDocument.Load(streamReader);
+                filePath = FindDocumentationFile(codeBaseUri.LocalPath);
+                if (filePath == null) return null;
+            }
+
+            StreamReader streamReader;
+
+            try
+            {
+                streamReader = new StreamReader(filePath);
+            }
+            catch (FileNotFoundException exception)
+            {
+                throw new Exception(
+                    "XML documentation not present (make sure it is turned on in project properties when building)",
+                    exception);
+            }
+
+            using (streamReader)
+            using (var xmlReader = new XmlTextReader(streamReader) { DtdProcessing = DtdProcessing.Prohibit, XmlResolver = null })
+            {
+                var xmlDocument = new XmlDocument { XmlResolver = null };
+                xmlDocument.Load(xmlReader);
 
                 return xmlDocument;
             }
+        }
 
-            throw new Exception("Could not ascertain assembly filename", null);
+        /// <summary>
+        ///     Gets the XML documentation file path next to the given assembly file, when it exists
+        /// </summary>
+        /// <param name="assemblyFilename">The assembly file path</param>
+        /// <returns>The XML documentation file path, or null when it does not exist</returns>
+        private static string FindDocumentationFile(string assemblyFilename)
+        {
+            if (assemblyFilename.IsNullOrEmpty()) return null;
+
+            var filePath = Path.ChangeExtension(assemblyFilename, ".xml");
+
+            return File.Exists(filePath) ? filePath : null;
         }
     }
 }
