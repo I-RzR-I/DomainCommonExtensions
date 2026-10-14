@@ -41,41 +41,22 @@ namespace RzR.Extensions.Domain.Reflection
     /// <remarks></remarks>
     public static partial class TypeExtensions
     {
-        private static readonly Dictionary<Type, Type> NullableTypeDict = new Dictionary<Type, Type>
-        {
-            [typeof(byte?)] = typeof(byte),
-            [typeof(sbyte?)] = typeof(sbyte),
-            [typeof(short?)] = typeof(short),
-            [typeof(ushort?)] = typeof(ushort),
-            [typeof(int?)] = typeof(int),
-            [typeof(uint?)] = typeof(uint),
-            [typeof(long?)] = typeof(long),
-            [typeof(ulong?)] = typeof(ulong),
-            [typeof(float?)] = typeof(float),
-            [typeof(double?)] = typeof(double),
-            [typeof(decimal?)] = typeof(decimal),
-            [typeof(bool?)] = typeof(bool),
-            [typeof(char?)] = typeof(char),
-            [typeof(Guid?)] = typeof(Guid),
-            [typeof(DateTime?)] = typeof(DateTime),
-            [typeof(DateTimeOffset?)] = typeof(DateTimeOffset),
-            [typeof(TimeSpan?)] = typeof(TimeSpan)
-        };
-
         /// <summary>
         ///     Get property value as object
         /// </summary>
         /// <param name="obj"></param>
         /// <param name="name"></param>
         /// <returns></returns>
-        /// <remarks></remarks>
+        /// <remarks>
+        ///     The property is looked up with the first char upper-cased; when it is not found, the name
+        ///     is used exactly as given.
+        /// </remarks>
         public static object GetPropertyValue(this object obj, string name)
         {
             if (obj.IsNull())
                 throw new ArgumentNullException(nameof(obj));
 
-            return obj?.GetType()
-                .GetProperty(name.Trim().FirstCharToUpper())
+            return FindProperty(obj.GetType(), name)
                 ?.GetValue(obj, null);
         }
 
@@ -85,14 +66,29 @@ namespace RzR.Extensions.Domain.Reflection
         /// <param name="obj"></param>
         /// <param name="name"></param>
         /// <returns></returns>
-        /// <remarks></remarks>
+        /// <remarks>
+        ///     The property is looked up with the first char upper-cased; when it is not found, the name
+        ///     is used exactly as given.
+        /// </remarks>
         public static string GetStringPropertyValue(this object obj, string name)
         {
             DomainEnsure.IsNotNull(obj, nameof(obj));
 
-            return obj?.GetType()
-                .GetProperty(name.Trim().FirstCharToUpper())
+            return FindProperty(obj.GetType(), name)
                 ?.GetValue(obj, null)?.ToString() ?? string.Empty;
+        }
+
+        /// <summary>
+        ///     Find a property by name, first with the first char upper-cased, then exactly as given.
+        /// </summary>
+        /// <param name="type">The type.</param>
+        /// <param name="name">The property name.</param>
+        /// <returns>The property, or null when it is not found.</returns>
+        internal static PropertyInfo FindProperty(Type type, string name)
+        {
+            var trimmed = name.Trim();
+
+            return type.GetProperty(trimmed.FirstCharToUpper()) ?? type.GetProperty(trimmed);
         }
 
         /// <summary>
@@ -340,15 +336,13 @@ namespace RzR.Extensions.Domain.Reflection
         ///     Get non-nullable type
         /// </summary>
         /// <param name="type"></param>
-        /// <returns></returns>
+        /// <returns>The underlying type of a closed <see cref="Nullable{T}"/>; otherwise the type itself.</returns>
         /// <remarks></remarks>
         public static Type GetNonNullableType(this Type type)
         {
             DomainEnsure.IsNotNull(type, nameof(type));
 
-            return type.IsNullablePropType()
-                ? NullableTypeDict.FirstOrDefault(x => x.Key == type).Value
-                : type;
+            return Nullable.GetUnderlyingType(type) ?? type;
         }
 
         /// <summary>
@@ -357,15 +351,28 @@ namespace RzR.Extensions.Domain.Reflection
         /// <param name="type">Entity type</param>
         /// <param name="propertyPath">Property name/path 'A.B.C'</param>
         /// <returns></returns>
+        /// <exception cref="ArgumentNullException">Thrown when <paramref name="type"/> or <paramref name="propertyPath"/> is null.</exception>
+        /// <exception cref="ArgumentException">
+        ///     Thrown when a segment of <paramref name="propertyPath"/> is not a public property of the type reached so far;
+        ///     the message names the missing segment.
+        /// </exception>
         /// <remarks></remarks>
         public static PropertyInfo[] GetPropertyPath(this Type type, string propertyPath)
         {
+            DomainEnsure.IsNotNull(type, nameof(type));
+            DomainEnsure.IsNotNull(propertyPath, nameof(propertyPath));
+
             var propertyNames = propertyPath.Split('.');
             var properties = new PropertyInfo[propertyNames.Length];
 
             for (var i = 0; i < propertyNames.Length; i++)
             {
                 properties[i] = type.GetProperty(propertyNames[i]);
+                if (properties[i].IsNull())
+                    throw new ArgumentException(
+                        $"Property '{propertyNames[i]}' of path '{propertyPath}' was not found on type '{type.FullName}'.",
+                        nameof(propertyPath));
+
                 type = properties[i].PropertyType;
             }
 

@@ -28,8 +28,6 @@ using RzR.Extensions.Domain.Primitives;
 using RzR.Extensions.Domain.Text;
 using RzR.Extensions.Domain.Validation;
 
-#pragma warning disable SCS0007
-
 #endregion
 
 namespace RzR.Extensions.Domain.Reflection.TypeParam
@@ -89,19 +87,21 @@ namespace RzR.Extensions.Domain.Reflection.TypeParam
             ms.Position = 0;
 
             var doc = new XmlDocument();
+            doc.XmlResolver = null;
             doc.Load(ms);
 
             return doc;
         }
 
-        ///-------------------------------------------------------------------------------------------------
-        /// <summary>A T extension method that appends to.</summary>
-        /// <remarks></remarks>
+        /// <summary>
+        ///     A T extension method that appends to.
+        /// </summary>
         /// <typeparam name="T">Generic type parameter.</typeparam>
         /// <param name="first">The first to act on.</param>
         /// <param name="items">A variable-length parameters list containing items.</param>
-        /// <returns>A T[].</returns>
-        ///=================================================================================================
+        /// <returns>
+        ///     A T[].
+        /// </returns>
         public static T[] AppendTo<T>(this T first, params T[] items)
         {
             var result = new T[items.Length + 1];
@@ -111,15 +111,14 @@ namespace RzR.Extensions.Domain.Reflection.TypeParam
             return result;
         }
 
-        ///-------------------------------------------------------------------------------------------------
         /// <summary>
         ///     A TSource extension method that gets properties information from source.
         /// </summary>
-        /// <remarks></remarks>
         /// <typeparam name="TSource">Type of the source.</typeparam>
         /// <param name="source">.</param>
-        /// <returns>The properties information from source.</returns>
-        ///=================================================================================================
+        /// <returns>
+        ///     The properties information from source.
+        /// </returns>
         public static IList<PropertyInfo> GetPropertiesInfoFromSource<TSource>(this TSource source) where TSource : class
         {
             try
@@ -130,7 +129,6 @@ namespace RzR.Extensions.Domain.Reflection.TypeParam
             catch { return null; }
         }
 
-        /// -------------------------------------------------------------------------------------------------
         /// <summary>
         ///     A TSource extension method that if is null.
         /// </summary>
@@ -140,7 +138,6 @@ namespace RzR.Extensions.Domain.Reflection.TypeParam
         /// <returns>
         ///     A TSource.
         /// </returns>
-        /// =================================================================================================
         public static TSource IfIsNull<TSource>(this TSource source, TSource defaultValue)
         {
             if (source.IsNull())
@@ -149,7 +146,6 @@ namespace RzR.Extensions.Domain.Reflection.TypeParam
             return source;
         }
 
-        /// -------------------------------------------------------------------------------------------------
         /// <summary>
         ///     A TSource extension method that if is not null.
         /// </summary>
@@ -159,7 +155,6 @@ namespace RzR.Extensions.Domain.Reflection.TypeParam
         /// <returns>
         ///     A TSource.
         /// </returns>
-        /// =================================================================================================
         public static TSource IfIsNotNull<TSource>(this TSource source, TSource defaultValue)
         {
             if (source.IsNotNull())
@@ -192,13 +187,11 @@ namespace RzR.Extensions.Domain.Reflection.TypeParam
         /// <param name="searchValue">The search value.</param>
         /// <param name="resultValue">Result object value.</param>
         /// <returns>
-        ///     A T. If objects are equals then return defaultValue.
+        ///     A T. If objects are equals (EqualityComparer default, null equals only null) then return
+        ///     resultValue, otherwise source.
         /// </returns>
         public static T IfEquals<T>(this T source, T searchValue, T resultValue)
         {
-            if (source.IsNull() || searchValue.IsNull())
-                return resultValue;
-
             return EqualityComparer<T>.Default.Equals(source, searchValue) ? resultValue : source;
         }
 
@@ -210,13 +203,11 @@ namespace RzR.Extensions.Domain.Reflection.TypeParam
         /// <param name="searchValue">The search value.</param>
         /// <param name="resultValue">Result object value.</param>
         /// <returns>
-        ///     A T. If objects are not equals then return resultValue.
+        ///     A T. If objects are not equals (EqualityComparer default, null equals only null) then
+        ///     return resultValue, otherwise source.
         /// </returns>
         public static T IfNotEquals<T>(this T source, T searchValue, T resultValue)
         {
-            if (source.IsNull() || searchValue.IsNull())
-                return resultValue;
-
             return EqualityComparer<T>.Default.Equals(source, searchValue).IsFalse() ? resultValue : source;
         }
 
