@@ -18,6 +18,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 
 #endregion
@@ -111,7 +112,7 @@ namespace RzR.Extensions.Domain.Primitives
         /// </summary>
         /// <param name="value"></param>
         /// <param name="total"></param>
-        /// <returns></returns>
+        /// <returns>The percent; 0 when total is 0 or the result overflows decimal.</returns>
         public static double PercentOf(this decimal value, decimal total)
         {
             if (total.IsZero()) return 0;
@@ -119,12 +120,10 @@ namespace RzR.Extensions.Domain.Primitives
             {
                 return (double)(value / total * 100);
             }
-            catch (Exception e)
+            catch (OverflowException)
             {
-                Console.WriteLine(e);
+                return 0;
             }
-
-            return 0;
         }
 
         /// <summary>
@@ -142,12 +141,17 @@ namespace RzR.Extensions.Domain.Primitives
         }
 
         /// <summary>
-        ///     Get random number
+        ///     Get random number.
         /// </summary>
-        /// <param name="random"></param>
-        /// <param name="min"></param>
-        /// <param name="max"></param>
-        /// <returns></returns>
+        /// <exception cref="ArgumentOutOfRangeException">
+        ///     Thrown when <paramref name="max"/> is less than or equal to <paramref name="min"/>.
+        /// </exception>
+        /// <param name="random">.</param>
+        /// <param name="min">.</param>
+        /// <param name="max">.</param>
+        /// <returns>
+        ///     A long.
+        /// </returns>
         public static long NextLong(this Random random, long min, long max)
         {
             if (max <= min)
@@ -204,9 +208,10 @@ namespace RzR.Extensions.Domain.Primitives
         ///     Is prime number
         /// </summary>
         /// <param name="number"></param>
-        /// <returns></returns>
+        /// <returns>True if the number is prime; numbers less than 2 are not prime</returns>
         public static bool IsPrime(this int number)
         {
+            if (number < 2) return false;
             if ((number % 2).IsZero()) return number == 2;
             var sqrt = (int)Math.Sqrt(number);
             for (var t = 3; t <= sqrt; t += 2)
@@ -267,55 +272,113 @@ namespace RzR.Extensions.Domain.Primitives
         /// <summary>
         ///     Get number suffix
         /// </summary>
-        /// <param name="sourceNumber">Number to check</param>
+        /// <param name="sourceNumber">Number to check; negative numbers use the suffix of their absolute value</param>
         /// <returns></returns>
         /// <remarks></remarks>
         public static string GetNumberSuffix(this int sourceNumber)
         {
-            var text = sourceNumber.ToString();
-            string result;
-            if (text.Length > 2)
-            {
-                var num = int.Parse(text.Substring(text.Length - 2, 2));
-                if (num >= 11 && num <= 13)
-                {
-                    result = "th";
-                    return result;
-                }
-            }
-            if (sourceNumber > 20)
-            {
-                switch (int.Parse(text.Substring(text.Length - 1, 1)))
-                {
-                    case 1:
-                        result = "st";
-                        return result;
-                    case 2:
-                        result = "nd";
-                        return result;
-                    case 3:
-                        result = "rd";
-                        return result;
-                }
-            }
-            else
-            {
-                switch (sourceNumber)
-                {
-                    case 1:
-                        result = "st";
-                        return result;
-                    case 2:
-                        result = "nd";
-                        return result;
-                    case 3:
-                        result = "rd";
-                        return result;
-                }
-            }
-            result = "th";
+            var number = Math.Abs((long)sourceNumber);
+            var lastTwoDigits = number % 100;
+            if (lastTwoDigits >= 11 && lastTwoDigits <= 13)
+                return "th";
 
-            return result;
+            switch (number % 10)
+            {
+                case 1:
+                    return "st";
+                case 2:
+                    return "nd";
+                case 3:
+                    return "rd";
+                default:
+                    return "th";
+            }
         }
+
+        /// <summary>
+        ///     Parses a string as an <see cref="int"/> using the invariant culture.
+        /// </summary>
+        /// <param name="source">The string to parse.</param>
+        /// <returns>
+        ///     The parsed value, or 0 when <paramref name="source"/> is null, empty, not a valid integer
+        ///     or out of range.
+        /// </returns>
+        public static int ToIntOrDefault(this string source)
+            => int.TryParse(source, NumberStyles.Integer, CultureInfo.InvariantCulture, out var result) ? result : 0;
+
+        /// <summary>
+        ///     Parses a string as a <see cref="long"/> using the invariant culture.
+        /// </summary>
+        /// <remarks>
+        ///     Same rules as <see cref="ToLongOrNull(string)"/>.
+        /// </remarks>
+        /// <param name="source">The string to parse.</param>
+        /// <returns>
+        ///     The parsed value, or 0 when <paramref name="source"/> is null, empty, not a valid integer
+        ///     or out of range.
+        /// </returns>
+        public static long ToLongOrDefault(this string source)
+            => source.ToLongOrNull().GetValueOrDefault();
+
+        /// <summary>
+        ///     Parses a string as a <see cref="decimal"/> using the invariant culture.
+        /// </summary>
+        /// <remarks>
+        ///     Same rules as <see cref="ToDecimalOrNull(string)"/>.
+        /// </remarks>
+        /// <param name="source">The string to parse.</param>
+        /// <returns>
+        ///     The parsed value, or 0 when <paramref name="source"/> is null, empty, not a valid number
+        ///     or out of range.
+        /// </returns>
+        public static decimal ToDecimalOrDefault(this string source)
+            => source.ToDecimalOrNull().GetValueOrDefault();
+
+        /// <summary>
+        ///     Parses a string as a <see cref="double"/> using the invariant culture.
+        /// </summary>
+        /// <remarks>
+        ///     Same rules as <see cref="ToDoubleOrNull(string)"/>.
+        /// </remarks>
+        /// <param name="source">The string to parse.</param>
+        /// <returns>
+        ///     The parsed value, or 0 when <paramref name="source"/> is null, empty or not a valid
+        ///     number.
+        /// </returns>
+        public static double ToDoubleOrDefault(this string source)
+            => source.ToDoubleOrNull().GetValueOrDefault();
+
+        /// <summary>
+        ///     Parses a string as a <see cref="long"/> using the invariant culture.
+        /// </summary>
+        /// <param name="source">The string to parse.</param>
+        /// <returns>
+        ///     The parsed value, or null when <paramref name="source"/> is null, empty, not a valid
+        ///     integer or out of range.
+        /// </returns>
+        public static long? ToLongOrNull(this string source)
+            => long.TryParse(source, NumberStyles.Integer, CultureInfo.InvariantCulture, out var result) ? result : null;
+
+        /// <summary>
+        ///     Parses a string as a <see cref="decimal"/> using the invariant culture.
+        /// </summary>
+        /// <param name="source">The string to parse.</param>
+        /// <returns>
+        ///     The parsed value, or null when <paramref name="source"/> is null, empty, not a valid
+        ///     number or out of range.
+        /// </returns>
+        public static decimal? ToDecimalOrNull(this string source)
+            => decimal.TryParse(source, NumberStyles.Float, CultureInfo.InvariantCulture, out var result) ? result : null;
+
+        /// <summary>
+        ///     Parses a string as a <see cref="double"/> using the invariant culture.
+        /// </summary>
+        /// <param name="source">The string to parse.</param>
+        /// <returns>
+        ///     The parsed value, or null when <paramref name="source"/> is null, empty or not a valid
+        ///     number.
+        /// </returns>
+        public static double? ToDoubleOrNull(this string source)
+            => double.TryParse(source, NumberStyles.Float, CultureInfo.InvariantCulture, out var result) ? result : null;
     }
 }

@@ -34,13 +34,34 @@ namespace RzR.Extensions.Domain.Primitives
         /// </summary>
         /// <param name="minutes">Minute to convert</param>
         /// <returns>
-        ///     Milliseconds from minute
+        ///     Milliseconds from minute, saturated to the <see cref="int"/> range
         /// </returns>
         public static int MinutesToMs(this double minutes)
         {
             DomainEnsure.IsNotNull(minutes, nameof(minutes));
 
-            return (int)TimeSpan.FromMinutes(minutes).TotalMilliseconds;
+            return TimeSpan.FromMinutes(minutes).TotalMilliseconds.ToSaturatedInt();
+        }
+
+        /// <summary>
+        ///     Truncate a double to int, clamping values outside the int range to int.MinValue / int.MaxValue
+        /// </summary>
+        /// <param name="value">Value to convert (NaN gives 0)</param>
+        /// <returns>
+        ///     Truncated value saturated to the <see cref="int"/> range
+        /// </returns>
+        internal static int ToSaturatedInt(this double value)
+        {
+            if (double.IsNaN(value))
+                return 0;
+
+            if (value >= int.MaxValue)
+                return int.MaxValue;
+
+            if (value <= int.MinValue)
+                return int.MinValue;
+
+            return (int)value;
         }
 
         /// <summary>

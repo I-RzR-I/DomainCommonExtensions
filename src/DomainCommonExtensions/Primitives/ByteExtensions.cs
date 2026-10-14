@@ -58,8 +58,18 @@ namespace RzR.Extensions.Domain.Primitives
         ///     Get hash string SHA256
         /// </summary>
         /// <param name="bytes">Input data</param>
-        /// <returns></returns>
-        /// <remarks></remarks>
+        /// <returns>The upper-case hexadecimal encoding of <paramref name="bytes"/>.</returns>
+        /// <remarks>
+        ///     Despite its name, this method does not compute SHA-256 or any other hash. It returns the
+        ///     upper-case hexadecimal encoding of its input, so the result can be turned back into the
+        ///     original bytes. To get a SHA-256 digest, use <see cref="Sha256Hex(byte[])"/>, which returns
+        ///     lower-case hex, so compare case-insensitively when you check it against values stored from
+        ///     this method.
+        ///     If you stored the output of this method as a hash of passwords, tokens or personal data,
+        ///     treat those values as plaintext and rotate the affected secrets. Re-hash passwords with a
+        ///     password KDF (PBKDF2, Argon2, bcrypt). <see cref="Sha256Hex(byte[])"/> suits high-entropy
+        ///     tokens and keys, not passwords.
+        /// </remarks>
         public static string GetHashSha256String(this byte[] bytes)
         {
             DomainEnsure.IsNotNull(bytes, nameof(bytes));
@@ -75,8 +85,13 @@ namespace RzR.Extensions.Domain.Primitives
         ///     Convert a byte array to a hexadecimal string.
         /// </summary>
         /// <param name="bytes">Input bytes.</param>
-        /// <param name="upperCase">When <see langword="true"/> emits upper-case hex (e.g. <c>FF</c>); otherwise lower-case (e.g. <c>ff</c>). Default is lower-case.</param>
-        /// <returns>Hexadecimal string representation of <paramref name="bytes"/>.</returns>
+        /// <param name="upperCase">
+        ///     (Optional) When <see langword="true"/> emits upper-case hex (e.g. <c>FF</c>); otherwise
+        ///     lower-case (e.g. <c>ff</c>). Default is lower-case.
+        /// </param>
+        /// <returns>
+        ///     Hexadecimal string representation of <paramref name="bytes"/>.
+        /// </returns>
         public static string ToHexString(this byte[] bytes, bool upperCase = false)
         {
             DomainEnsure.IsNotNull(bytes, nameof(bytes));
@@ -139,15 +154,21 @@ namespace RzR.Extensions.Domain.Primitives
         }
 
         /// <summary>
-        ///     Gets string for bytes array
+        ///     Gets string for bytes array.
         /// </summary>
-        /// <param name="bytes">The bytes array</param>
-        /// <returns>The string</returns>
+        /// <param name="bytes">The bytes array.</param>
+        /// <returns>
+        ///     The string, where each byte is mapped to the char with the same code (Latin-1)
+        /// </returns>
         public static string GetString(this byte[] bytes)
         {
             DomainEnsure.IsNotNull(bytes, nameof(bytes));
 
-            return bytes.Aggregate(string.Empty, (current, b) => current + (char) b);
+            var chars = new char[bytes.Length];
+            for (var i = 0; i < bytes.Length; i++)
+                chars[i] = (char)bytes[i];
+
+            return new string(chars);
         }
 
         /// <summary>

@@ -105,6 +105,7 @@ namespace RzR.Extensions.Domain.Primitives
         /// <param name="source">Enum property</param>
         /// <returns></returns>
         /// <typeparam name="T"></typeparam>
+        /// <exception cref="OverflowException">Thrown when the enum value is outside the <see cref="int"/> range.</exception>
         /// <remarks></remarks>
         public static int ToInt<T>(this T source) where T : Enum, IConvertible
         {
@@ -112,7 +113,7 @@ namespace RzR.Extensions.Domain.Primitives
             DomainEnsure.ThrowArgumentExceptionIfFuncIsFalse(
                 () => typeof(T).IsEnum, "T must be an enumerated type!", typeof(T).Name);
 
-            return (int)(IConvertible)source;
+            return Convert.ToInt32(source);
         }
 
         /// -------------------------------------------------------------------------------------------------
@@ -132,7 +133,10 @@ namespace RzR.Extensions.Domain.Primitives
         ///     Convert enum property to string
         /// </summary>
         /// <param name="source">Enum property</param>
-        /// <returns></returns>
+        /// <returns>
+        ///     The value formatted as by <see cref="Enum.ToString()"/>: the member name, comma-separated flags,
+        ///     or the numeric value when it is not defined.
+        /// </returns>
         /// <typeparam name="T"></typeparam>
         /// <remarks></remarks>
         public static string ToString<T>(this T source) where T : Enum, IConvertible
@@ -141,7 +145,7 @@ namespace RzR.Extensions.Domain.Primitives
             DomainEnsure.ThrowArgumentExceptionIfFuncIsFalse(
                 () => typeof(T).IsEnum, "T must be an enumerated type!", typeof(T).Name);
 
-            return (string)(IConvertible)source;
+            return source.ToString();
         }
 
 #if NET45_OR_GREATER || NET || NETSTANDARD1_0_OR_GREATER
@@ -164,10 +168,10 @@ namespace RzR.Extensions.Domain.Primitives
 #endif
 
         /// <summary>
-        ///     Method to get enumeration value from string value
+        ///     Method to get enumeration value from string value (member name compared ordinal, case-insensitive)
         /// </summary>
         /// <param name="str"></param>
-        /// <returns></returns>
+        /// <returns>The matching member, or the first member when not found</returns>
         /// <typeparam name="T"></typeparam>
         /// <remarks></remarks>
         public static T GetEnumValue<T>(this string str) where T : struct, Enum, IConvertible
@@ -178,7 +182,7 @@ namespace RzR.Extensions.Domain.Primitives
             var val = ((T[])Enum.GetValues(typeof(T)))[0];
             if (str.IsPresent())
                 foreach (var enumValue in (T[])Enum.GetValues(typeof(T)))
-                    if (enumValue.ToString().ToUpper().Equals(str.ToUpper()))
+                    if (string.Equals(enumValue.ToString(), str, StringComparison.OrdinalIgnoreCase))
                     {
                         val = enumValue;
                         break;
@@ -188,10 +192,99 @@ namespace RzR.Extensions.Domain.Primitives
         }
 
         /// <summary>
+        ///     Strictly parses a string into a defined value of the enumeration <typeparamref name="T"/>.
+        /// </summary>
+        /// <typeparam name="T">The enumeration type.</typeparam>
+        /// <param name="value">
+        ///     The member name, comma-separated member names or numeric value to parse.
+        /// </param>
+        /// <param name="result">
+        ///     [out] When this method returns true, the parsed value; otherwise the default value of <typeparamref name="T"/>.
+        /// </param>
+        /// <param name="ignoreCase">
+        ///     (Optional)
+        ///     True to match member names case-insensitively; false (the default) to require an exact
+        ///     match.
+        /// </param>
+        /// <returns>
+        ///     True when <paramref name="value"/> parses into a defined value of <typeparamref name="T"/>
+        ///     ; otherwise false.
+        /// </returns>
+        public static bool TryParseEnum<T>(this string value, out T result, bool ignoreCase = false)
+            where T : struct, Enum
+        {
+            if (value.IsNotNull() && value.IndexOf(',') >= 0 && !typeof(T).IsDefined(typeof(FlagsAttribute), false))
+            {
+                result = default;
+
+                return false;
+            }
+
+            if (Enum.TryParse(value, ignoreCase, out result) && IsDefinedEnumValue(result))
+                return true;
+
+            result = default;
+
+            return false;
+        }
+
+        /// <summary>
+        ///     Checks that a parsed enumeration value is a declared member or, for a [Flags] enumeration,
+        ///     a combination of declared flags.
+        /// </summary>
+        /// <typeparam name="T">The enumeration type.</typeparam>
+        /// <param name="value">The value to check.</param>
+        /// <returns>
+        ///     True when the value is defined as described; otherwise false.
+        /// </returns>
+        private static bool IsDefinedEnumValue<T>(T value) where T : struct, Enum
+        {
+            var enumType = typeof(T);
+            object boxed = value;
+            if (Enum.IsDefined(enumType, boxed))
+                return true;
+
+            if (!enumType.IsDefined(typeof(FlagsAttribute), false))
+                return false;
+
+            var bits = ToUInt64Bits(boxed);
+            if (bits == 0)
+                return false;
+
+            ulong declaredBits = 0;
+            foreach (var member in Enum.GetValues(enumType))
+                declaredBits |= ToUInt64Bits(member);
+
+            return (bits & ~declaredBits) == 0;
+        }
+
+        /// <summary>
+        ///     Reinterprets an enumeration value as the unsigned 64-bit pattern of its underlying
+        ///     integer.
+        /// </summary>
+        /// <param name="value">The boxed enumeration value.</param>
+        /// <returns>
+        ///     The bit pattern; negative signed values are sign-extended.
+        /// </returns>
+        private static ulong ToUInt64Bits(object value)
+        {
+            switch (Convert.GetTypeCode(value))
+            {
+                case TypeCode.SByte:
+                case TypeCode.Int16:
+                case TypeCode.Int32:
+                case TypeCode.Int64:
+                    return unchecked((ulong)Convert.ToInt64(value));
+                default:
+                    return Convert.ToUInt64(value);
+            }
+        }
+
+        /// <summary>
         ///     Method to get enumeration value from int value
         /// </summary>
         /// <param name="intValue"></param>
-        /// <returns></returns>
+        /// <returns>The matching member, or the first member when not found</returns>
         /// <typeparam name="T"></typeparam>
         /// <remarks></remarks>
         public static T GetEnumValue<T>(this int intValue) where T : struct, Enum, IConvertible
@@ -202,7 +295,7 @@ namespace RzR.Extensions.Domain.Primitives
             var val = ((T[])Enum.GetValues(typeof(T)))[0];
 
             foreach (var enumValue in (T[])Enum.GetValues(typeof(T)))
-                if (Convert.ToInt32(enumValue).Equals(intValue))
+                if (Convert.ToDecimal(enumValue) == intValue)
                 {
                     val = enumValue;
                     break;

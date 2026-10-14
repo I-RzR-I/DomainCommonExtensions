@@ -27,9 +27,9 @@ namespace RzR.Extensions.Domain.Primitives
     ///     Time span extensions.
     /// </summary>
     /// =================================================================================================
+    /// =================================================================================================
     public static class TimeSpanExtension
     {
-        /// -------------------------------------------------------------------------------------------------
         /// <summary>
         ///     Returns the absolute value of the timestamp.
         /// </summary>
@@ -37,7 +37,6 @@ namespace RzR.Extensions.Domain.Primitives
         /// <returns>
         ///     A TimeSpan.
         /// </returns>
-        /// =================================================================================================
         public static TimeSpan Absolute(this TimeSpan source)
         {
             if (source.IsNull()) 
@@ -48,7 +47,6 @@ namespace RzR.Extensions.Domain.Primitives
                 : source.Negate();
         }
 
-        /// -------------------------------------------------------------------------------------------------
         /// <summary>
         ///     A TimeSpan is considered missing if it is zero or negative.
         /// </summary>
@@ -56,13 +54,11 @@ namespace RzR.Extensions.Domain.Primitives
         /// <returns>
         ///     True if missing, false if not.
         /// </returns>
-        /// =================================================================================================
         public static bool IsMissing(this TimeSpan source)
         {
             return source.IsNotNull() && source <= TimeSpan.Zero;
         }
 
-        /// -------------------------------------------------------------------------------------------------
         /// <summary>
         ///     A TimeSpan is considered missing if it is zero or negative.
         /// </summary>
@@ -70,13 +66,11 @@ namespace RzR.Extensions.Domain.Primitives
         /// <returns>
         ///     True if missing, false if not.
         /// </returns>
-        /// =================================================================================================
         public static bool IsMissing(this TimeSpan? source)
         {
             return !source.HasValue || source.Value <= TimeSpan.Zero;
         }
 
-        /// -------------------------------------------------------------------------------------------------
         /// <summary>
         ///     A TimeSpan? extension method that query if 'source' has valid value.
         /// </summary>
@@ -84,13 +78,11 @@ namespace RzR.Extensions.Domain.Primitives
         /// <returns>
         ///     True if valid value, false if not.
         /// </returns>
-        /// =================================================================================================
         public static bool HasValidValue(this TimeSpan source)
         {
             return source.IsNotNull() && source > TimeSpan.Zero;
         }
 
-        /// -------------------------------------------------------------------------------------------------
         /// <summary>
         ///     A TimeSpan? extension method that query if 'source' has valid value.
         /// </summary>
@@ -98,13 +90,11 @@ namespace RzR.Extensions.Domain.Primitives
         /// <returns>
         ///     True if valid value, false if not.
         /// </returns>
-        /// =================================================================================================
         public static bool HasValidValue(this TimeSpan? source)
         {
             return source.HasValue && source.Value > TimeSpan.Zero;
         }
 
-        /// -------------------------------------------------------------------------------------------------
         /// <summary>
         ///     A TimeSpan extension method that query if 'source' is zero.
         /// </summary>
@@ -112,13 +102,11 @@ namespace RzR.Extensions.Domain.Primitives
         /// <returns>
         ///     True if zero, false if not.
         /// </returns>
-        /// =================================================================================================
         public static bool IsZero(this TimeSpan source)
         {
             return source.IsNotNull() && source == TimeSpan.Zero;
         }
 
-        /// -------------------------------------------------------------------------------------------------
         /// <summary>
         ///     A TimeSpan extension method that query if 'source' is zero.
         /// </summary>
@@ -126,13 +114,11 @@ namespace RzR.Extensions.Domain.Primitives
         /// <returns>
         ///     True if zero, false if not.
         /// </returns>
-        /// =================================================================================================
         public static bool IsZero(this TimeSpan? source)
         {
             return source.IsNotNull() && source == TimeSpan.Zero;
         }
 
-        /// -------------------------------------------------------------------------------------------------
         /// <summary>
         ///     A TimeSpan extension method that query if 'source' is positive.
         /// </summary>
@@ -140,13 +126,11 @@ namespace RzR.Extensions.Domain.Primitives
         /// <returns>
         ///     True if positive, false if not.
         /// </returns>
-        /// =================================================================================================
         public static bool IsPositive(this TimeSpan source)
         {
             return source.IsNotNull() && source > TimeSpan.Zero;
         }
 
-        /// -------------------------------------------------------------------------------------------------
         /// <summary>
         ///     A TimeSpan extension method that query if 'source' is positive.
         /// </summary>
@@ -154,13 +138,11 @@ namespace RzR.Extensions.Domain.Primitives
         /// <returns>
         ///     True if positive, false if not.
         /// </returns>
-        /// =================================================================================================
         public static bool IsPositive(this TimeSpan? source)
         {
             return source.IsNotNull() && source > TimeSpan.Zero;
         }
 
-        /// -------------------------------------------------------------------------------------------------
         /// <summary>
         ///     A TimeSpan extension method that query if 'source' is negative.
         /// </summary>
@@ -168,13 +150,11 @@ namespace RzR.Extensions.Domain.Primitives
         /// <returns>
         ///     True if negative, false if not.
         /// </returns>
-        /// =================================================================================================
         public static bool IsNegative(this TimeSpan source)
         {
             return source.IsNotNull() && source < TimeSpan.Zero;
         }
 
-        /// -------------------------------------------------------------------------------------------------
         /// <summary>
         ///     A TimeSpan extension method that query if 'source' is negative.
         /// </summary>
@@ -182,13 +162,11 @@ namespace RzR.Extensions.Domain.Primitives
         /// <returns>
         ///     True if negative, false if not.
         /// </returns>
-        /// =================================================================================================
         public static bool IsNegative(this TimeSpan? source)
         {
             return source.IsNotNull() && source < TimeSpan.Zero;
         }
 
-        /// -------------------------------------------------------------------------------------------------
         /// <summary>
         ///     A TimeSpan extension method that query if 'source' is between.
         /// </summary>
@@ -198,14 +176,12 @@ namespace RzR.Extensions.Domain.Primitives
         /// <returns>
         ///     True if between, false if not.
         /// </returns>
-        /// =================================================================================================
         public static bool IsBetween(this TimeSpan source,
             TimeSpan minInclusive, TimeSpan maxInclusive)
         {
             return source >= minInclusive && source <= maxInclusive;
         }
 
-        /// -------------------------------------------------------------------------------------------------
         /// <summary>
         ///     A TimeSpan? extension method that default if null.
         /// </summary>
@@ -214,13 +190,11 @@ namespace RzR.Extensions.Domain.Primitives
         /// <returns>
         ///     A TimeSpan.
         /// </returns>
-        /// =================================================================================================
         public static TimeSpan DefaultIfNull(this TimeSpan? source, TimeSpan defaultValue)
         {
             return source ?? defaultValue;
         }
 
-        /// -------------------------------------------------------------------------------------------------
         /// <summary>
         ///     A TimeSpan? extension method that zero if null.
         /// </summary>
@@ -228,13 +202,11 @@ namespace RzR.Extensions.Domain.Primitives
         /// <returns>
         ///     A TimeSpan.
         /// </returns>
-        /// =================================================================================================
         public static TimeSpan ZeroIfNull(this TimeSpan? source)
         {
             return source ?? TimeSpan.Zero;
         }
 
-        /// -------------------------------------------------------------------------------------------------
         /// <summary>
         ///     A TimeSpan extension method that round up.
         /// </summary>
@@ -246,7 +218,6 @@ namespace RzR.Extensions.Domain.Primitives
         /// <returns>
         ///     A TimeSpan.
         /// </returns>
-        /// =================================================================================================
         public static TimeSpan RoundUp(this TimeSpan source, TimeSpan interval)
         {
             if (interval <= TimeSpan.Zero)
@@ -256,7 +227,6 @@ namespace RzR.Extensions.Domain.Primitives
             return TimeSpan.FromTicks(ticks);
         }
 
-        /// -------------------------------------------------------------------------------------------------
         /// <summary>
         ///     A TimeSpan extension method that round down.
         /// </summary>
@@ -268,7 +238,6 @@ namespace RzR.Extensions.Domain.Primitives
         /// <returns>
         ///     A TimeSpan.
         /// </returns>
-        /// =================================================================================================
         public static TimeSpan RoundDown(this TimeSpan source, TimeSpan interval)
         {
             if (interval <= TimeSpan.Zero)
@@ -278,7 +247,6 @@ namespace RzR.Extensions.Domain.Primitives
             return TimeSpan.FromTicks(ticks);
         }
 
-        /// -------------------------------------------------------------------------------------------------
         /// <summary>
         ///     A TimeSpan extension method that clamp the given source.
         /// </summary>
@@ -291,7 +259,6 @@ namespace RzR.Extensions.Domain.Primitives
         /// <returns>
         ///     A TimeSpan.
         /// </returns>
-        /// =================================================================================================
         public static TimeSpan Clamp(this TimeSpan source,
             TimeSpan min, TimeSpan max)
         {
@@ -307,35 +274,30 @@ namespace RzR.Extensions.Domain.Primitives
             return source;
         }
 
-        /// -------------------------------------------------------------------------------------------------
         /// <summary>
         ///     A TimeSpan extension method that total seconds int.
         /// </summary>
         /// <param name="source">Source TimeSpan.</param>
         /// <returns>
-        ///     The total number of seconds int.
+        ///     The total number of seconds int, saturated to the <see cref="int"/> range.
         /// </returns>
-        /// =================================================================================================
         public static int TotalSecondsInt(this TimeSpan source)
         {
-            return (int)source.TotalSeconds;
+            return source.TotalSeconds.ToSaturatedInt();
         }
 
-        /// -------------------------------------------------------------------------------------------------
         /// <summary>
         ///     A TimeSpan extension method that total minutes int.
         /// </summary>
         /// <param name="source">Source TimeSpan.</param>
         /// <returns>
-        ///     The total number of minutes int.
+        ///     The total number of minutes int, saturated to the <see cref="int"/> range.
         /// </returns>
-        /// =================================================================================================
         public static int TotalMinutesInt(this TimeSpan source)
         {
-            return (int)source.TotalMinutes;
+            return source.TotalMinutes.ToSaturatedInt();
         }
 
-        /// -------------------------------------------------------------------------------------------------
         /// <summary>
         ///     A TimeSpan extension method that total milliseconds long.
         /// </summary>
@@ -343,39 +305,40 @@ namespace RzR.Extensions.Domain.Primitives
         /// <returns>
         ///     The total number of milliseconds long.
         /// </returns>
-        /// =================================================================================================
         public static long TotalMillisecondsLong(this TimeSpan source)
         {
             return (long)source.TotalMilliseconds;
         }
 
-        /// -------------------------------------------------------------------------------------------------
         /// <summary>
-        ///     Formats as HH:mm:ss (zero padded).
+        ///     Formats as HH:mm:ss (zero padded). A negative span of one second or more is prefixed with
+        ///     "-" (e.g. "-01:30:00").
         /// </summary>
         /// <param name="source">Source TimeSpan.</param>
         /// <returns>
         ///     Source as a string.
         /// </returns>
-        /// =================================================================================================
         public static string ToClockFormat(this TimeSpan source)
         {
+            if (source <= TimeSpan.FromSeconds(-1))
+                return "-" + SaturatedDuration(source).ToClockFormat();
+
             return $"{(int)source.TotalHours:00}:{source.Minutes:00}:{source.Seconds:00}";
         }
 
-        /// -------------------------------------------------------------------------------------------------
         /// <summary>
-        ///     Formats as a human-readable duration (e.g. "2h 15m 3s").
+        ///     Formats as a human-readable duration (e.g. "2h 15m 3s") with seconds granularity. A span
+        ///     under one second (either sign) gives "0s"; a negative span of one second or more is
+        ///     prefixed with "-" (e.g. "-1h 30m").
         /// </summary>
         /// <param name="source">Source TimeSpan.</param>
         /// <returns>
         ///     Source as a string.
         /// </returns>
-        /// =================================================================================================
         public static string ToHumanReadable(this TimeSpan source)
         {
-            if (source == TimeSpan.Zero)
-                return "0s";
+            if (source <= TimeSpan.FromSeconds(-1))
+                return "-" + SaturatedDuration(source).ToHumanReadable();
 
             var result = "";
 
@@ -391,10 +354,9 @@ namespace RzR.Extensions.Domain.Primitives
             if (source.Seconds > 0)
                 result += $"{source.Seconds}s ";
 
-            return result.TrimEnd();
+            return result.Length == 0 ? "0s" : result.TrimEnd();
         }
 
-        /// -------------------------------------------------------------------------------------------------
         /// <summary>
         ///     A TimeSpan extension method that throw if missing.
         /// </summary>
@@ -403,14 +365,12 @@ namespace RzR.Extensions.Domain.Primitives
         /// </exception>
         /// <param name="source">Source TimeSpan.</param>
         /// <param name="paramName">(Optional) Name of the parameter.</param>
-        /// =================================================================================================
         public static void ThrowIfMissing(this TimeSpan source, string paramName = null)
         {
             if (source <= TimeSpan.Zero)
                 throw new ArgumentOutOfRangeException(paramName, source, "TimeSpan must be greater than zero.");
         }
 
-        /// -------------------------------------------------------------------------------------------------
         /// <summary>
         ///     A TimeSpan extension method that throw if negative.
         /// </summary>
@@ -419,7 +379,6 @@ namespace RzR.Extensions.Domain.Primitives
         /// </exception>
         /// <param name="source">Source TimeSpan.</param>
         /// <param name="paramName">(Optional) Name of the parameter.</param>
-        /// =================================================================================================
         public static void ThrowIfNegative(this TimeSpan source, string paramName = null)
         {
             if (source < TimeSpan.Zero)
@@ -429,7 +388,6 @@ namespace RzR.Extensions.Domain.Primitives
                     "TimeSpan cannot be negative.");
         }
 
-        /// -------------------------------------------------------------------------------------------------
         /// <summary>
         ///     A TimeSpan extension method that query if 'source' is shorter than.
         /// </summary>
@@ -438,13 +396,11 @@ namespace RzR.Extensions.Domain.Primitives
         /// <returns>
         ///     True if shorter than, false if not.
         /// </returns>
-        /// =================================================================================================
         public static bool IsShorterThan(this TimeSpan source, TimeSpan other)
         {
             return source < other;
         }
 
-        /// -------------------------------------------------------------------------------------------------
         /// <summary>
         ///     A TimeSpan extension method that query if 'source' is longer than.
         /// </summary>
@@ -453,13 +409,11 @@ namespace RzR.Extensions.Domain.Primitives
         /// <returns>
         ///     True if longer than, false if not.
         /// </returns>
-        /// =================================================================================================
         public static bool IsLongerThan(this TimeSpan source, TimeSpan other)
         {
             return source > other;
         }
 
-        /// -------------------------------------------------------------------------------------------------
         /// <summary>
         ///     A TimeSpan extension method that adds a safe to 'other'.
         /// </summary>
@@ -468,7 +422,6 @@ namespace RzR.Extensions.Domain.Primitives
         /// <returns>
         ///     A TimeSpan.
         /// </returns>
-        /// =================================================================================================
         public static TimeSpan AddSafe(this TimeSpan source, TimeSpan other)
         {
             try
@@ -481,6 +434,21 @@ namespace RzR.Extensions.Domain.Primitives
                     ? TimeSpan.MaxValue
                     : TimeSpan.MinValue;
             }
+        }
+
+        /// <summary>
+        ///     Returns the absolute value of the source; <see cref="TimeSpan.MinValue"/> gives
+        ///     <see cref="TimeSpan.MaxValue"/> because its absolute value does not fit a TimeSpan. 
+        /// </summary>
+        /// <param name="source">Source TimeSpan.</param>
+        /// <returns>
+        ///     A non-negative TimeSpan.
+        /// </returns>
+        private static TimeSpan SaturatedDuration(TimeSpan source)
+        {
+            return source == TimeSpan.MinValue
+                ? TimeSpan.MaxValue
+                : source.Duration();
         }
     }
 }
