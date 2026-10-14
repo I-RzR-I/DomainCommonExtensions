@@ -54,16 +54,31 @@ namespace RzR.Extensions.Domain.Data
         /// <param name="expando">Object</param>
         /// <param name="propertyName">Property name</param>
         /// <param name="propertyValue">Property value</param>
-        /// <remarks></remarks>
+        /// <remarks>
+        ///     Walks <paramref name="expando"/> and every nested <see cref="ExpandoObject"/> value iteratively.
+        ///     Each object is processed once, so cycles and shared nodes are handled.
+        /// </remarks>
         public static void UpdateValue(this ExpandoObject expando, string propertyName, object propertyValue)
         {
-            var map = (IDictionary<string, object>)expando;
-            if (map.ContainsKey(propertyName).IsTrue())
-                map[propertyName] = propertyValue;
-            foreach (var val in map.Values)
+            // ExpandoObject does not override Equals/GetHashCode, so the default comparer is reference equality.
+            var visited = new HashSet<ExpandoObject>();
+            var pending = new Stack<ExpandoObject>();
+            pending.Push(expando);
+
+            while (pending.Count > 0)
             {
-                if (val is ExpandoObject)
-                    UpdateValue((ExpandoObject)val, propertyName, propertyValue);
+                var current = pending.Pop();
+                if (visited.Add(current).IsFalse())
+                    continue;
+
+                var map = (IDictionary<string, object>)current;
+                if (map.ContainsKey(propertyName).IsTrue())
+                    map[propertyName] = propertyValue;
+                foreach (var val in map.Values)
+                {
+                    if (val is ExpandoObject)
+                        pending.Push((ExpandoObject)val);
+                }
             }
         }
 
