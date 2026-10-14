@@ -57,12 +57,41 @@ namespace RzR.Extensions.Domain.Text
 
         private static readonly string[] EmptyStringArray = new string[0];
 
+        private static readonly char[] PermutationSeparators = { ' ', ',' };
+
+        private const int PermutationMaxWords = 8;
+
+        private const int PermutationMaxLength = 256;
+
+        private static readonly Regex EmailRegex = RegularExpressions.CreateRegex(RegularExpressions.EMAIL, RegexOptions.None);
+
+        private static readonly Regex HtmlTagRegex = RegularExpressions.CreateRegex(@"</?.+?>", RegexOptions.None);
+
+        private static readonly Regex UrlRegex = RegularExpressions.CreateRegex(RegularExpressions.URL, RegexOptions.None);
+
+        private static readonly Regex IpRegex = RegularExpressions.CreateRegex(RegularExpressions.IP, RegexOptions.None);
+
+        private static readonly Regex WhiteSpaceRunRegex = RegularExpressions.CreateRegex(@"\s+", RegexOptions.None);
+
+        private static readonly Regex Base64Regex = RegularExpressions.CreateRegex(RegularExpressions.BASE64, RegexOptions.None);
+
+        private static readonly Regex GuidRegex = RegularExpressions.CreateRegex(RegularExpressions.GUID, RegexOptions.IgnoreCase | RegexOptions.Multiline);
+
+        private static readonly Regex Base32Regex = RegularExpressions.CreateRegex(RegularExpressions.BASE32, RegexOptions.None);
+
+        private static readonly Regex NotLetterNumberOrSpaceRegex = RegularExpressions.CreateRegex("[^a-zA-Z0-9 ]", RegexOptions.None);
+
         /// <summary>
         ///     Split string
         /// </summary>
         /// <param name="str"></param>
         /// <param name="delimiter"></param>
         /// <returns></returns>
+        /// <remarks>
+        ///     For consumers targeting .NET Standard 2.1 or .NET Core 2.1+ the instance method
+        ///     System.String.Split(string, StringSplitOptions) wins overload resolution, so this extension is
+        ///     reached there only through an explicit static call (StringExtensions.Split(str, delimiter)).
+        /// </remarks>
         public static string[] Split(this string str, string delimiter)
         {
             return string.IsNullOrEmpty(str)
@@ -71,27 +100,29 @@ namespace RzR.Extensions.Domain.Text
         }
 
         /// <summary>
-        ///     First char to upper
+        ///     First char to upper (culture-invariant). A single-char input is converted too;
+        ///     null or empty input is returned unchanged.
         /// </summary>
         /// <param name="input"></param>
         /// <returns></returns>
         public static string FirstCharToUpper(this string input)
         {
-            if (input.IsNullOrEmpty() || input.Length < 2) return input;
+            if (input.IsNullOrEmpty()) return input;
 
-            return input.First().ToString().ToUpper() + input.Substring(1);
+            return char.ToUpperInvariant(input[0]) + input.Substring(1);
         }
 
         /// <summary>
-        ///     First char to lower
+        ///     First char to lower (culture-invariant). A single-char input is converted too;
+        ///     null or empty input is returned unchanged.
         /// </summary>
         /// <param name="input"></param>
         /// <returns></returns>
         public static string FirstCharToLower(this string input)
         {
-            if (input.IsNullOrEmpty() || input.Length < 2) return input;
+            if (input.IsNullOrEmpty()) return input;
 
-            return input.First().ToString().ToLowerInvariant() + input.Substring(1);
+            return char.ToLowerInvariant(input[0]) + input.Substring(1);
         }
 
         /// <summary>
@@ -109,9 +140,10 @@ namespace RzR.Extensions.Domain.Text
         /// </summary>
         /// <param name="email"></param>
         /// <returns></returns>
+        /// <remarks>Returns false when the regex match times out.</remarks>
         public static bool IsValidEmail(this string email)
         {
-            return !email.IsNullOrEmpty() && Regex.IsMatch(email, RegularExpressions.EMAIL);
+            return !email.IsNullOrEmpty() && RegularExpressions.IsMatchOrFalseOnTimeout(EmailRegex, email);
         }
 
         /// <summary>
@@ -132,25 +164,37 @@ namespace RzR.Extensions.Domain.Text
         }
 
         /// <summary>
-        ///     Remove any html tags from string
+        ///     Remove any html tags from string.
         /// </summary>
-        /// <param name="input"></param>
-        /// <returns></returns>
+        /// <remarks>
+        ///     On .NET Framework 4.5+ and .NET Standard throws <see cref="T:System.Text.RegularExpressions.RegexMatchTimeoutException"/>
+        ///     when the regex match times out.
+        /// </remarks>
+        /// <param name="input">.</param>
+        /// <returns>
+        ///     A string.
+        /// </returns>
         public static string StripHtml(this string input)
         {
             input ??= string.Empty;
-            var tagsExpression = new Regex(@"</?.+?>");
 
-            return tagsExpression.Replace(input, " ");
+            return HtmlTagRegex.Replace(input, " ");
         }
 
         /// <summary>
-        ///     Truncates the string to a specified length and replace the truncated to a ...
+        ///     Truncates the string to a specified length and replace the truncated to a ... The result
+        ///     never exceeds <paramref name="maxLength"/>: when there is no room for the dots (maxLength
+        ///     &lt;= 3) the first maxLength chars are returned without dots, and a surrogate pair is
+        ///     never split at the cut (the whole pair is dropped).
         /// </summary>
-        /// <param name="text">string that will be truncated</param>
-        /// <param name="maxLength">total length of characters to maintain before the truncate happens</param>
-        /// <param name="useDots">Use 3 dots(...) in the end of string</param>
-        /// <returns>truncated string</returns>
+        /// <param name="text">string that will be truncated.</param>
+        /// <param name="maxLength">
+        ///     total length of characters to maintain before the truncate happens.
+        /// </param>
+        /// <param name="useDots">(Optional) Use 3 dots(...) in the end of string.</param>
+        /// <returns>
+        ///     truncated string.
+        /// </returns>
         public static string Truncate(this string text, int maxLength, bool useDots = false)
         {
             // replaces the truncated string to a ...
@@ -158,44 +202,55 @@ namespace RzR.Extensions.Domain.Text
             var truncatedString = text ?? string.Empty;
 
             if (maxLength.IsLessOrEqualZero()) return truncatedString;
-            var strLength = maxLength - (useDots.Equals(true) ? suffix.Length : 0);
-
-            if (strLength.IsLessOrEqualZero()) return truncatedString;
 
             if (text.IsNullOrEmpty() || text!.Length <= maxLength) return truncatedString;
+
+            var addDots = useDots && maxLength > suffix.Length;
+            var strLength = maxLength - (addDots ? suffix.Length : 0);
+            
+            if (char.IsSurrogatePair(text, strLength - 1)) 
+                strLength--;
 
             truncatedString = text.Substring(0, strLength);
             truncatedString = truncatedString.TrimEnd();
 
-            if (useDots.IsTrue())
+            if (addDots)
                 truncatedString += suffix;
 
             return truncatedString;
         }
 
         /// <summary>
-        ///     Truncates the string to a specified length and replace the truncated to a ...
+        ///     Truncates the string to a specified length and replace the truncated to a ... The tail of
+        ///     the text is kept. The result never exceeds <paramref name="maxLength"/>: when there is no
+        ///     room for the dots (maxLength &lt;= 3) the last maxLength chars are returned without dots,
+        ///     and a surrogate pair is never split at the cut (the whole pair is dropped).
         /// </summary>
-        /// <param name="text">String that will be truncated</param>
-        /// <param name="maxLength">Total length of characters to maintain before the truncate happens</param>
-        /// <param name="useDots">Use 3 dots(...) in the start of string</param>
-        /// <returns>Truncated string</returns>
+        /// <param name="text">String that will be truncated.</param>
+        /// <param name="maxLength">
+        ///     Total length of characters to maintain before the truncate happens.
+        /// </param>
+        /// <param name="useDots">(Optional) Use 3 dots(...) in the start of string.</param>
+        /// <returns>
+        ///     Truncated string.
+        /// </returns>
         public static string TruncateFromStart(this string text, int maxLength, bool useDots = false)
         {
             const string suffix = "...";
             var truncatedString = text ?? string.Empty;
 
             if (maxLength.IsLessOrEqualZero()) return truncatedString;
-            var strLength = maxLength - (useDots.Equals(true) ? suffix.Length : 0);
-
-            if (strLength.IsLessOrEqualZero()) return truncatedString;
 
             if (text.IsNullOrEmpty() || text!.Length <= maxLength) return truncatedString;
 
-            truncatedString = text.Substring(text.Length - strLength, strLength);
+            var addDots = useDots && maxLength > suffix.Length;
+            var startIndex = text.Length - (maxLength - (addDots ? suffix.Length : 0));
+            if (char.IsSurrogatePair(text, startIndex - 1)) startIndex++;
+
+            truncatedString = text.Substring(startIndex);
             truncatedString = truncatedString.TrimEnd();
 
-            if (useDots.IsTrue())
+            if (addDots)
                 return suffix + truncatedString;
 
             return truncatedString;
@@ -219,11 +274,10 @@ namespace RzR.Extensions.Domain.Text
         /// </summary>
         /// <param name="text"></param>
         /// <returns></returns>
+        /// <remarks>Returns false when the regex match times out.</remarks>
         public static bool IsValidUrl(this string text)
         {
-            var rx = new Regex(RegularExpressions.URL);
-
-            return rx.IsMatch(text.IfNullThenEmpty());
+            return RegularExpressions.IsMatchOrFalseOnTimeout(UrlRegex, text.IfNullThenEmpty());
         }
 
         /// <summary>
@@ -231,9 +285,10 @@ namespace RzR.Extensions.Domain.Text
         /// </summary>
         /// <param name="s"></param>
         /// <returns></returns>
+        /// <remarks>Returns false when the regex match times out.</remarks>
         public static bool IsValidIpAddress(this string s)
         {
-            return Regex.IsMatch(s, RegularExpressions.IP);
+            return RegularExpressions.IsMatchOrFalseOnTimeout(IpRegex, s);
         }
 
         /// <summary>
@@ -377,12 +432,12 @@ namespace RzR.Extensions.Domain.Text
         ///     Default value is 'false'.
         /// </param>
         /// <returns></returns>
-        /// <remarks></remarks>
+        /// <remarks>On .NET Framework 4.5+ and .NET Standard throws <see cref="T:System.Text.RegularExpressions.RegexMatchTimeoutException"/> when the regex match times out.</remarks>
         public static string TrimAndReduceSpace(this string value, bool reduceAllSpaces = false)
         {
             if (value.IfNullThenEmpty().IsMissing()) return null;
 
-            return Regex.Replace(value, @"\s+", reduceAllSpaces.IsTrue() ? "" : " ").TrimIfNotNull();
+            return WhiteSpaceRunRegex.Replace(value, reduceAllSpaces.IsTrue() ? "" : " ").TrimIfNotNull();
         }
 
         /// <summary>
@@ -406,19 +461,43 @@ namespace RzR.Extensions.Domain.Text
         }
 
         /// <summary>
-        ///     Get file name and extension separately as array
+        ///     Get file name and extension separately as array.
         /// </summary>
+        /// <remarks>
+        ///     The extension is the text after the last '.', so "my.gzip.gz" gives ["my.gzip", "gz"].
+        ///     See also <see cref="GetFileNameAndExtension(string)"/>.
+        /// </remarks>
         /// <param name="fullName">Full file name (added by user)</param>
-        /// <returns>Array of 2 string array[0] => filename, array[1] => extension</returns>
+        /// <returns>
+        ///     Array of 2 string array[0] => filename, array[1] => extension.
+        /// </returns>
         public static string[] GetFileNameAndExtenstion(this string fullName)
         {
             if (fullName.IfNullThenEmpty().IsMissing()) return null;
 
             var extension = fullName.Split('.')[fullName.Split('.').Length - 1];
-            var fileName = fullName.Replace($".{extension}", "");
+            var fileName = fullName.IndexOf('.') >= 0
+                ? fullName.Substring(0, fullName.Length - extension.Length - 1)
+                : fullName;
 
             return new[] { fileName, extension };
         }
+
+        /// -------------------------------------------------------------------------------------------------
+        /// <summary>
+        ///     Get file name and extension separately as array
+        /// </summary>
+        /// <param name="fullName">Full file name (added by user)</param>
+        /// <returns>Array of 2 string array[0] => filename, array[1] => extension</returns>
+        /// <remarks>
+        ///     The extension is the text after the last '.', so "my.gzip.gz" gives ["my.gzip", "gz"].
+        ///     Same behaviour as <see cref="GetFileNameAndExtenstion(string)"/>: a null, empty or
+        ///     whitespace-only <paramref name="fullName"/> returns null, and a name without '.' returns
+        ///     <paramref name="fullName"/> in both elements.
+        /// </remarks>
+        /// =================================================================================================
+        public static string[] GetFileNameAndExtension(this string fullName)
+            => GetFileNameAndExtenstion(fullName);
 
         /// <summary>
         ///     Encode string to BASE 64
@@ -569,15 +648,19 @@ namespace RzR.Extensions.Domain.Text
         ///     Like: old => "****, ", new => "****"
         /// </summary>
         /// <param name="value">string value</param>
-        /// <param name="reduce">chars array to remove</param>
+        /// <param name="reduce">chars array to remove; when null or empty only the white space is trimmed</param>
         /// <returns></returns>
-        /// <remarks></remarks>
+        /// <remarks>
+        ///     All chars of <paramref name="reduce"/> are trimmed from the end in a single pass. A null
+        ///     <paramref name="value"/> returns an empty string.
+        /// </remarks>
         public static string TrimEndCharAndReduceLastWhiteSpace(this string value, char[] reduce)
         {
-            var result = string.Empty;
-            foreach (var i in reduce) result = value.TrimIfNotNull().TrimEnd(' ').TrimEnd(i);
+            if (value == null) return string.Empty;
 
-            return result;
+            var result = value.TrimIfNotNull().TrimEnd(' ');
+
+            return reduce.IsNullOrEmptyEnumerable() ? result : result.TrimEnd(reduce);
         }
 
         /// <summary>
@@ -637,8 +720,11 @@ namespace RzR.Extensions.Domain.Text
         ///     Get hash string SHA256
         /// </summary>
         /// <param name="inputString">Input data</param>
-        /// <returns></returns>
-        /// <remarks></remarks>
+        /// <returns>The upper-case hexadecimal SHA-256 digest of the UTF-8 bytes of <paramref name="inputString"/>.</returns>
+        /// <remarks>
+        ///     Computes an unsalted SHA-256 of the UTF-8 bytes and returns it as upper-case hex. It is not
+        ///     suitable for password storage; use a password KDF (PBKDF2, Argon2, bcrypt) for passwords.
+        /// </remarks>
         public static string GetHashSha256String(this string inputString)
         {
             DomainEnsure.IsNotNull(inputString, nameof(inputString));
@@ -676,7 +762,7 @@ namespace RzR.Extensions.Domain.Text
         /// </summary>
         /// <param name="encoded">Encoded byte[]</param>
         /// <returns></returns>
-        /// <remarks></remarks>
+        /// <remarks>See also <see cref="DecodeBytesFromBase64(string)"/>.</remarks>
         public static byte[] DeCodeBytesFromBase64(this string encoded)
         {
             DomainEnsure.IsNotNull(encoded, nameof(encoded));
@@ -685,13 +771,35 @@ namespace RzR.Extensions.Domain.Text
         }
 
         /// <summary>
-        ///     Encode the UTF-8 representation of <paramref name="input"/> as a Base64Url string
-        ///     (RFC 4648 §5): standard Base64 with <c>+</c> replaced by <c>-</c>, <c>/</c> replaced
-        ///     by <c>_</c>, and trailing <c>=</c> padding stripped. Safe to use unescaped in URLs,
-        ///     filenames, JWTs and HTTP headers.
+        ///     Decode byte[] from BASE64 string.
+        /// </summary>
+        /// <remarks>
+        ///     Same behaviour as <see cref="DeCodeBytesFromBase64(string)"/>.
+        /// </remarks>
+        /// <exception cref="ArgumentNullException">
+        ///     Thrown when <paramref name="encoded"/> is null.
+        /// </exception>
+        /// <exception cref="FormatException">
+        ///     Thrown when <paramref name="encoded"/> is not a valid Base64 string, as
+        ///     <see cref="Convert.FromBase64String(string)"/> reports it.
+        /// </exception>
+        /// <param name="encoded">Encoded byte[].</param>
+        /// <returns>
+        ///     The bytes decoded from the standard Base64 string <paramref name="encoded"/>.
+        /// </returns>
+        public static byte[] DecodeBytesFromBase64(this string encoded)
+            => DeCodeBytesFromBase64(encoded);
+
+        /// <summary>
+        ///     Encode the UTF-8 representation of <paramref name="input"/> as a Base64Url string (RFC
+        ///     4648 §5): standard Base64 with <c>+</c> replaced by <c>-</c>, <c>/</c> replaced by <c>_</c>
+        ///     , and trailing <c>=</c> padding stripped. Safe to use unescaped in URLs, filenames, JWTs
+        ///     and HTTP headers.
         /// </summary>
         /// <param name="input">String to encode. <see langword="null"/> is treated as empty.</param>
-        /// <returns>URL-safe Base64 representation of the UTF-8 bytes of <paramref name="input"/>.</returns>
+        /// <returns>
+        ///     URL-safe Base64 representation of the UTF-8 bytes of <paramref name="input"/>.
+        /// </returns>
         public static string ToBase64Url(this string input)
         {
             var bytes = Encoding.UTF8.GetBytes(input ?? string.Empty);
@@ -846,7 +954,7 @@ namespace RzR.Extensions.Domain.Text
         /// </summary>
         /// <param name="base64String">Encoded string</param>
         /// <returns></returns>
-        /// <remarks></remarks>
+        /// <remarks>Returns false when the regex match times out.</remarks>
         public static bool IsBase64String(this string base64String)
         {
             if (base64String.IsNullOrEmpty()) return false;
@@ -854,7 +962,7 @@ namespace RzR.Extensions.Domain.Text
             base64String = base64String.TrimIfNotNull();
 
             return (base64String.Length % 4).IsZero() &&
-                   Regex.IsMatch(base64String, RegularExpressions.BASE64, RegexOptions.None);
+                   RegularExpressions.IsMatchOrFalseOnTimeout(Base64Regex, base64String);
         }
 
         /// <summary>
@@ -969,12 +1077,12 @@ namespace RzR.Extensions.Domain.Text
             var array = value.ToCharArray();
             if (array.Length >= 1)
                 if (char.IsLower(array[0]))
-                    array[0] = char.ToUpper(array[0]);
+                    array[0] = char.ToUpperInvariant(array[0]);
 
             for (var i = 1; i < array.Length; i++)
                 if (array[i - 1] == ' ')
                     if (char.IsLower(array[i]))
-                        array[i] = char.ToUpper(array[i]);
+                        array[i] = char.ToUpperInvariant(array[i]);
 
             return new string(array);
         }
@@ -1069,24 +1177,32 @@ namespace RzR.Extensions.Domain.Text
         /// <summary>
         ///     Generate list of permutation from input words
         /// </summary>
-        /// <param name="inputData">input string separated by ' ' (space) or ',' (coma)</param>
+        /// <param name="inputData">input string separated by ' ' (space) or ',' (coma); empty entries are ignored</param>
         /// <returns>List of all permutations</returns>
+        /// <exception cref="ArgumentNullException">Thrown when <paramref name="inputData"/> is <see langword="null"/>.</exception>
+        /// <exception cref="ArgumentOutOfRangeException">
+        ///     Thrown when <paramref name="inputData"/> is longer than 256 characters or contains more than 8 words.
+        /// </exception>
         public static List<string> GenerateStringPermutation(this string inputData)
         {
             if (inputData.IsNull())
                 throw new ArgumentNullException(nameof(inputData));
 
-            var result = new List<string>();
-            var splittedWord = inputData.Split(new[] { " ", ",", ", " }, StringSplitOptions.None).ToList();
-            var factorial = 1;
-            for (var i = 2; i <= splittedWord.Count; i++)
-                factorial *= i;
+            if (inputData.Length > PermutationMaxLength || CountPermutationWords(inputData) > PermutationMaxWords)
+                throw new ArgumentOutOfRangeException(nameof(inputData),
+                    $"The input must be at most {PermutationMaxLength} characters long and contain at most {PermutationMaxWords} words.");
 
+            var words = inputData.Split(PermutationSeparators, StringSplitOptions.RemoveEmptyEntries);
+            var factorial = 1;
+            for (var i = 2; i <= words.Length; i++)
+                factorial = checked(factorial * i);
+
+            var result = new List<string>(factorial);
             for (var v = 0; v < factorial; v++)
             {
-                var s = splittedWord.ToArray();
+                var s = (string[])words.Clone();
                 var k = v;
-                for (var j = 2; j <= splittedWord.Count; j++)
+                for (var j = 2; j <= s.Length; j++)
                 {
                     var other = k % j;
                     var temp = s[j - 1];
@@ -1095,12 +1211,32 @@ namespace RzR.Extensions.Domain.Text
                     k = k / j;
                 }
 
-                var itemPermutation = string.Empty;
-                foreach (var item in s) itemPermutation += item + " ";
-                result.Add(itemPermutation.Trim());
+                result.Add(string.Join(" ", s).Trim());
             }
 
             return result;
+        }
+
+        /// <summary>
+        ///     Count the non-empty words separated by ' ' or ',' without allocating.
+        /// </summary>
+        /// <param name="inputData">The input string; must not be null.</param>
+        /// <returns>
+        ///     The number of words.
+        /// </returns>
+        private static int CountPermutationWords(string inputData)
+        {
+            var count = 0;
+            var inWord = false;
+            foreach (var character in inputData)
+            {
+                var isSeparator = Array.IndexOf(PermutationSeparators, character) >= 0;
+                if (!isSeparator && !inWord)
+                    count++;
+                inWord = !isSeparator;
+            }
+
+            return count;
         }
 
         /// <summary>
@@ -1189,18 +1325,27 @@ namespace RzR.Extensions.Domain.Text
         }
 
         /// <summary>
-        ///     Replace exact word in string
+        ///     Replace exact word in string.
         /// </summary>
-        /// <param name="input">Current strings</param>
-        /// <param name="oldValue">Value for search</param>
-        /// <param name="newValue">Value to replace</param>
-        /// <returns></returns>
-        /// <remarks></remarks>
+        /// <remarks>
+        ///     Both values are literal: <paramref name="oldValue"/> is regex-escaped and matched as a
+        ///     whole token (not preceded or followed by a word character), and '$' in <paramref name="newValue"/>
+        ///     is inserted as is. A null or empty <paramref name="oldValue"/> returns the input
+        ///     unchanged. On .NET Framework 4.5+ and .NET Standard throws <see cref="T:System.Text.RegularExpressions.RegexMatchTimeoutException"/>
+        ///     when the regex match times out.
+        /// </remarks>
+        /// <param name="input">Current strings.</param>
+        /// <param name="oldValue">Value for search.</param>
+        /// <param name="newValue">Value to replace.</param>
+        /// <returns>
+        ///     A string.
+        /// </returns>
         public static string ReplaceExact(this string input, string oldValue, string newValue)
         {
             if (input.IfNullThenEmpty().IsMissing()) return null;
+            if (oldValue.IsNullOrEmpty()) return input;
 
-            return Regex.Replace(input, $@"\b{oldValue}\b", newValue);
+            return RegularExpressions.Replace(input, $@"(?<!\w){Regex.Escape(oldValue)}(?!\w)", newValue?.Replace("$", "$$"));
         }
 
         /// <summary>
@@ -1354,10 +1499,114 @@ namespace RzR.Extensions.Domain.Text
         /// <param name="check">Data to check</param>
         /// <param name="comp">String comparison</param>
         /// <returns></returns>
-        /// <remarks></remarks>
         public static bool Contains(this string source, string check, StringComparison comp)
         {
             return source?.IndexOf(check, comp) >= 0;
+        }
+
+        /// <summary>
+        ///     Checks whether the source string contains at least one of the specified values.
+        /// </summary>
+        /// <remarks>
+        ///     <paramref name="comparison"/> comes first so this overload never captures calls to
+        ///     <see cref="EnumerableExtensions.ContainsAny{TSource}(IEnumerable{TSource}, IEnumerable{TSource})"/>.
+        ///     A null <paramref name="source"/>, a null or empty <paramref name="values"/> array returns
+        ///     false;
+        ///     null elements are skipped; an empty-string element matches any non-null source, as
+        ///     <see cref="string.IndexOf(string, StringComparison)"/> does.
+        /// </remarks>
+        /// <exception cref="ArgumentException">
+        ///     Thrown when <paramref name="comparison"/> is not a defined <see cref="StringComparison"/>
+        ///     value.
+        /// </exception>
+        /// <param name="source">The string to search in.</param>
+        /// <param name="comparison">The comparison rules to use.</param>
+        /// <param name="values">The candidate substrings.</param>
+        /// <returns>
+        ///     True when <paramref name="source"/> contains at least one non-null element of <paramref name="values"/>;
+        ///     otherwise false.
+        /// </returns>
+        public static bool ContainsAny(this string source, StringComparison comparison, params string[] values)
+            => MatchesAny(source, comparison, values, (s, v, c) => s.IndexOf(v, c) >= 0);
+
+        /// <summary>
+        ///     Checks whether the source string starts with at least one of the specified values.
+        /// </summary>
+        /// <remarks>
+        ///     A null <paramref name="source"/>, a null or empty <paramref name="values"/> array returns
+        ///     false;
+        ///     null elements are skipped; an empty-string element matches any non-null source, as
+        ///     <see cref="string.StartsWith(string, StringComparison)"/> does.
+        /// </remarks>
+        /// <exception cref="ArgumentException">
+        ///     Thrown when <paramref name="comparison"/> is not a defined <see cref="StringComparison"/>
+        ///     value.
+        /// </exception>
+        /// <param name="source">The string to check.</param>
+        /// <param name="comparison">The comparison rules to use.</param>
+        /// <param name="values">The candidate prefixes.</param>
+        /// <returns>
+        ///     True when <paramref name="source"/> starts with at least one non-null element of <paramref name="values"/>
+        ///     ;
+        ///     otherwise false.
+        /// </returns>
+        public static bool StartsWithAny(this string source, StringComparison comparison, params string[] values)
+            => MatchesAny(source, comparison, values, (s, v, c) => s.StartsWith(v, c));
+
+        /// <summary>
+        ///     Checks whether the source string ends with at least one of the specified values.
+        /// </summary>
+        /// <remarks>
+        ///     A null <paramref name="source"/>, a null or empty <paramref name="values"/> array returns
+        ///     false;
+        ///     null elements are skipped; an empty-string element matches any non-null source, as
+        ///     <see cref="string.EndsWith(string, StringComparison)"/> does.
+        /// </remarks>
+        /// <exception cref="ArgumentException">
+        ///     Thrown when <paramref name="comparison"/> is not a defined <see cref="StringComparison"/>
+        ///     value.
+        /// </exception>
+        /// <param name="source">The string to check.</param>
+        /// <param name="comparison">The comparison rules to use.</param>
+        /// <param name="values">The candidate suffixes.</param>
+        /// <returns>
+        ///     True when <paramref name="source"/> ends with at least one non-null element of <paramref name="values"/>; 
+        ///     otherwise false.
+        /// </returns>
+        public static bool EndsWithAny(this string source, StringComparison comparison, params string[] values)
+            => MatchesAny(source, comparison, values, (s, v, c) => s.EndsWith(v, c));
+
+        /// <summary>
+        ///     Shared loop of <see cref="ContainsAny(string, StringComparison, string[])"/>,
+        ///     <see cref="StartsWithAny(string, StringComparison, string[])"/> and
+        ///     <see cref="EndsWithAny(string, StringComparison, string[])"/>.
+        /// </summary>
+        /// <exception cref="ArgumentException">
+        ///     Thrown when <paramref name="comparison"/> is not a defined <see cref="StringComparison"/>
+        ///     value.
+        /// </exception>
+        /// <param name="source">The string to check.</param>
+        /// <param name="comparison">The comparison rules to use.</param>
+        /// <param name="values">The candidate values.</param>
+        /// <param name="isMatch">The per-value match test.</param>
+        /// <returns>
+        ///     True when <paramref name="isMatch"/> succeeds for at least one non-null element;
+        ///     otherwise false.
+        /// </returns>
+        private static bool MatchesAny(string source, StringComparison comparison, string[] values,
+            Func<string, string, StringComparison, bool> isMatch)
+        {
+            if ((uint)comparison > (uint)StringComparison.OrdinalIgnoreCase)
+                throw new ArgumentException("The value is not a defined StringComparison.", nameof(comparison));
+
+            if (source.IsNull() || values.IsNull())
+                return false;
+
+            foreach (var value in values)
+                if (value.IsNotNull() && isMatch(source, value, comparison))
+                    return true;
+
+            return false;
         }
 
         /// <summary>
@@ -1402,6 +1651,7 @@ namespace RzR.Extensions.Domain.Text
         /// </summary>
         /// <param name="source">The input.</param>
         /// <returns>A hash</returns>
+        /// <exception cref="ArgumentNullException">Thrown when <paramref name="source"/> is <see langword="null"/>.</exception>
         public static string GetHashSha512String(this string source)
         {
             if (source.IsNull())
@@ -1419,6 +1669,7 @@ namespace RzR.Extensions.Domain.Text
         /// </summary>
         /// <param name="source">The input source string</param>
         /// <returns></returns>
+        /// <exception cref="ArgumentNullException">Thrown when <paramref name="source"/> is <see langword="null"/>.</exception>
         /// <remarks></remarks>
         public static IEnumerable<string> FromSpaceSeparatedString(this string source)
         {
@@ -1453,26 +1704,40 @@ namespace RzR.Extensions.Domain.Text
         }
 
         /// <summary>
-        ///     Add query string
+        ///     Add query string.
         /// </summary>
-        /// <param name="url">Source URL</param>
-        /// <param name="query">Query string</param>
-        /// <remarks></remarks>
+        /// <remarks>
+        ///     The query is inserted before a '#' fragment, which is kept at the end; no separator is
+        ///     added after a trailing '?' or '&amp;'. The query must already be URL-encoded (a raw '#'
+        ///     in it would start the fragment).
+        /// </remarks>
+        /// <param name="url">Source URL.</param>
+        /// <param name="query">Query string.</param>
+        /// <returns>
+        ///     A string.
+        /// </returns>
         public static string AddQueryString(this string url, string query)
         {
-            if (url.IfNullThenEmpty().IsMissing()) return null;
-            if (query.IfNullThenEmpty().IsMissing()) return url;
+            if (url.IfNullThenEmpty().IsMissing()) 
+                return null;
 
-            if (!url.Contains("?"))
+            if (query.IfNullThenEmpty().IsMissing())
+                return url;
+
+            var fragmentIndex = url.IndexOf('#');
+            var fragment = fragmentIndex < 0 ? string.Empty : url.Substring(fragmentIndex);
+            var target = fragmentIndex < 0 ? url : url.Substring(0, fragmentIndex);
+
+            if (target.IndexOf('?') < 0)
             {
-                url += "?";
+                target += "?";
             }
-            else if (!url.EndsWith("&"))
+            else if (!target.EndsWith("?", StringComparison.Ordinal) && !target.EndsWith("&", StringComparison.Ordinal))
             {
-                url += "&";
+                target += "&";
             }
 
-            return url + query;
+            return target + query + fragment;
         }
 
 #if NET || NETSTANDARD2_0_OR_GREATER
@@ -1575,7 +1840,8 @@ namespace RzR.Extensions.Domain.Text
         /// <param name="stringComparision">String comparision type. Default OrdinalIgnoreCase.</param>
         /// <returns></returns>
         /// <remarks></remarks>
-        public static string TrimPrefix(this string source, string prefix, StringComparison stringComparision = StringComparison.OrdinalIgnoreCase)
+        public static string TrimPrefix(this string source, string prefix, 
+            StringComparison stringComparision = StringComparison.OrdinalIgnoreCase)
         {
             if (source.IsMissing() || prefix.IsMissing()) return source;
 
@@ -1595,7 +1861,8 @@ namespace RzR.Extensions.Domain.Text
         /// <param name="stringComparision">String comparision type. Default OrdinalIgnoreCase.</param>
         /// <returns></returns>
         /// <remarks></remarks>
-        public static string TrimSuffix(this string source, string suffix, StringComparison stringComparision = StringComparison.OrdinalIgnoreCase)
+        public static string TrimSuffix(this string source, string suffix, 
+            StringComparison stringComparision = StringComparison.OrdinalIgnoreCase)
         {
             if (source.IsMissing() || suffix.IsMissing()) return source;
 
@@ -1741,14 +2008,12 @@ namespace RzR.Extensions.Domain.Text
         /// </summary>
         /// <param name="source">Source string value to check.</param>
         /// <returns></returns>
+        /// <remarks>Returns false when the regex match times out.</remarks>
         public static bool IsGuid(this string source)
         {
             if (source.IsNullOrEmpty()) return false;
 
-            var options = RegexOptions.IgnoreCase | RegexOptions.Multiline;
-            var guidRegEx = new Regex(RegularExpressions.GUID, options);
-
-            return guidRegEx.IsMatch(source);
+            return RegularExpressions.IsMatchOrFalseOnTimeout(GuidRegex, source);
         }
 
         /// <summary>
@@ -1807,10 +2072,17 @@ namespace RzR.Extensions.Domain.Text
         /// <param name="searchValue">The search value.</param>
         /// <param name="resultValue">Default value to return.</param>
         /// <returns>
-        ///     A string.
+        ///     A string; a <see langword="null"/> source is returned unchanged.
         /// </returns>
+        /// <exception cref="ArgumentNullException">Thrown when <paramref name="searchValue"/> is <see langword="null"/>.</exception>
         public static string IfContains(this string source, string searchValue, string resultValue)
         {
+            if (searchValue.IsNull())
+                throw new ArgumentNullException(nameof(searchValue));
+
+            if (source.IsNull())
+                return source;
+
             return source.Contains(searchValue).IsTrue() ? resultValue : source;
         }
 
@@ -1821,10 +2093,17 @@ namespace RzR.Extensions.Domain.Text
         /// <param name="searchValue">The search value.</param>
         /// <param name="resultValue">Default value to return.</param>
         /// <returns>
-        ///     A string.
+        ///     A string; a <see langword="null"/> source is returned unchanged.
         /// </returns>
+        /// <exception cref="ArgumentNullException">Thrown when <paramref name="searchValue"/> is <see langword="null"/>.</exception>
         public static string IfNotContains(this string source, string searchValue, string resultValue)
         {
+            if (searchValue.IsNull())
+                throw new ArgumentNullException(nameof(searchValue));
+
+            if (source.IsNull())
+                return source;
+
             return source.Contains(searchValue).IsFalse() ? resultValue : source;
         }
 
@@ -1835,11 +2114,19 @@ namespace RzR.Extensions.Domain.Text
         /// <param name="searchValue">The search value.</param>
         /// <param name="resultValue">Default value to return.</param>
         /// <returns>
-        ///     A string.
+        ///     A string; a <see langword="null"/> source is returned unchanged.
         /// </returns>
+        /// <exception cref="ArgumentNullException">Thrown when <paramref name="searchValue"/> is <see langword="null"/>.</exception>
+        /// <remarks>The comparison is ordinal (case-sensitive, culture-invariant).</remarks>
         public static string IfStartsWith(this string source, string searchValue, string resultValue)
         {
-            return source.StartsWith(searchValue).IsTrue() ? resultValue : source;
+            if (searchValue.IsNull())
+                throw new ArgumentNullException(nameof(searchValue));
+
+            if (source.IsNull())
+                return source;
+
+            return source.StartsWith(searchValue, StringComparison.Ordinal).IsTrue() ? resultValue : source;
         }
 
         /// <summary>
@@ -1849,11 +2136,18 @@ namespace RzR.Extensions.Domain.Text
         /// <param name="searchValue">The search value.</param>
         /// <param name="resultValue">Default value to return.</param>
         /// <returns>
-        ///     A string.
+        ///     A string; a <see langword="null"/> source is returned unchanged.
         /// </returns>
+        /// <exception cref="ArgumentNullException">Thrown when <paramref name="searchValue"/> is <see langword="null"/>.</exception>
+        /// <remarks>The comparison is ordinal (case-sensitive, culture-invariant).</remarks>
         public static string IfNotStartsWith(this string source, string searchValue, string resultValue)
         {
-            return source.StartsWith(searchValue).IsFalse() ? resultValue : source;
+            if (searchValue.IsNull())
+                throw new ArgumentNullException(nameof(searchValue));
+            if (source.IsNull())
+                return source;
+
+            return source.StartsWith(searchValue, StringComparison.Ordinal).IsFalse() ? resultValue : source;
         }
 
         /// <summary>
@@ -1862,7 +2156,7 @@ namespace RzR.Extensions.Domain.Text
         /// <param name="base32String">Encoded BASE32 string</param>
         /// <param name="paddingCheck">Check for padding data.</param>
         /// <returns></returns>
-        /// <remarks></remarks>
+        /// <remarks>Returns false when the regex match times out.</remarks>
         public static bool IsBase32String(this string base32String, bool paddingCheck = true)
         {
             if (base32String.IsNullOrEmpty()) return false;
@@ -1871,9 +2165,9 @@ namespace RzR.Extensions.Domain.Text
 
             if (paddingCheck.IsTrue())
                 return (base32String.Length % 8).IsZero() &&
-                    Regex.IsMatch(base32String, RegularExpressions.BASE32, RegexOptions.None);
+                    RegularExpressions.IsMatchOrFalseOnTimeout(Base32Regex, base32String);
             else
-                return Regex.IsMatch(base32String, RegularExpressions.BASE32, RegexOptions.None);
+                return RegularExpressions.IsMatchOrFalseOnTimeout(Base32Regex, base32String);
         }
 
         /// <summary>
@@ -2022,14 +2316,16 @@ namespace RzR.Extensions.Domain.Text
             {
                 NotAllowedEmpty(parameterName, nameof(parameterName));
 
-                DomainEnsure.ThrowException($"String value cannot be null. The param: [{parameterName}]", ExceptionType.ArgumentNullException);
+                DomainEnsure.ThrowException($"String value cannot be null. The param: [{parameterName}]",
+                    ExceptionType.ArgumentNullException);
             }
 
             if (source.IsMissing())
             {
                 NotAllowedEmpty(parameterName, nameof(parameterName));
 
-                DomainEnsure.ThrowException($"String value cannot be null. The param: [{parameterName}]", ExceptionType.ArgumentException);
+                DomainEnsure.ThrowException($"String value cannot be null. The param: [{parameterName}]",
+                    ExceptionType.ArgumentException);
             }
 
             return source;
@@ -2064,13 +2360,20 @@ namespace RzR.Extensions.Domain.Text
         /// <returns>
         ///     A new string without period.
         /// </returns>
+        /// <remarks>
+        ///     When the source, ignoring trailing white space, ends with the delimiter (ordinal), the trailing white
+        ///     space and the whole delimiter are removed; otherwise, or for a null or empty delimiter, the source is
+        ///     returned unchanged.
+        /// </remarks>
         public static string RemovePeriod(this string source, string periodDelimiter = ".")
         {
-            if (source.IsNullOrEmpty())
+            if (source.IsNullOrEmpty() || periodDelimiter.IsNullOrEmpty())
                 return source;
 
-            return source?.Trim().EndsWith(periodDelimiter) == true
-                ? source.Remove(source.Length - 1)
+            var trimmed = source.TrimEnd();
+
+            return trimmed.EndsWith(periodDelimiter, StringComparison.Ordinal)
+                ? trimmed.Substring(0, trimmed.Length - periodDelimiter.Length)
                 : source;
         }
 
@@ -2104,20 +2407,20 @@ namespace RzR.Extensions.Domain.Text
         /// <returns>
         ///     A new string value without period and its value.
         /// </returns>
+        /// <remarks>
+        ///     Only a trailing delimiter + period suffix is removed (ordinal comparison); a null or empty delimiter
+        ///     returns the source unchanged.
+        /// </remarks>
         public static string RemovePeriodValue(this string source, string periodDelimiter = ".", string period = "")
         {
-            if (source.IsNullOrEmpty())
+            if (source.IsNullOrEmpty() || periodDelimiter.IsNullOrEmpty())
                 return source;
 
-            if (source.EndsWith(periodDelimiter + period).IsTrue())
-            {
-                var idx = source.IndexOf(periodDelimiter + period, StringComparison.Ordinal);
+            var suffix = periodDelimiter + period;
 
-                return idx == -1
-                    ? source
-                    : source.Remove(idx, (periodDelimiter + period).Length);
-            }
-            else return source;
+            return source.EndsWith(suffix, StringComparison.Ordinal)
+                ? source.Substring(0, source.Length - suffix.Length)
+                : source;
         }
 
         /// <summary>
@@ -2127,12 +2430,16 @@ namespace RzR.Extensions.Domain.Text
         /// <returns>
         ///     True if all upper case, false if not.
         /// </returns>
+        /// <remarks>
+        ///     Matches ASCII letters only and accepts a trailing newline; it is not a sanitizer.
+        ///     Returns false when the regex match times out.
+        /// </remarks>
         public static bool IsAllUpperCase(this string source)
         {
             if (source.IsMissing())
                 return false;
 
-            return RegularExpressions.IsUpperCaseStringRegex.IsMatch(source);
+            return RegularExpressions.IsMatchOrFalseOnTimeout(RegularExpressions.IsUpperCaseStringRegex, source);
         }
 
         /// <summary>
@@ -2142,12 +2449,16 @@ namespace RzR.Extensions.Domain.Text
         /// <returns>
         ///     True if lower case, false if not.
         /// </returns>
+        /// <remarks>
+        ///     Matches ASCII letters only and accepts a trailing newline; it is not a sanitizer.
+        ///     Returns false when the regex match times out.
+        /// </remarks>
         public static bool IsAllLowerCase(this string source)
         {
             if (source.IsMissing())
                 return false;
 
-            return RegularExpressions.IsLowerCaseStringRegex.IsMatch(source);
+            return RegularExpressions.IsMatchOrFalseOnTimeout(RegularExpressions.IsLowerCaseStringRegex, source);
         }
 
         /// <summary>
@@ -2157,12 +2468,16 @@ namespace RzR.Extensions.Domain.Text
         /// <returns>
         ///     True if lower case, false if not.
         /// </returns>
+        /// <remarks>
+        ///     Matches ASCII letters only and accepts a trailing newline; it is not a sanitizer.
+        ///     Returns false when the regex match times out.
+        /// </remarks>
         public static bool IsAllLetters(this string source)
         {
             if (source.IsMissing())
                 return false;
 
-            return RegularExpressions.IsAllLettersStringRegex.IsMatch(source);
+            return RegularExpressions.IsMatchOrFalseOnTimeout(RegularExpressions.IsAllLettersStringRegex, source);
         }
 
         /// <summary>
@@ -2171,6 +2486,7 @@ namespace RzR.Extensions.Domain.Text
         /// <param name="source">Source string text/value.</param>
         /// <remarks>
         ///     Allowed only letters a - z (lower/upper case), numbers 0 - 9 and space.
+        ///     On .NET Framework 4.5+ and .NET Standard throws <see cref="T:System.Text.RegularExpressions.RegexMatchTimeoutException"/> when the regex match times out.
         /// </remarks>
         /// <returns>
         ///     A new cleaned text.
@@ -2180,9 +2496,7 @@ namespace RzR.Extensions.Domain.Text
             if (source.IsNullOrEmpty())
                 return source;
 
-            const string pattern = "[^a-zA-Z0-9 ]";
-
-            return Regex.Replace(source, pattern, "");
+            return NotLetterNumberOrSpaceRegex.Replace(source, "");
         }
 
         /// <summary>
@@ -2192,16 +2506,20 @@ namespace RzR.Extensions.Domain.Text
         /// <returns>
         ///     True if web url, false if not.
         /// </returns>
+        /// <remarks>Returns false when the regex match times out.</remarks>
         public static bool IsWebUrl(this string source)
         {
-            return source.IsPresent() && RegularExpressions.IsWebUrlRegex.IsMatch(source);
+            return source.IsPresent() && RegularExpressions.IsMatchOrFalseOnTimeout(RegularExpressions.IsWebUrlRegex, source);
         }
 
         /// <summary>
         ///     A string extension method that removes characters from start.
         /// </summary>
         /// <param name="source">The source to act on.</param>
-        /// <param name="length">The length. How many characters to be removed.</param>
+        /// <param name="length">
+        ///     The length. How many characters to be removed. When less or equal to zero the source is returned
+        ///     unchanged; when greater or equal to the source length an empty string is returned.
+        /// </param>
         /// <returns>
         ///     A string.
         /// </returns>
@@ -2210,8 +2528,11 @@ namespace RzR.Extensions.Domain.Text
             if (source.IsMissing())
                 return source.IfNullThenEmpty();
 
-            if (source.Length <= length || length == 0)
+            if (length.IsLessOrEqualZero())
                 return source;
+
+            if (length >= source.Length)
+                return string.Empty;
 
             return source.Substring(length, source.Length - length);
         }
@@ -2220,7 +2541,10 @@ namespace RzR.Extensions.Domain.Text
         ///     A string extension method that removes characters from end.
         /// </summary>
         /// <param name="source">The source to act on.</param>
-        /// <param name="length">The length. How many characters to be removed.</param>
+        /// <param name="length">
+        ///     The length. How many characters to be removed. When less or equal to zero the source is returned
+        ///     unchanged; when greater or equal to the source length an empty string is returned.
+        /// </param>
         /// <returns>
         ///     A string.
         /// </returns>
@@ -2229,8 +2553,11 @@ namespace RzR.Extensions.Domain.Text
             if (source.IsMissing())
                 return source.IfNullThenEmpty();
 
-            if (source.Length <= length || length == 0)
+            if (length.IsLessOrEqualZero())
                 return source;
+
+            if (length >= source.Length)
+                return string.Empty;
 
             return source.Substring(0, source.Length - length);
         }

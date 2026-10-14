@@ -16,6 +16,7 @@
 
 #region U S A G E S
 
+using System;
 using System.Text.RegularExpressions;
 
 // ReSharper disable InconsistentNaming
@@ -27,12 +28,14 @@ namespace RzR.Extensions.Domain.Text
     /// <summary>
     ///     Regular expressions REGEX
     /// </summary>
-    /// <remarks></remarks>
     public struct RegularExpressions
     {
+        private const int RegexMatchTimeoutMilliseconds = 2000;
+
         /// <summary>
         ///     Is only numbers
         /// </summary>
+        /// <remarks>Accepts a trailing newline; not a sanitizer.</remarks>
         public const string NUMBER = "^[0-9]*$";
 
         /// <summary>
@@ -77,21 +80,78 @@ namespace RzR.Extensions.Domain.Text
         /// <summary>
         ///     (Immutable) the is all upper case string RegEx.
         /// </summary>
-        public static readonly Regex IsUpperCaseStringRegex = new Regex("^[A-Z]*$", RegexOptions.Compiled);
+        /// <remarks>ASCII letters only; accepts a trailing newline; not a sanitizer.</remarks>
+        public static readonly Regex IsUpperCaseStringRegex = CreateRegex("^[A-Z]*$", RegexOptions.Compiled);
 
         /// <summary>
         ///     (Immutable) the is all lower case string RegEx.
         /// </summary>
-        public static readonly Regex IsLowerCaseStringRegex = new Regex("^[a-z]*$", RegexOptions.Compiled);
+        /// <remarks>ASCII letters only; accepts a trailing newline; not a sanitizer.</remarks>
+        public static readonly Regex IsLowerCaseStringRegex = CreateRegex("^[a-z]*$", RegexOptions.Compiled);
 
         /// <summary>
         ///     (Immutable) the is all letters string RegEx.
         /// </summary>
-        public static readonly Regex IsAllLettersStringRegex = new Regex("^[a-zA-Z]*$", RegexOptions.Compiled);
+        /// <remarks>ASCII letters only; accepts a trailing newline; not a sanitizer.</remarks>
+        public static readonly Regex IsAllLettersStringRegex = CreateRegex("^[a-zA-Z]*$", RegexOptions.Compiled);
 
         /// <summary>
         ///     (Immutable) the web URL expression.
         /// </summary>
-        public static readonly Regex IsWebUrlRegex = new Regex(@"((([A-Za-z]{3,9}:(?:\/\/)?)(?:[-;:&=\+\$,\w]+@)?[A-Za-z0-9.-]+(:[0-9]+)?|(?:www.|[-;:&=\+\$,\w]+@)[A-Za-z0-9.-]+)((?:\/[\+~%\/.\w-_]*)?\??(?:[-\+=&;%@.\w_]*)#?(?:[\w]*))?)", RegexOptions.Singleline | RegexOptions.Compiled);
+        public static readonly Regex IsWebUrlRegex = CreateRegex(@"((([A-Za-z]{3,9}:(?:\/\/)?)(?:[-;:&=\+\$,\w]+@)?[A-Za-z0-9.-]+(:[0-9]+)?|(?:www.|[-;:&=\+\$,\w]+@)[A-Za-z0-9.-]+)((?:\/[\+~%\/.\w-_]*)?\??(?:[-\+=&;%@.\w_]*)#?(?:[\w]*))?)", RegexOptions.Singleline | RegexOptions.Compiled);
+
+        /// <summary>
+        ///     Create a regex with the library match timeout where the target framework supports one.
+        /// </summary>
+        /// <param name="pattern">Regular expression pattern.</param>
+        /// <param name="options">Regular expression options.</param>
+        /// <returns></returns>
+        internal static Regex CreateRegex(string pattern, RegexOptions options)
+        {
+#if NET45_OR_GREATER || NET || NETSTANDARD1_0_OR_GREATER
+            return new Regex(pattern, options, TimeSpan.FromMilliseconds(RegexMatchTimeoutMilliseconds));
+#else
+            return new Regex(pattern, options);
+#endif
+        }
+
+        /// <summary>
+        ///     Replace every match of <paramref name="pattern"/> through the static (cached) Regex.Replace, with the
+        ///     library match timeout where the target framework supports one.
+        /// </summary>
+        /// <param name="input">Input text.</param>
+        /// <param name="pattern">Regular expression pattern.</param>
+        /// <param name="replacement">Replacement pattern.</param>
+        /// <returns></returns>
+        internal static string Replace(string input, string pattern, string replacement)
+        {
+#if NET45_OR_GREATER || NET || NETSTANDARD1_0_OR_GREATER
+            return Regex.Replace(input, pattern, replacement, RegexOptions.None, TimeSpan.FromMilliseconds(RegexMatchTimeoutMilliseconds));
+#else
+            return Regex.Replace(input, pattern, replacement);
+#endif
+        }
+
+        /// <summary>
+        ///     Answer whether <paramref name="input"/> matches, failing closed (false) when the match times out.
+        /// </summary>
+        /// <param name="regex">Regex to evaluate.</param>
+        /// <param name="input">Input to check.</param>
+        /// <returns></returns>
+        internal static bool IsMatchOrFalseOnTimeout(Regex regex, string input)
+        {
+#if NET45_OR_GREATER || NET || NETSTANDARD1_0_OR_GREATER
+            try
+            {
+                return regex.IsMatch(input);
+            }
+            catch (RegexMatchTimeoutException)
+            {
+                return false;
+            }
+#else
+            return regex.IsMatch(input);
+#endif
+        }
     }
 }
