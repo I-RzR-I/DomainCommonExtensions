@@ -40,11 +40,25 @@ namespace RzR.Extensions.Domain.Collections
         /// <param name="context"></param>
         /// <param name="data"></param>
         /// <returns></returns>
+        /// <remarks>
+        ///     A null <paramref name="data"/> returns <paramref name="context"/> unchanged. An empty read-only
+        ///     <paramref name="context"/> returns null and nothing is added; this is kept for compatibility with
+        ///     earlier versions. A non-empty read-only <paramref name="context"/> throws
+        ///     <see cref="NotSupportedException"/>.
+        /// </remarks>
         public static ICollection<TTarget> AddRange<TTarget>(this ICollection<TTarget> context,
             IEnumerable<TTarget> data)
         {
-            if (context.IsNullOrEmptyEnumerable()) return null;
-            foreach (var item in data) 
+            if (context == null)
+                return null;
+
+            if (data == null)
+                return context;
+
+            if (context.Count == 0 && context.IsReadOnly) 
+                return null;
+
+            foreach (var item in data)
                 context.Add(item);
 
             return context;
