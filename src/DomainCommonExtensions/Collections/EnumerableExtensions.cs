@@ -83,14 +83,26 @@ namespace RzR.Extensions.Domain.Collections
         /// <param name="items"></param>
         /// <param name="item"></param>
         /// <returns></returns>
+        /// <remarks>Enumerates the source at most once and compares with <see cref="EqualityComparer{T}.Default"/>.</remarks>
         public static bool IsLast<T>(this IEnumerable<T> items, T item)
         {
-            var list = items?.ToList() ?? new List<T>();
-            if (list.IsNullOrEmptyEnumerable())
+            if (items.IsNull())
                 return false;
-            var last = list.ElementAt(list.Count - 1);
 
-            return item.Equals(last);
+            if (items is IList<T> list)
+                return list.Count > 0 && EqualityComparer<T>.Default.Equals(item, list[list.Count - 1]);
+
+            using (var enumerator = items.GetEnumerator())
+            {
+                if (!enumerator.MoveNext())
+                    return false;
+
+                var last = enumerator.Current;
+                while (enumerator.MoveNext())
+                    last = enumerator.Current;
+
+                return EqualityComparer<T>.Default.Equals(item, last);
+            }
         }
 
         /// <summary>
@@ -100,14 +112,14 @@ namespace RzR.Extensions.Domain.Collections
         /// <param name="items"></param>
         /// <param name="item"></param>
         /// <returns></returns>
+        /// <remarks>Reads only the first element and compares with <see cref="EqualityComparer{T}.Default"/>.</remarks>
         public static bool IsFirst<T>(this IEnumerable<T> items, T item)
         {
-            var list = items?.ToList() ?? new List<T>();
-            if (list.IsNullOrEmptyEnumerable())
+            if (items.IsNull())
                 return false;
-            var first = list.FirstOrDefault();
 
-            return item.Equals(first);
+            using (var enumerator = items.GetEnumerator())
+                return enumerator.MoveNext() && EqualityComparer<T>.Default.Equals(item, enumerator.Current);
         }
 
 #if NET45_OR_GREATER || NET || NETSTANDARD1_0_OR_GREATER
@@ -303,25 +315,34 @@ namespace RzR.Extensions.Domain.Collections
         /// <param name="data">List of data</param>
         /// <returns></returns>
         /// <typeparam name="T">Anonymous type (dynamic) List<list type="dynamic"></list></typeparam>
-        /// <remarks></remarks>
+        /// <remarks>
+        ///     The properties of the first item's type are resolved once; items of another type are read by
+        ///     property name.
+        /// </remarks>
         public static DataTable ToDataTableDynamic<T>(this IEnumerable<T> data)
         {
             var table = new DataTable();
             var inputData = data.ToList();
             if (inputData.Any())
             {
-                var props = inputData.ToArray()[0]
-                    .GetType()
+                var firstType = inputData[0].GetType();
+                var props = firstType
                     .GetProperties()
                     .Where(x => x.PropertyType.IsSimpleType())
                     .ToList();
 
                 foreach (var prop in props) table.Columns.Add(prop.Name, typeof(string));
 
+                var getters = props.Select(x => TypeExtensions.FindProperty(firstType, x.Name)).ToArray();
                 var values = new object[props.Count];
                 foreach (var item in inputData)
                 {
-                    for (var i = 0; i < values.Length; i++) values[i] = item.GetStringPropertyValue(props[i].Name);
+                    var isFirstType = item != null && item.GetType() == firstType;
+                    for (var i = 0; i < values.Length; i++)
+                        values[i] = isFirstType
+                            ? getters[i]?.GetValue(item, null)?.ToString() ?? string.Empty
+                            : item.GetStringPropertyValue(props[i].Name);
+
                     table.Rows.Add(values);
                 }
             }
@@ -715,21 +736,28 @@ namespace RzR.Extensions.Domain.Collections
         /// <summary>
         ///     Chunk source array of data by size.
         /// </summary>
+        /// <remarks>
+        ///     The source is enumerated exactly once.
+        /// </remarks>
+        /// <typeparam name="T">Type of list.</typeparam>
         /// <param name="source">Source list/array.</param>
-        /// <param name="chunkSize">The chunk size. Default value is 100.</param>
-        /// <typeparam name="T">Type of list</typeparam>
-        /// <returns></returns>
-        /// <remarks></remarks>
+        /// <param name="chunkSize">
+        ///     (Optional) The chunk size. Default value is 100. A value less than or equal to zero
+        ///     returns a single chunk with all items.
+        /// </param>
+        /// <returns>
+        ///     An enumerator that allows foreach to be used to process chunked in this collection.
+        /// </returns>
         public static IEnumerable<IEnumerable<T>> Chunked<T>(this IEnumerable<T> source, int chunkSize = 100)
         {
-            if (source.IsNullOrEmptyEnumerable())
+            var chunkArray = source?.ToArray();
+            if (chunkArray.IsNullOrEmptyEnumerable())
                 return new List<IEnumerable<T>>();
 
-            if (chunkSize.IsNull() || chunkSize.IsLessOrEqualZero())
-                return new List<IEnumerable<T>>(1) { source };
+            if (chunkSize.IsLessOrEqualZero())
+                return new List<IEnumerable<T>>(1) { chunkArray };
 
-            var chunkArray = source.ToArray();
-            var chunksCount = (int)Math.Ceiling((double)source.Count() / chunkSize);
+            var chunksCount = (int)Math.Ceiling((double)chunkArray!.Length / chunkSize);
             var chunks = new List<IEnumerable<T>>(chunksCount);
 
             for (var chunkIndex = 0; chunkIndex < chunksCount; chunkIndex++)
